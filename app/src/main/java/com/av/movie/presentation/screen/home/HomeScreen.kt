@@ -39,13 +39,12 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = hiltView
             HomeTopBar()
         },
         content = { innerPadding ->
-            val p = innerPadding // Avoid error Material3
             val movies = listOf(
                 Movie(movieId = 1, title = "One Piece"),
                 Movie(movieId = 2, title = "Naruto"),
                 Movie(movieId = 3, title = "Jujitsu Kaisen")
             )
-            MovieList(movies = movies, navController = navController)
+            MovieList(movies = movies, navController = navController, innerPadding)
         }
     )
 }

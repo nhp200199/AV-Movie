@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.av.movie.presentation.screen.detail.MovieDetailScreen
+import com.av.movie.presentation.screen.favourite.FavouriteScreen
 import com.av.movie.presentation.screen.home.HomeScreen
 
 const val MOVIE_ID_ARGUMENT_KEY = "movieId"
@@ -16,8 +17,13 @@ fun NavGraph(navController: NavHostController) {
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Home.route
+        startDestination = Screen.Favourite.route
     ) {
+        
+        composable(route = Screen.Favourite.route) {
+            FavouriteScreen(navController = navController)
+        }
+        
         composable(route = Screen.Home.route) {
             HomeScreen(navController = navController)
         }

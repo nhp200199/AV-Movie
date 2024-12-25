@@ -2,6 +2,7 @@ package com.av.movie.presentation.screen.home
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,9 +20,9 @@ import com.av.movie.domain.model.Movie
 import com.av.movie.presentation.navigation.Screen
 
 @Composable
-fun MovieList(movies: List<Movie>, navController: NavController) {
+fun MovieList(movies: List<Movie>, navController: NavController, padding: PaddingValues) {
     Column (
-        Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+        Modifier.padding(start = 16.dp, top = padding.calculateTopPadding(), end = 16.dp, bottom = 0.dp)
     ){
         movies.forEach { movie ->
             MovieItem(movie = movie, navController = navController)

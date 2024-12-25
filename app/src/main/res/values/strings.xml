@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">AV Movie</string>
     <string name="movie_detail">Movie detail</string>
+    <string name="favourite_title">Pick What You\'d Like To Watch</string>
 </resources>
