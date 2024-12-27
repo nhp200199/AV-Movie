@@ -21,15 +21,11 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private lateinit var navController: NavHostController
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
             AVMovieTheme {
-                navController = rememberNavController()
-                NavGraph(navController = navController)
+                NavGraph()
             }
         }
     }

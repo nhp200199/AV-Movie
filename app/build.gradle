@@ -64,6 +64,7 @@ dependencies {
     implementation libs.androidx.ui.tooling.preview
     implementation libs.androidx.material3
     implementation libs.navigation.compose
+    implementation(libs.androidx.compose.material)
     implementation project(path: ':domain')
     implementation project(path: ':data')
     testImplementation libs.junit
