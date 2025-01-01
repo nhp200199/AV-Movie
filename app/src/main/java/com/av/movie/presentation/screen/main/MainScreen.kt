@@ -28,6 +28,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.av.avmovie.R
 import com.av.movie.presentation.screen.home.HomeScreen
+import com.av.movie.presentation.screen.home.MyHomeScreen
 import com.av.movie.ui.theme.AVMovieTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
@@ -94,7 +95,7 @@ fun MainScreen() {
         }
     ) { innerPadding ->
         NavHost(navHostController, startDestination = "home", Modifier.padding(innerPadding)) {
-            composable("home") { HomeScreen(navController = navHostController) }
+            composable("home") { MyHomeScreen() }
             composable("explore") { HomeScreen(navController = navHostController) }
             composable("tv") { HomeScreen(navController = navHostController) }
             composable("favourites") { HomeScreen(navController = navHostController) }
