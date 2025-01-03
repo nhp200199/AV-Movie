@@ -1,5 +1,6 @@
 package com.av.movie.presentation.screen.home
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -11,13 +12,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
@@ -29,6 +30,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -41,7 +43,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -68,19 +69,22 @@ data class Movie(
 
 @Composable
 fun MyHomeScreen() {
-    Column(
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .background(LightGrey30)
     ) {
-        MovieCarousel(
-            modifier = Modifier.height(500.dp)
-                .fillMaxWidth(),
-            movies = MODEL_POPULAR_MOVIES
-        )
-        Spacer(Modifier.height(16.dp))
-        Text("Pager", modifier = Modifier.fillMaxWidth().weight(2.5f),
-            style = TextStyle(fontSize = 56.sp),)
+        item {
+            MovieCarousel(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                movies = MODEL_POPULAR_MOVIES
+            )
+        }
+
+        item {
+            Category(name = "Popular", movies = MODEL_POPULAR_MOVIES, modifier = Modifier.padding(8.dp))
+        }
     }
 }
 
@@ -124,7 +128,6 @@ fun MovieCarousel(
     ) {
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier.weight(7.5f)
         ) { page ->
             PopularMovie(
                 movie = movies[page],
@@ -134,7 +137,7 @@ fun MovieCarousel(
         LazyRow(
             state = listState,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
-            contentPadding = PaddingValues(vertical = 32.dp, horizontal = 8.dp),
+            contentPadding = PaddingValues(vertical = 16.dp, horizontal = 8.dp),
         ) {
             items(count = movies.size) { idx ->
                 AsyncImage(
@@ -145,9 +148,11 @@ fun MovieCarousel(
                         .width(125.dp)
                         .height(50.dp)
                         .alpha(if (pagerState.currentPage == idx) 1f else 0.3f)
-                        .clickable { coroutineScope.launch {
-                            pagerState.animateScrollToPage(idx)
-                        } },
+                        .clickable {
+                            coroutineScope.launch {
+                                pagerState.animateScrollToPage(idx)
+                            }
+                        },
                     contentScale = ContentScale.Crop,
                     placeholder = painterResource(id = R.drawable.ic_launcher_background)
                 )
@@ -160,19 +165,20 @@ fun MovieCarousel(
 fun PopularMovie(modifier: Modifier = Modifier, movie: Movie) {
     Box(
         modifier = modifier
-//            .background(Color.White)
     ) {
         AsyncImage(
             model = getFullPosterPath(movie.posterPath),
             contentDescription = movie.title,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxWidth(),
+            contentScale = ContentScale.FillWidth,
+            error = painterResource(id = R.drawable.ic_launcher_background),
             placeholder = painterResource(id = R.drawable.ic_launcher_background)
         )
 
         Column(
             verticalArrangement = Arrangement.Bottom,
-            modifier = Modifier.fillMaxHeight()
+            modifier = Modifier
+                .align(Alignment.BottomStart)
                 .padding(start = 8.dp)
         ) {
             MovieInfo(movie.voteAverage, movie.title)
@@ -186,16 +192,7 @@ fun PopularMovie(modifier: Modifier = Modifier, movie: Movie) {
 fun MovieInfo(avgRating: Double, title: String) {
     Column {
         Row {
-            Text("IMdb", color = White, fontSize = 14.sp)
-            Spacer(Modifier.height(8.dp))
-            Text(
-                BigDecimal(avgRating)
-                    .setScale(1, RoundingMode.HALF_UP)
-                    .toDouble()
-                    .toString(),
-                color = White,
-                fontSize = 14.sp
-            )
+            RatingChip(rating = avgRating)
         }
         Text(
             title,
@@ -228,6 +225,103 @@ fun MovieAction() {
             )
         }
     }
+}
+
+@Composable
+fun Category(
+    name: String,
+    movies: List<Movie>,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = name)
+            TextButton(onClick = { /*TODO*/ }) {
+                Text(text = "See all")
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            items(movies.size) {
+                MovieItem(movie = movies[it], modifier = Modifier.width(110.dp))
+            }
+        }
+    }
+}
+
+@Composable
+fun MovieItem(
+    movie: Movie,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier) {
+        Box {
+            AsyncImage(
+                model = getFullPosterPath(movie.posterPath),
+                placeholder = painterResource(id = R.drawable.ic_launcher_background),
+                error = painterResource(id = R.drawable.ic_launcher_background),
+                contentDescription = movie.title,
+                contentScale = ContentScale.FillWidth,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(8.dp))
+            )
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(start = 8.dp, top = 8.dp)
+            ) {
+                RatingChip(rating = movie.voteAverage)
+            }
+
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(text = movie.title)
+    }
+}
+
+@Composable
+fun RatingChip(
+    rating: Double,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+            .background(
+                color = White.copy(alpha = 0.5f),
+                shape = RoundedCornerShape(8.dp),
+            )
+            .padding(4.dp)
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.pngwing),
+            contentDescription = null,
+            modifier = Modifier.width(36.dp),
+            contentScale = ContentScale.FillWidth
+        )
+        Spacer(modifier = Modifier.width(4.dp))
+        Text(text = BigDecimal(rating)
+            .setScale(1, RoundingMode.HALF_UP)
+            .toDouble()
+            .toString()
+        )
+    }
+}
+
+//---PREVIEW
+@Preview(showBackground = true)
+@Composable
+fun MovieItemPreview() {
+    MovieItem(movie = MODEL_MOVIE_Gladiator_II, modifier = Modifier.width(110.dp))
 }
 
 @Preview(showBackground = true)
