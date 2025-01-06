@@ -139,7 +139,10 @@ fun MovieCarousel(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             contentPadding = PaddingValues(vertical = 16.dp, horizontal = 8.dp),
         ) {
-            items(count = movies.size) { idx ->
+            items(
+                count = movies.size,
+                key = { movies[it].id }
+            ) { idx ->
                 AsyncImage(
                     model = getFullPosterPath(movies[idx].posterPath),
                     contentDescription = null,
@@ -248,7 +251,10 @@ fun Category(
         Spacer(modifier = Modifier.height(16.dp))
 
         LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            items(movies.size) {
+            items(
+                movies.size,
+                key = { movies[it].id }
+            ) {
                 MovieItem(movie = movies[it], modifier = Modifier.width(110.dp))
             }
         }
