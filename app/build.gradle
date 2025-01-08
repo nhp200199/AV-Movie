@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.dagger.hilt.android)
     alias(libs.plugins.jetbrains.kotlin.kapt)
+    alias(libs.plugins.kotlin.plugin.serialization)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -43,9 +45,9 @@ android {
         compose true
         buildConfig true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion '1.5.13'
-    }
+//    composeOptions {
+//        kotlinCompilerExtensionVersion '1.5.13'
+//    }
     packaging {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
@@ -67,6 +69,8 @@ dependencies {
     implementation(libs.androidx.compose.material)
     implementation project(path: ':domain')
     implementation project(path: ':data')
+    implementation(libs.kotlinx.serialization.json)
+
     testImplementation libs.junit
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core

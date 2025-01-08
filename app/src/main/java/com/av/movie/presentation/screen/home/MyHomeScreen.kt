@@ -78,7 +78,9 @@ data class Movie(
 )
 
 @Composable
-fun MyHomeScreen() {
+fun MyHomeScreen(
+    onNavigateToCategoryDetail: (category: String) -> Unit
+) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -95,7 +97,8 @@ fun MyHomeScreen() {
             Category(
                 name = "Popular",
                 movies = MODEL_POPULAR_MOVIES,
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier.padding(8.dp),
+                onNavigateToCategoryDetail = onNavigateToCategoryDetail
             )
         }
     }
@@ -290,7 +293,8 @@ fun MovieAction(isFavorite: Boolean) {
 fun Category(
     name: String,
     movies: List<Movie>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onNavigateToCategoryDetail: (category: String) -> Unit
 ) {
     Column(modifier = modifier) {
         Row(
@@ -300,7 +304,7 @@ fun Category(
         ) {
             Text(fontSize = 16.sp, color = Color.White, text = name, fontWeight = FontWeight.SemiBold)
             TextButton(
-                onClick = {  },
+                onClick = { onNavigateToCategoryDetail("Popular Movies") },
                 colors = ButtonDefaults.textButtonColors(
 
                 )
@@ -403,7 +407,7 @@ fun MovieItemPreview() {
 @Preview(showBackground = true)
 @Composable
 fun MyHomeScreenPreview() {
-    MyHomeScreen()
+    MyHomeScreen {}
 }
 
 @Preview(showBackground = true)

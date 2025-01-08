@@ -1,5 +1,7 @@
 package com.av.movie.presentation.navigation
 
+import kotlinx.serialization.Serializable
+
 sealed class Screen(val route: String) {
 
     data object Home: Screen("home_screen")
@@ -10,3 +12,19 @@ sealed class Screen(val route: String) {
 
     data object Main: Screen("main_screen")
 }
+
+// Top level screens
+@Serializable
+object Home
+@Serializable
+object Explore
+@Serializable
+object Profile
+@Serializable
+object Favourites
+
+@Serializable
+data class CategoryDetail(val category: String)
+
+@Serializable
+object Nested

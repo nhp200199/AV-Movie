@@ -1,6 +1,6 @@
 package com.av.movie.presentation.screen.main
 
-import android.os.Bundle
+import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -22,11 +22,21 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navigation
+import androidx.navigation.toRoute
+import com.av.movie.presentation.navigation.CategoryDetail
+import com.av.movie.presentation.navigation.Explore
+import com.av.movie.presentation.navigation.Favourites
+import com.av.movie.presentation.navigation.Home
+import com.av.movie.presentation.navigation.Nested
+import com.av.movie.presentation.navigation.Profile
 import com.av.movie.presentation.screen.categoryDetail.CategoryDetailScreen
 import com.av.movie.presentation.screen.home.HomeScreen
 import com.av.movie.presentation.screen.home.MyHomeScreen
@@ -43,19 +53,23 @@ sealed class TopLevelScreen(val route: String, val name: String, val icon: Image
     object Account : TopLevelScreen("account", "Account", Icons.Filled.AccountCircle)
 }
 
+data class TopLevelRoute<T: Any>(
+    val name: String,
+    val route: T,
+    val icon: ImageVector
+)
+
 val topLevelScreens = listOf(
-    TopLevelScreen.Home,
-    TopLevelScreen.Explore,
-//    TopLevelScreen.TV,
-    TopLevelScreen.Favourites,
-    TopLevelScreen.Account
+    TopLevelRoute("Home", Nested, Icons.Filled.Home),
+    TopLevelRoute("Explore", Explore, Icons.Filled.Search),
+    TopLevelRoute("Favourites", Favourites, Icons.Filled.Favorite),
+    TopLevelRoute("Profile", Profile, Icons.Filled.AccountCircle)
 )
 
 @Composable
 fun MainScreen() {
     val systemUiController = rememberSystemUiController()
     val systemBarColor = MaterialTheme.colorScheme.primary
-//    val allMovies = viewModel.latestMovie
 
     SideEffect {
         systemUiController.setSystemBarsColor(color = systemBarColor)
@@ -75,12 +89,16 @@ fun MainScreen() {
 
                 val currentRoute = currentDestination?.route
 
-                topLevelScreens.forEach { route ->
+                Log.d("TAG", "MainScreen: $currentRoute")
+
+                topLevelScreens.forEach { topLevelRoute ->
+                    val isSelected
+                        = currentDestination?.hierarchy?.any { it.hasRoute(topLevelRoute.route::class) }
+                            ?: false
                     BottomNavigationItem(
-                        selected
-                            = route.route == currentRoute,
+                        selected = isSelected,
                         onClick = {
-                            navHostController.navigate(route.name) {
+                            navHostController.navigate(topLevelRoute.route) {
                                 // Pop up to the start destination of the graph to
                                 // avoid building up a large stack of destinations
                                 // on the back stack as users select items
@@ -95,7 +113,7 @@ fun MainScreen() {
                             }
                         },
                         icon = {
-                            val modifier = if (route.route == currentRoute) {
+                            val modifier = if (isSelected) {
                                 val brush = Brush.verticalGradient(
                                     listOf(
                                         Cyan90,
@@ -115,8 +133,8 @@ fun MainScreen() {
                                 Modifier
                             }
                             Icon(
-                                route.icon,
-                                contentDescription = route.name,
+                                topLevelRoute.icon,
+                                contentDescription = topLevelRoute.name,
                                 modifier = modifier
                             )
                         },
@@ -127,18 +145,30 @@ fun MainScreen() {
             }
         }
     ) { innerPadding ->
-        NavHost(navHostController, startDestination = "home", Modifier.padding(innerPadding)) {
-            composable(TopLevelScreen.Home.route) {
-                MyHomeScreen()
+        NavHost(
+            navController = navHostController,
+            startDestination = Nested,
+            Modifier.padding(innerPadding)
+        ) {
+
+            navigation<Nested>(startDestination = Home) {
+                composable<Home> {
+                    MyHomeScreen { category ->
+                        navHostController.navigate(CategoryDetail(category))
+                    }
+                }
+
+                composable<CategoryDetail> { backStackEntry ->
+                    val categoryDetail = backStackEntry.toRoute<CategoryDetail>()
+
+                    CategoryDetailScreen(name = categoryDetail.category)
+                }
             }
-            composable("explore") {
-                CategoryDetailScreen(
-                    name = "test",
-                )
+            composable<Explore> {
+                HomeScreen(navController = navHostController)
             }
-            composable("tv") { HomeScreen(navController = navHostController) }
-            composable("favourites") { HomeScreen(navController = navHostController) }
-            composable("account") { HomeScreen(navController = navHostController) }
+            composable<Favourites> { HomeScreen(navController = navHostController) }
+            composable<Profile> { HomeScreen(navController = navHostController) }
         }
     }
 }
