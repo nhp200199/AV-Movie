@@ -28,7 +28,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -45,8 +47,10 @@ import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -56,6 +60,8 @@ import com.av.avmovie.R
 import com.av.movie.test.MODEL_MOVIE_Gladiator_II
 import com.av.movie.test.MODEL_POPULAR_MOVIES
 import com.av.movie.test.getFullPosterPath
+import com.av.movie.ui.theme.Blue90
+import com.av.movie.ui.theme.Cyan90
 import com.av.movie.ui.theme.LightGrey30
 import com.av.movie.ui.theme.White
 import kotlinx.coroutines.delay
@@ -76,7 +82,6 @@ fun MyHomeScreen() {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(LightGrey30)
     ) {
         item {
             MovieCarousel(
@@ -87,7 +92,11 @@ fun MyHomeScreen() {
         }
 
         item {
-            Category(name = "Popular", movies = MODEL_POPULAR_MOVIES, modifier = Modifier.padding(8.dp))
+            Category(
+                name = "Popular",
+                movies = MODEL_POPULAR_MOVIES,
+                modifier = Modifier.padding(8.dp)
+            )
         }
     }
 }
@@ -201,7 +210,7 @@ fun PopularMovie(modifier: Modifier = Modifier, movie: Movie) {
         ) {
             MovieInfo(movie.voteAverage, movie.title)
             Spacer(Modifier.height(16.dp))
-            MovieAction()
+            MovieAction(movie.isFavorite)
         }
     }
 }
@@ -222,11 +231,24 @@ fun MovieInfo(avgRating: Double, title: String) {
 }
 
 @Composable
-fun MovieAction() {
+fun MovieAction(isFavorite: Boolean) {
     Row(
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Button(modifier = Modifier.width(150.dp), onClick = {}) {
+        val colors = listOf(
+            Cyan90,
+            Blue90
+        )
+
+        Button(
+            modifier = Modifier.width(150.dp)
+                .background(brush = Brush.linearGradient(colors),
+                    shape = ButtonDefaults.shape),
+            onClick = {},
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Transparent,
+            )
+        ) {
             Text("Watch Now")
         }
         Spacer(modifier = Modifier.width(24.dp))
@@ -235,11 +257,30 @@ fun MovieAction() {
             modifier = Modifier
                 .size(40.dp),
             shape = CircleShape,
-            contentPadding = PaddingValues(0.dp)
+            contentPadding = PaddingValues(0.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = LightGrey30
+            )
+
         ) {
+            val brush = Brush.linearGradient(listOf(
+                Cyan90,
+                Blue90
+            ))
+
             Icon(
-                imageVector = Icons.Filled.Favorite,
-                contentDescription = "Favorite"
+                contentDescription =
+                    if (isFavorite) "Favorite" else "Not Favorite",
+                modifier = Modifier
+                    .graphicsLayer(alpha = 0.99f)
+                    .drawWithCache {
+                        onDrawWithContent {
+                            drawContent()
+                            drawRect(brush, blendMode = BlendMode.SrcAtop)
+                    }
+                },
+                imageVector =
+                    if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
             )
         }
     }
@@ -257,9 +298,23 @@ fun Category(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = name)
-            TextButton(onClick = { /*TODO*/ }) {
-                Text(text = "See all")
+            Text(fontSize = 16.sp, color = Color.White, text = name, fontWeight = FontWeight.SemiBold)
+            TextButton(
+                onClick = {  },
+                colors = ButtonDefaults.textButtonColors(
+
+                )
+            ) {
+                val brush = Brush.linearGradient(listOf(
+                    Cyan90,
+                    Blue90
+                ))
+
+                Text(text = "See all",
+                    style = TextStyle(
+                        brush = brush
+                    )
+                )
             }
         }
 
@@ -305,7 +360,7 @@ fun MovieItem(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        Text(text = movie.title)
+        Text(fontSize = 14.sp, color = Color.White, text = movie.title)
     }
 }
 
@@ -354,7 +409,7 @@ fun MyHomeScreenPreview() {
 @Preview(showBackground = true)
 @Composable
 fun MovieActionPreview() {
-    MovieAction()
+    MovieAction(isFavorite = true)
 }
 
 @Preview()
