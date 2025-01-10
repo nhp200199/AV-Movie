@@ -18,8 +18,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -52,14 +55,17 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.av.avmovie.R
-import com.av.movie.test.MODEL_MOVIE_Gladiator_II
-import com.av.movie.test.MODEL_POPULAR_MOVIES
-import com.av.movie.test.getFullPosterPath
+import com.av.movie.dataTest.ALL_GENRES
+import com.av.movie.dataTest.GLADIATOR_II
+import com.av.movie.dataTest.MODEL_POPULAR_MOVIES
+import com.av.movie.dataTest.getFullBackdropPath
+import com.av.movie.dataTest.getFullPosterPath
 import com.av.movie.ui.theme.Blue90
 import com.av.movie.ui.theme.Cyan90
 import com.av.movie.ui.theme.LightGrey30
@@ -70,11 +76,26 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 
 data class Movie(
+    val adult: Boolean,
+    val backdropPath: String,
+    val genreIds: List<Int>,
     val id: Int,
-    val title: String,
+    val originalLanguage: String,
+    val originalTitle: String,
+    val overview: String,
+    val popularity: Double,
     val posterPath: String,
+    val releaseDate: String,
+    val title: String,
+    val video: Boolean,
     val voteAverage: Double,
-    val isFavorite: Boolean
+    val voteCount: Int,
+    val isFavorite: Boolean = false
+)
+
+data class Genre(
+    val id: Int,
+    val name: String
 )
 
 @Composable
@@ -100,6 +121,70 @@ fun MyHomeScreen(
                 modifier = Modifier.padding(8.dp),
                 onNavigateToCategoryDetail = onNavigateToCategoryDetail
             )
+        }
+
+        item {
+            Genres(
+                genres = ALL_GENRES,
+                modifier = Modifier
+                    .padding(8.dp)
+            )
+        }
+
+        item {
+            MovieCategory(
+                name = "Now on TV",
+                movies = MODEL_POPULAR_MOVIES,
+                modifier = Modifier.padding(8.dp),
+                onNavigateToCategoryDetail = {}
+            )
+        }
+    }
+}
+
+@Composable
+fun Genres(
+    genres: List<Genre>,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+    ) {
+        Text(
+            fontSize = 16.sp,
+            color = Color.White,
+            text = "Categories",
+            fontWeight = FontWeight.SemiBold)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        LazyHorizontalGrid(
+            rows = GridCells.Fixed(3),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.height(225.dp)
+        ) {
+            items(
+                count = genres.size,
+                key = { genres[it].id }
+            ) {
+                Text(
+                    text = genres[it].name,
+                    style = TextStyle(
+                        color = Color.White,
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.Center
+                    ),
+                    modifier = Modifier
+                        .width(150.dp)
+                        .height(150.dp)
+                        .background(
+                            color = LightGrey30.copy(alpha = 0.7f),
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .wrapContentHeight(),
+                )
+            }
         }
     }
 }
@@ -188,7 +273,8 @@ fun PopularMovie(modifier: Modifier = Modifier, movie: Movie) {
         AsyncImage(
             model = getFullPosterPath(movie.posterPath),
             contentDescription = movie.title,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .drawWithCache {
                     val gradient = Brush.verticalGradient(
                         colors = listOf(Color.Transparent, Color.Black),
@@ -197,7 +283,7 @@ fun PopularMovie(modifier: Modifier = Modifier, movie: Movie) {
                     )
                     onDrawWithContent {
                         drawContent()
-                        drawRect(gradient,blendMode = BlendMode.Multiply)
+                        drawRect(gradient, blendMode = BlendMode.Multiply)
                     }
                 },
             contentScale = ContentScale.FillWidth,
@@ -244,9 +330,12 @@ fun MovieAction(isFavorite: Boolean) {
         )
 
         Button(
-            modifier = Modifier.width(150.dp)
-                .background(brush = Brush.linearGradient(colors),
-                    shape = ButtonDefaults.shape),
+            modifier = Modifier
+                .width(150.dp)
+                .background(
+                    brush = Brush.linearGradient(colors),
+                    shape = ButtonDefaults.shape
+                ),
             onClick = {},
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Transparent,
@@ -280,8 +369,8 @@ fun MovieAction(isFavorite: Boolean) {
                         onDrawWithContent {
                             drawContent()
                             drawRect(brush, blendMode = BlendMode.SrcAtop)
-                    }
-                },
+                        }
+                    },
                 imageVector =
                     if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
             )
@@ -336,14 +425,66 @@ fun Category(
 }
 
 @Composable
+fun MovieCategory(
+    name: String,
+    movies: List<Movie>,
+    modifier: Modifier = Modifier,
+    onNavigateToCategoryDetail: (category: String) -> Unit
+) {
+    Column(modifier = modifier) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(fontSize = 16.sp, color = Color.White, text = name, fontWeight = FontWeight.SemiBold)
+            TextButton(
+                onClick = { onNavigateToCategoryDetail("Popular Movies") },
+                colors = ButtonDefaults.textButtonColors(
+
+                )
+            ) {
+                val brush = Brush.linearGradient(listOf(
+                    Cyan90,
+                    Blue90
+                ))
+
+                Text(text = "See all",
+                    style = TextStyle(
+                        brush = brush
+                    )
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            items(
+                movies.size,
+                key = { movies[it].id }
+            ) {
+                MovieItem(
+                    movie = movies[it],
+                    modifier = Modifier.width(250.dp),
+                    isBackdrop = true
+                )
+            }
+        }
+    }
+}
+
+@Composable
 fun MovieItem(
     movie: Movie,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isBackdrop: Boolean = false
 ) {
     Column(modifier = modifier) {
         Box {
             AsyncImage(
-                model = getFullPosterPath(movie.posterPath),
+                model = if (isBackdrop) getFullBackdropPath(movie.backdropPath)
+                    else getFullPosterPath(movie.posterPath),
                 placeholder = painterResource(id = R.drawable.ic_launcher_background),
                 error = painterResource(id = R.drawable.ic_launcher_background),
                 contentDescription = movie.title,
@@ -401,7 +542,7 @@ fun RatingChip(
 @Preview(showBackground = true)
 @Composable
 fun MovieItemPreview() {
-    MovieItem(movie = MODEL_MOVIE_Gladiator_II, modifier = Modifier.width(110.dp))
+    MovieItem(movie = GLADIATOR_II, modifier = Modifier.width(110.dp))
 }
 
 @Preview(showBackground = true)
@@ -420,8 +561,8 @@ fun MovieActionPreview() {
 @Composable
 fun MovieInfoPreview() {
     MovieInfo(
-        MODEL_MOVIE_Gladiator_II.voteAverage,
-        MODEL_MOVIE_Gladiator_II.title
+        GLADIATOR_II.voteAverage,
+        GLADIATOR_II.title
     )
 }
 
@@ -430,6 +571,6 @@ fun MovieInfoPreview() {
 fun PopularMoviePreview() {
     PopularMovie(
         modifier = Modifier.fillMaxSize(),
-        movie = MODEL_MOVIE_Gladiator_II
+        movie = GLADIATOR_II
     )
 }

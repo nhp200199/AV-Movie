@@ -23,7 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.av.movie.presentation.screen.home.MovieItem
-import com.av.movie.test.MODEL_POPULAR_MOVIES
+import com.av.movie.dataTest.MODEL_POPULAR_MOVIES
 import com.av.movie.ui.theme.Grey10
 
 @Composable
