@@ -12,6 +12,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -26,13 +27,17 @@ import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -110,20 +115,11 @@ fun SignUpSection(
         Spacer(modifier = Modifier.height(32.dp))
 
         var emailText by remember { mutableStateOf("") }
-        OutlinedTextField(
+        CommonOutlineTextField(
             value = emailText,
             onValueChange = { emailText = it },
-            shape = RoundedCornerShape(50),
-            placeholder = {
-                Text(text = "Email")
-            },
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Filled.Email,
-                    contentDescription = "email",
-                    modifier = Modifier.padding(start = 12.dp)
-                )
-            },
+            placeholder = "Email",
+            leadingIconResource = Icons.Filled.Email,
             modifier = Modifier
                 .fillMaxWidth()
         )
@@ -131,39 +127,23 @@ fun SignUpSection(
         Spacer(modifier = Modifier.height(12.dp))
 
         var passwordText by remember { mutableStateOf("") }
-        OutlinedTextField(
+        CommonOutlineTextField(
             value = passwordText,
             onValueChange = { passwordText = it },
-            shape = RoundedCornerShape(50),
-            placeholder = {
-                Text(text = "Password")
-            },
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Filled.Lock,
-                    contentDescription = "password",
-                    modifier = Modifier.padding(start = 12.dp)
-                )
-            },
+            placeholder = "Password",
+            leadingIconResource = Icons.Filled.Lock,
             modifier = Modifier
                 .fillMaxWidth()
         )
 
+        Spacer(modifier = Modifier.height(12.dp))
+
         var repeatPasswordText by remember { mutableStateOf("") }
-        OutlinedTextField(
+        CommonOutlineTextField(
             value = repeatPasswordText,
             onValueChange = { repeatPasswordText = it },
-            shape = RoundedCornerShape(50),
-            placeholder = {
-                Text(text = "Password")
-            },
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Filled.Lock,
-                    contentDescription = "password",
-                    modifier = Modifier.padding(start = 12.dp)
-                )
-            },
+            placeholder = "Repeat Password",
+            leadingIconResource = Icons.Filled.Lock,
             modifier = Modifier
                 .fillMaxWidth()
         )
@@ -178,13 +158,38 @@ fun SignUpSection(
 
         Spacer(modifier = Modifier.height(128.dp))
 
-        Text(
-            text = "Already have an account? Log In",
-            style = TextStyle(
-                color = Color.White,
-                fontSize = 14.sp
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = "Already have an account?",
+                style = TextStyle(
+                    color = Color.White,
+                    fontSize = 14.sp
+                ),
             )
-        )
+
+            TextButton(
+                onClick = { /*TODO*/ },
+                contentPadding = PaddingValues(0.dp),
+            ) {
+                val textBrush = Brush.linearGradient(
+                    colors = listOf(
+                        Cyan90,
+                        Blue90
+                    )
+                )
+
+                Text(
+                    text = "Log In",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        brush = textBrush
+                    )
+                )
+            }
+        }
+
     }
 }
 
@@ -325,13 +330,38 @@ fun LoginSection(
 
         Spacer(modifier = Modifier.height(128.dp))
 
-        Text(
-            text = "Don't have an account? Sign Up",
-            style = TextStyle(
-                color = Color.White,
-                fontSize = 14.sp
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = "Don't have an account?",
+                style = TextStyle(
+                    color = Color.White,
+                    fontSize = 14.sp
+                )
             )
-        )
+
+            TextButton(
+                onClick = { /*TODO*/ },
+                contentPadding = PaddingValues(0.dp),
+            ) {
+                val textBrush = Brush.linearGradient(
+                    colors = listOf(
+                        Cyan90,
+                        Blue90
+                    )
+                )
+
+                Text(
+                    text = "Sign Up",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        brush = textBrush
+                    )
+                )
+            }
+        }
+
     }
 }
 @Composable
@@ -347,13 +377,21 @@ fun Introduction() {
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = "Start streaming now with Black TV",
-            modifier = Modifier.fillMaxWidth(0.7f),
+            text = buildAnnotatedString {
+                append("Start streaming now with ")
+
+                withStyle(
+                    SpanStyle(fontWeight = FontWeight.SemiBold)
+                ) {
+                    append("Black TV")
+                }
+            },
             style = TextStyle(
                 color = Color.White,
                 fontSize = 22.sp,
                 textAlign = TextAlign.Center
-            )
+            ),
+            modifier = Modifier.fillMaxWidth(0.7f),
         )
     }
 }
@@ -449,4 +487,62 @@ private fun LoginButtonPreview() {
 @Composable
 fun LoginScreenPreview() {
     AuthenticationScreen()
+}
+
+@Composable
+fun CommonOutlineTextField(
+    modifier: Modifier = Modifier,
+    value: String = "",
+    onValueChange: (String) -> Unit = {},
+    placeholder: String = "",
+    leadingIconResource: ImageVector? = null,
+) {
+    OutlinedTextField(
+        modifier = modifier,
+        value = value,
+        onValueChange = onValueChange,
+        shape = RoundedCornerShape(50),
+        placeholder = {
+            Text(text = placeholder)
+        },
+        leadingIcon = leadingIconResource?.let {
+            return@let {
+                val brush = Brush.linearGradient(listOf(
+                    Cyan90,
+                    Blue90
+                ))
+
+               Icon(
+                   imageVector = it,
+                   contentDescription = null,
+                   modifier = Modifier.padding(start = 12.dp)
+                       .graphicsLayer(0.99f)
+                       .drawWithCache {
+                           onDrawWithContent {
+                               drawContent()
+                               drawRect(brush, blendMode = BlendMode.SrcAtop)
+                           }
+                       },
+               )
+           }
+        },
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = Blue90,
+            focusedTextColor = Color.White,
+            unfocusedTextColor = Color.White
+        )
+    )
+}
+
+@Preview
+@Composable
+fun CommonOutlineTextFieldPreview() {
+    var value by remember { mutableStateOf("") }
+    CommonOutlineTextField(
+        value = value,
+        onValueChange = { value = it },
+        placeholder = "Placeholder",
+        leadingIconResource = Icons.Filled.Lock,
+        modifier = Modifier.width(200.dp) // Adjust width as needed
+    )
 }
