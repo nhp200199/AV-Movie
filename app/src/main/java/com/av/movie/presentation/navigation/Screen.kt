@@ -15,6 +15,9 @@ sealed class Screen(val route: String) {
 
 // Top level screens
 @Serializable
+object Main
+
+@Serializable
 object Home
 @Serializable
 object Explore
@@ -22,6 +25,11 @@ object Explore
 object Profile
 @Serializable
 object Favourites
+@Serializable
+object Authentication
+
+@Serializable
+object Onboarding
 
 @Serializable
 data class CategoryDetail(val category: String)

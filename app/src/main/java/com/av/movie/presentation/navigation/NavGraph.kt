@@ -24,32 +24,30 @@ fun NavGraph() {
 //        systemUiController.systemBarsInteractionBehavior = SYSTEM_BARS_INTERACTION_BEHAVIOR_STICKY
     }
 
-
-
     val navController = rememberNavController()
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Main.route
+        startDestination = Main
     ) {
 
-        composable(route = Screen.Main.route) {
+        composable<Main> {
             MainScreen()
         }
 
-        composable(route = Screen.Home.route) {
-            HomeScreen(navController = navController)
-        }
-
-        composable(
-            route = Screen.MovieDetail.route,
-            arguments = listOf(navArgument(MOVIE_ID_ARGUMENT_KEY) {
-                type = NavType.StringType
-            })
-        ) { navBackStackEntry ->
-            navBackStackEntry.arguments?.getString(MOVIE_ID_ARGUMENT_KEY)?.let { movieId ->
-                MovieDetailScreen(movieId = movieId, navController = navController)
-            }
-        }
+//        composable(route = Screen.Home.route) {
+//            HomeScreen(navController = navController)
+//        }
+//
+//        composable(
+//            route = Screen.MovieDetail.route,
+//            arguments = listOf(navArgument(MOVIE_ID_ARGUMENT_KEY) {
+//                type = NavType.StringType
+//            })
+//        ) { navBackStackEntry ->
+//            navBackStackEntry.arguments?.getString(MOVIE_ID_ARGUMENT_KEY)?.let { movieId ->
+//                MovieDetailScreen(movieId = movieId, navController = navController)
+//            }
+//        }
     }
 }

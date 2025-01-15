@@ -45,14 +45,6 @@ import com.av.movie.ui.theme.Cyan90
 import com.av.movie.ui.theme.Grey10
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
-sealed class TopLevelScreen(val route: String, val name: String, val icon: ImageVector) {
-    object Home : TopLevelScreen("home", "Home", Icons.Filled.Home)
-    object Explore : TopLevelScreen("explore", "Explore", Icons.Filled.Search)
-//    object TV : TopLevelScreen("tv", "TV", painterResource(id = ))
-    object Favourites : TopLevelScreen("favourites", "Favourites", Icons.Filled.Favorite)
-    object Account : TopLevelScreen("account", "Account", Icons.Filled.AccountCircle)
-}
-
 data class TopLevelRoute<T: Any>(
     val name: String,
     val route: T,
