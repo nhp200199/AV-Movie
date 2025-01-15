@@ -51,9 +51,11 @@ import com.av.movie.ui.theme.Grey10
 import com.av.movie.ui.theme.LightGrey30
 
 @Composable
-fun AuthenticationScreen() {
+fun AuthenticationScreen(
+    onNavigateToOnboarding: () -> Unit,
+) {
     Scaffold(
-        containerColor = Grey10
+        containerColor = Color.Black
     ) {
         Box(
             modifier = Modifier
@@ -88,7 +90,9 @@ fun AuthenticationScreen() {
                     .padding(PaddingValues(bottom = 16.dp))
                     .align(Alignment.BottomCenter)
             ) {
-                SignUpSection()
+                LoginSection(
+                    onNavigateToOnboarding = onNavigateToOnboarding
+                )
             }
         }
     }
@@ -251,7 +255,8 @@ fun CommonButton(
 
 @Composable
 fun LoginSection(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onNavigateToOnboarding: () -> Unit
 ) {
     Column(
         modifier = modifier,
@@ -314,7 +319,8 @@ fun LoginSection(
         CommonButton(
             text = "Log In",
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            onClick = onNavigateToOnboarding
         )
 
 
@@ -486,7 +492,7 @@ private fun LoginButtonPreview() {
 @Preview
 @Composable
 fun LoginScreenPreview() {
-    AuthenticationScreen()
+    AuthenticationScreen {}
 }
 
 @Composable
@@ -515,7 +521,8 @@ fun CommonOutlineTextField(
                Icon(
                    imageVector = it,
                    contentDescription = null,
-                   modifier = Modifier.padding(start = 12.dp)
+                   modifier = Modifier
+                       .padding(start = 12.dp)
                        .graphicsLayer(0.99f)
                        .drawWithCache {
                            onDrawWithContent {

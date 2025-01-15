@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -46,7 +47,9 @@ import com.av.movie.ui.theme.Grey10
 import com.av.movie.ui.theme.LightGrey30
 
 @Composable
-fun OnBoardingScreen() {
+fun OnBoardingScreen(
+    onNavigateToMain: () -> Unit = {}
+) {
     Scaffold(
         topBar = {
             TopAppBar(title = {
@@ -55,16 +58,17 @@ fun OnBoardingScreen() {
         },
         backgroundColor = Grey10
     ) {
-        Box(
+        Column(
             modifier =
-            Modifier.padding(it)
+                Modifier.padding(it)
         ) {
             var selectedGenres by remember { mutableStateOf(emptyList<Int>()) }
 
             GenreSelection(
                 genres = ALL_GENRES,
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .weight(1f),
                 selectedGenres = selectedGenres,
                 onGenreSelected = { genreId ->
                     selectedGenres = if (selectedGenres.contains(genreId)) {
@@ -78,9 +82,9 @@ fun OnBoardingScreen() {
             FooterAction(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
                     .height(100.dp),
-                enabled = selectedGenres.isNotEmpty()
+                enabled = selectedGenres.isNotEmpty(),
+                onNavigateToMain = onNavigateToMain
             )
         }
     }
@@ -89,14 +93,15 @@ fun OnBoardingScreen() {
 @Composable
 fun FooterAction(
     modifier: Modifier = Modifier,
-    enabled: Boolean = false
+    enabled: Boolean = false,
+    onNavigateToMain: () -> Unit
 ) {
     Box(
         modifier = modifier
             .background(Grey10)
     ) {
         Button(
-            onClick = { /*TODO*/ },
+            onClick = onNavigateToMain,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 16.dp, horizontal = 32.dp)

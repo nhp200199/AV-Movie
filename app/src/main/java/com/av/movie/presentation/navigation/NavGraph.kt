@@ -2,15 +2,12 @@ package com.av.movie.presentation.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.av.movie.presentation.screen.detail.MovieDetailScreen
-import com.av.movie.presentation.screen.home.HomeScreen
+import com.av.movie.presentation.screen.login.AuthenticationScreen
 import com.av.movie.presentation.screen.main.MainScreen
+import com.av.movie.presentation.screen.onboarding.OnBoardingScreen
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 const val MOVIE_ID_ARGUMENT_KEY = "movieId"
@@ -28,11 +25,31 @@ fun NavGraph() {
 
     NavHost(
         navController = navController,
-        startDestination = Main
+        startDestination = Authentication
     ) {
 
         composable<Main> {
             MainScreen()
+        }
+
+        composable<Authentication> {
+            AuthenticationScreen {
+                navController.navigate(Onboarding) {
+                    popUpTo<Authentication> {
+                         inclusive = true
+                    }
+                }
+            }
+        }
+
+        composable<Onboarding> {
+            OnBoardingScreen {
+                navController.navigate(Main) {
+                    popUpTo<Onboarding> {
+                        inclusive = true
+                    }
+                }
+            }
         }
 
 //        composable(route = Screen.Home.route) {

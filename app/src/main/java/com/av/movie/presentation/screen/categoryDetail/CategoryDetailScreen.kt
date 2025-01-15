@@ -29,7 +29,8 @@ import com.av.movie.ui.theme.Grey10
 @Composable
 fun CategoryDetailScreen(
     name: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onNavigatingUp: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -39,7 +40,7 @@ fun CategoryDetailScreen(
         ) {
             Box(modifier = Modifier.fillMaxSize()) {
                 IconButton(
-                    onClick = { /*TODO*/ },
+                    onClick = onNavigatingUp,
                     modifier = Modifier
                         .align(Alignment.CenterStart)
                 ) {
@@ -82,5 +83,5 @@ fun CategoryDetailScreen(
 @Preview(showBackground = true)
 @Composable
 fun CategoryDetailScreenPreview() {
-    CategoryDetailScreen(name = "test")
+    CategoryDetailScreen(name = "test") {}
 }

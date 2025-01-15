@@ -153,7 +153,9 @@ fun MainScreen() {
                 composable<CategoryDetail> { backStackEntry ->
                     val categoryDetail = backStackEntry.toRoute<CategoryDetail>()
 
-                    CategoryDetailScreen(name = categoryDetail.category)
+                    CategoryDetailScreen(name = categoryDetail.category) {
+                        navHostController.navigateUp()
+                    }
                 }
             }
             composable<Explore> {
