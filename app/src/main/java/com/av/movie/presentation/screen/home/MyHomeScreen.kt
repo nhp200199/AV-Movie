@@ -331,11 +331,12 @@ fun MovieAction(isFavorite: Boolean) {
 
         Button(
             modifier = Modifier
-                .width(150.dp)
                 .background(
                     brush = Brush.linearGradient(colors),
                     shape = ButtonDefaults.shape
-                ),
+                )
+                .width(150.dp)
+                .height(ButtonDefaults.MinHeight),
             onClick = {},
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Transparent,
