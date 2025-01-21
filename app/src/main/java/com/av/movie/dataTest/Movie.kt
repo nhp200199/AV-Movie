@@ -1,6 +1,9 @@
 package com.av.movie.dataTest
 
 import com.av.movie.presentation.screen.home.Movie
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.Date
 
 val SONIC_THE_HEDGEHOG_3 = Movie(
     adult = false,
@@ -115,3 +118,20 @@ val MODEL_POPULAR_MOVIES = listOf(
 
 fun getFullPosterPath(path: String): String = "https://image.tmdb.org/t/p/w440_and_h660_face${path}"
 fun getFullBackdropPath(path: String) = "https://media.themoviedb.org/t/p/w250_and_h141_face${path}"
+
+fun formatDate(pattern: String, date: String, originPattern: String = "yyyy-MM-dd"): String {
+    val sdf = SimpleDateFormat(originPattern)
+    val requiredSdf = SimpleDateFormat(pattern)
+
+    return try {
+        val dateObj: Date? = sdf.parse(date)
+
+         if (dateObj == null) "" else requiredSdf.format(dateObj)
+    } catch (e: ParseException) {
+        ""
+    }
+}
+
+fun formatTime(timeInt: Int): String {
+    return "${timeInt /60}h ${timeInt % 60}m"
+}

@@ -93,6 +93,17 @@ data class Movie(
     val isFavorite: Boolean = false
 )
 
+data class Video(
+    val id: String,
+    val name: String,
+    val size: Int,
+    val key: String,
+    val site: String,
+    val type: String,
+    val official: Boolean,
+    val publishedAt: String,
+)
+
 data class Genre(
     val id: Int,
     val name: String
