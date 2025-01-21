@@ -13,6 +13,9 @@ sealed class Screen(val route: String) {
     data object Main: Screen("main_screen")
 }
 
+@Serializable
+data class MovieDetail(val id: Int)
+
 // Top level screens
 @Serializable
 object Main

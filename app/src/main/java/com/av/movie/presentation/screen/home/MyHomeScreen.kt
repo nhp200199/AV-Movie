@@ -111,7 +111,8 @@ data class Genre(
 
 @Composable
 fun MyHomeScreen(
-    onNavigateToCategoryDetail: (category: String) -> Unit
+    onNavigateToCategoryDetail: (category: String) -> Unit,
+    onNavigateToMovieDetail: (id: Int) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -121,7 +122,8 @@ fun MyHomeScreen(
             MovieCarousel(
                 modifier = Modifier
                     .fillMaxWidth(),
-                movies = MODEL_POPULAR_MOVIES
+                movies = MODEL_POPULAR_MOVIES,
+                onNavigateToMovieDetail = onNavigateToMovieDetail
             )
         }
 
@@ -130,7 +132,8 @@ fun MyHomeScreen(
                 name = "Popular",
                 movies = MODEL_POPULAR_MOVIES,
                 modifier = Modifier.padding(8.dp),
-                onNavigateToCategoryDetail = onNavigateToCategoryDetail
+                onNavigateToCategoryDetail = onNavigateToCategoryDetail,
+                onNavigateToMovieDetail = onNavigateToMovieDetail
             )
         }
 
@@ -147,7 +150,8 @@ fun MyHomeScreen(
                 name = "Now on TV",
                 movies = MODEL_POPULAR_MOVIES,
                 modifier = Modifier.padding(8.dp),
-                onNavigateToCategoryDetail = {}
+                onNavigateToCategoryDetail = {},
+                onNavigateToMovieDetail = {}
             )
         }
     }
@@ -203,7 +207,8 @@ fun Genres(
 @Composable
 fun MovieCarousel(
     modifier: Modifier = Modifier,
-    movies: List<Movie>
+    movies: List<Movie>,
+    onNavigateToMovieDetail: (id: Int) -> Unit
 ) {
     val listState = rememberLazyListState()
     val pagerState = rememberPagerState(pageCount = { movies.size })
@@ -243,6 +248,7 @@ fun MovieCarousel(
         ) { page ->
             PopularMovie(
                 movie = movies[page],
+                onNavigateToMovieDetail = onNavigateToMovieDetail
             )
         }
 
@@ -277,9 +283,14 @@ fun MovieCarousel(
 }
 
 @Composable
-fun PopularMovie(modifier: Modifier = Modifier, movie: Movie) {
+fun PopularMovie(
+    modifier: Modifier = Modifier,
+    movie: Movie,
+    onNavigateToMovieDetail: (id: Int) -> Unit
+) {
     Box(
         modifier = modifier
+            .clickable { onNavigateToMovieDetail(movie.id) }
     ) {
         AsyncImage(
             model = getFullPosterPath(movie.posterPath),
@@ -395,7 +406,8 @@ fun Category(
     name: String,
     movies: List<Movie>,
     modifier: Modifier = Modifier,
-    onNavigateToCategoryDetail: (category: String) -> Unit
+    onNavigateToCategoryDetail: (category: String) -> Unit,
+    onNavigateToMovieDetail: (id: Int) -> Unit
 ) {
     Column(modifier = modifier) {
         Row(
@@ -430,7 +442,11 @@ fun Category(
                 movies.size,
                 key = { movies[it].id }
             ) {
-                MovieItem(movie = movies[it], modifier = Modifier.width(110.dp))
+                MovieItem(
+                    movie = movies[it],
+                    modifier = Modifier.width(110.dp),
+                    onNavigateToMovieDetail = onNavigateToMovieDetail
+                )
             }
         }
     }
@@ -441,7 +457,8 @@ fun MovieCategory(
     name: String,
     movies: List<Movie>,
     modifier: Modifier = Modifier,
-    onNavigateToCategoryDetail: (category: String) -> Unit
+    onNavigateToCategoryDetail: (category: String) -> Unit,
+    onNavigateToMovieDetail: (id: Int) -> Unit
 ) {
     Column(modifier = modifier) {
         Row(
@@ -479,7 +496,8 @@ fun MovieCategory(
                 MovieItem(
                     movie = movies[it],
                     modifier = Modifier.width(250.dp),
-                    isBackdrop = true
+                    isBackdrop = true,
+                    onNavigateToMovieDetail = onNavigateToMovieDetail
                 )
             }
         }
@@ -490,9 +508,13 @@ fun MovieCategory(
 fun MovieItem(
     movie: Movie,
     modifier: Modifier = Modifier,
-    isBackdrop: Boolean = false
+    isBackdrop: Boolean = false,
+    onNavigateToMovieDetail: (id: Int) -> Unit = {}
 ) {
-    Column(modifier = modifier) {
+    Column(
+        modifier = modifier
+            .clickable { onNavigateToMovieDetail(movie.id) },
+    ) {
         Box {
             AsyncImage(
                 model = if (isBackdrop) getFullBackdropPath(movie.backdropPath)
@@ -560,7 +582,10 @@ fun MovieItemPreview() {
 @Preview(showBackground = true)
 @Composable
 fun MyHomeScreenPreview() {
-    MyHomeScreen {}
+    MyHomeScreen(
+        onNavigateToMovieDetail = {},
+        onNavigateToCategoryDetail = {}
+    )
 }
 
 @Preview(showBackground = true)
@@ -584,5 +609,5 @@ fun PopularMoviePreview() {
     PopularMovie(
         modifier = Modifier.fillMaxSize(),
         movie = GLADIATOR_II
-    )
+    ) {}
 }

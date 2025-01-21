@@ -17,6 +17,7 @@ val Grey10 = Color(0xFF090E17)
 
 val LightGrey30 = Color(0xFF303D4F)
 val LightGrey50 = Color(0xFF4C5158)
+val LightGrey10 = Color(0xFF5C6169)
 
 val Cyan90 = Color(0xFF4AB9FF)
 

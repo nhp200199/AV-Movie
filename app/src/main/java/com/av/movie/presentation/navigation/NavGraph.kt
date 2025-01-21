@@ -5,8 +5,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.av.movie.presentation.screen.login.AuthenticationScreen
 import com.av.movie.presentation.screen.main.MainScreen
+import com.av.movie.presentation.screen.movieDetail.MovieDetailScreen
 import com.av.movie.presentation.screen.onboarding.OnBoardingScreen
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
@@ -25,11 +27,13 @@ fun NavGraph() {
 
     NavHost(
         navController = navController,
-        startDestination = Authentication
+        startDestination = Main
     ) {
 
         composable<Main> {
-            MainScreen()
+            MainScreen { movieId ->
+                navController.navigate(MovieDetail(movieId))
+            }
         }
 
         composable<Authentication> {
@@ -52,19 +56,9 @@ fun NavGraph() {
             }
         }
 
-//        composable(route = Screen.Home.route) {
-//            HomeScreen(navController = navController)
-//        }
-//
-//        composable(
-//            route = Screen.MovieDetail.route,
-//            arguments = listOf(navArgument(MOVIE_ID_ARGUMENT_KEY) {
-//                type = NavType.StringType
-//            })
-//        ) { navBackStackEntry ->
-//            navBackStackEntry.arguments?.getString(MOVIE_ID_ARGUMENT_KEY)?.let { movieId ->
-//                MovieDetailScreen(movieId = movieId, navController = navController)
-//            }
-//        }
+        composable<MovieDetail> {  backStackEntry ->
+            val movieDetail = backStackEntry.toRoute<MovieDetail>()
+            MovieDetailScreen(movieDetail.id)
+        }
     }
 }

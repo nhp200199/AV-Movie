@@ -48,6 +48,7 @@ import com.av.movie.dataTest.MODEL_GLADIATOR_VIDEO
 import com.av.movie.dataTest.MODEL_POPULAR_MOVIES
 import com.av.movie.dataTest.formatDate
 import com.av.movie.dataTest.formatTime
+import com.av.movie.dataTest.getFullBackdropPath
 import com.av.movie.dataTest.getFullPosterPath
 import com.av.movie.presentation.screen.home.Movie
 import com.av.movie.presentation.screen.home.MovieAction
@@ -57,6 +58,7 @@ import com.av.movie.presentation.screen.home.Video
 import com.av.movie.ui.theme.Blue90
 import com.av.movie.ui.theme.Cyan90
 import com.av.movie.ui.theme.Grey10
+import com.av.movie.ui.theme.LightGrey10
 import com.av.movie.ui.theme.LightGrey30
 import com.av.movie.ui.theme.LightGrey50
 import kotlinx.coroutines.launch
@@ -77,11 +79,13 @@ fun MovieDetailScreen(
 
     Column(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .background(color = Grey10),
     ) {
         Headline(
             movie = movie!!,
             modifier = Modifier.fillMaxWidth()
+                .height(300.dp)
         )
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -109,7 +113,7 @@ fun OtherInformation(
 ) {
     val pagerState = rememberPagerState(
         pageCount = { pages.size },
-        initialPage = 1
+        initialPage = 0
     )
 
     val coroutineScope = rememberCoroutineScope()
@@ -310,7 +314,7 @@ fun AboutItem(
         Text(
             text = description,
             style = TextStyle(
-                color = Color.White,
+                color = LightGrey10,
                 fontSize = 14.sp
             )
         )
@@ -330,7 +334,7 @@ fun Overview(
         Text(
             text = movie.overview,
             style = TextStyle(
-                color = Color.White,
+                color = LightGrey10,
                 fontSize = 14.sp
             )
         )
@@ -399,7 +403,7 @@ fun TrailerItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
-            model = getFullPosterPath(backdrop),
+            model = getFullBackdropPath(backdrop),
             contentDescription = data.name,
             error = painterResource(id = R.drawable.ic_launcher_background),
             contentScale = ContentScale.FillWidth,
@@ -424,7 +428,7 @@ fun TrailerItem(
             Text(
                 text = formatDate("dd-MM-yyyy", data.publishedAt, originPattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"),
                 style = TextStyle(
-                    color = Color.White,
+                    color = LightGrey10,
                     fontSize = 14.sp
                 )
             )

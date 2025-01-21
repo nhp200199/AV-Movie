@@ -35,11 +35,13 @@ import com.av.movie.presentation.navigation.CategoryDetail
 import com.av.movie.presentation.navigation.Explore
 import com.av.movie.presentation.navigation.Favourites
 import com.av.movie.presentation.navigation.Home
+import com.av.movie.presentation.navigation.MovieDetail
 import com.av.movie.presentation.navigation.Nested
 import com.av.movie.presentation.navigation.Profile
 import com.av.movie.presentation.screen.categoryDetail.CategoryDetailScreen
 import com.av.movie.presentation.screen.home.HomeScreen
 import com.av.movie.presentation.screen.home.MyHomeScreen
+import com.av.movie.presentation.screen.movieDetail.MovieDetailScreen
 import com.av.movie.ui.theme.Blue90
 import com.av.movie.ui.theme.Cyan90
 import com.av.movie.ui.theme.Grey10
@@ -59,7 +61,9 @@ val topLevelScreens = listOf(
 )
 
 @Composable
-fun MainScreen() {
+fun MainScreen(
+    onNavigateMovieDetail: (Int) -> Unit
+) {
     val systemUiController = rememberSystemUiController()
     val systemBarColor = MaterialTheme.colorScheme.primary
 
@@ -145,9 +149,12 @@ fun MainScreen() {
 
             navigation<Nested>(startDestination = Home) {
                 composable<Home> {
-                    MyHomeScreen { category ->
-                        navHostController.navigate(CategoryDetail(category))
-                    }
+                    MyHomeScreen(
+                        onNavigateToCategoryDetail = { category ->
+                            navHostController.navigate(CategoryDetail(category))
+                        },
+                        onNavigateToMovieDetail = onNavigateMovieDetail
+                    )
                 }
 
                 composable<CategoryDetail> { backStackEntry ->
@@ -163,6 +170,11 @@ fun MainScreen() {
             }
             composable<Favourites> { HomeScreen(navController = navHostController) }
             composable<Profile> { HomeScreen(navController = navHostController) }
+
+            composable<MovieDetail> {  backStackEntry ->
+                val movieDetail = backStackEntry.toRoute<MovieDetail>()
+                MovieDetailScreen(movieDetail.id)
+            }
         }
     }
 }
