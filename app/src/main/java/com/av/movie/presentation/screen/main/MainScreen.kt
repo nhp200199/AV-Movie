@@ -39,6 +39,7 @@ import com.av.movie.presentation.navigation.MovieDetail
 import com.av.movie.presentation.navigation.Nested
 import com.av.movie.presentation.navigation.Profile
 import com.av.movie.presentation.screen.categoryDetail.CategoryDetailScreen
+import com.av.movie.presentation.screen.explore.ExploreScreen
 import com.av.movie.presentation.screen.home.HomeScreen
 import com.av.movie.presentation.screen.home.MyHomeScreen
 import com.av.movie.presentation.screen.movieDetail.MovieDetailScreen
@@ -166,7 +167,7 @@ fun MainScreen(
                 }
             }
             composable<Explore> {
-                HomeScreen(navController = navHostController)
+                ExploreScreen()
             }
             composable<Favourites> { HomeScreen(navController = navHostController) }
             composable<Profile> { HomeScreen(navController = navHostController) }
