@@ -23,11 +23,14 @@ import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -65,12 +68,16 @@ import com.av.movie.ui.theme.Cyan90
 fun ExploreScreen(
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier.fillMaxSize(),
+    Box(
+        modifier = modifier
+            .fillMaxSize()
     ) {
-        ExploreToolBar()
+        Column(
+            modifier = modifier.fillMaxSize(),
+        ) {
+            ExploreToolBar()
 
-        Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
 //        SearchHistory(
 //            histories = MODEL_POPULAR_MOVIES,
@@ -90,8 +97,21 @@ fun ExploreScreen(
 //        } else {
 //            SearchResults()
 //        }
-    }
+        }
 
+        //TODO: Display this button only when the search is available
+        ElevatedButton(
+            onClick = { /*TODO*/ },
+            modifier = Modifier
+                .align(Alignment.BottomCenter),
+            colors = ButtonDefaults.elevatedButtonColors(
+                contentColor = Color.Black
+            )
+        ) {
+            Icon(imageVector = Icons.AutoMirrored.Filled.List, contentDescription = "Filter")
+            Text(text = "Filter")
+        }
+    }
 }
 
 @Composable
