@@ -25,6 +25,16 @@ object Home
 @Serializable
 object Explore
 @Serializable
+object ExploreFilter
+@Serializable
+object GenreFilter
+@Serializable
+object YearFilter
+@Serializable
+object CountryFilter
+
+
+@Serializable
 object Profile
 @Serializable
 object Favourites

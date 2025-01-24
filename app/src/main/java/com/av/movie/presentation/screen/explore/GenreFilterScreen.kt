@@ -21,7 +21,7 @@ import com.av.movie.presentation.screen.onboarding.GenreItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CategoryFilterScreen(
+fun GenreFilterScreen(
     availableCategories: List<Genre>,
     selectedCategories: List<Genre>,
     onGenreSelected: (Int) -> Unit

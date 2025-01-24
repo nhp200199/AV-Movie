@@ -2,6 +2,7 @@ package com.av.movie.presentation.screen.explore
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,6 +21,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.Text
@@ -45,9 +47,20 @@ import com.av.movie.ui.theme.LightGrey10
 import com.av.movie.ui.theme.LightGrey30
 import kotlin.reflect.KProperty
 
+enum class ExploreFilters(
+    private val genre: String
+) {
+    GENRE("Genre"),
+    COUNTRY("Country"),
+    YEAR("Year")
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExploreFilterScreen() {
+fun ExploreFilterScreen(
+    onBackClick: () -> Unit,
+    onNavigateToFilterScreen: (ExploreFilters) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -56,10 +69,14 @@ fun ExploreFilterScreen() {
         CenterAlignedTopAppBar(
             title = { Text(text = "Filters") },
             navigationIcon = {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Close"
-                )
+                IconButton(
+                    onClick = onBackClick
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Close"
+                    )
+                }
             },
             actions = {
                 Text(text = "Reset")
@@ -77,7 +94,10 @@ fun ExploreFilterScreen() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        FilterSection(modifier = Modifier.padding(horizontal = 8.dp))
+        FilterSection(
+            modifier = Modifier.padding(horizontal = 8.dp),
+            onNavigateToFilterScreen = onNavigateToFilterScreen
+        )
     }
 }
 
@@ -132,14 +152,9 @@ fun SortSection(
 
 @Composable
 fun FilterSection(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onNavigateToFilterScreen: (ExploreFilters) -> Unit
 ) {
-    val filterHeadlines = listOf(
-        "Genre",
-        "Country",
-        "Year"
-    )
-
     Column(modifier = modifier) {
         Text(
             text = "Filters",
@@ -149,11 +164,11 @@ fun FilterSection(
             )
         )
 
-        filterHeadlines.forEach {
+        ExploreFilters.entries.toTypedArray().forEach {
             ListItem(
                 headlineContent = {
                     Text(
-                        text = it,
+                        text = it.name,
                         style = TextStyle(
                             color = Color.White,
                             fontSize = 14.sp
@@ -172,7 +187,11 @@ fun FilterSection(
                 },
                 colors = ListItemDefaults.colors(
                     containerColor = Color.Transparent
-                )
+                ),
+                modifier = Modifier
+                    .clickable {
+                        onNavigateToFilterScreen(it)
+                    }
             )
 
             HorizontalDivider()
@@ -183,5 +202,8 @@ fun FilterSection(
 @Preview
 @Composable
 fun ExploreFilterScreenPreview() {
-    ExploreFilterScreen()
+    ExploreFilterScreen(
+        onBackClick = {},
+        onNavigateToFilterScreen = {}
+    )
 }

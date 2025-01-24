@@ -31,9 +31,14 @@ fun NavGraph() {
     ) {
 
         composable<Main> {
-            MainScreen { movieId ->
-                navController.navigate(MovieDetail(movieId))
-            }
+            MainScreen(
+                onNavigateMovieDetail = { movieId ->
+                    navController.navigate(MovieDetail(movieId))
+                },
+                onNavigateExploreFilterScreen = {
+                    navController.navigate(ExploreFilter)
+                }
+            )
         }
 
         composable<Authentication> {

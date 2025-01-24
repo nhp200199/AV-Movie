@@ -63,7 +63,8 @@ val topLevelScreens = listOf(
 
 @Composable
 fun MainScreen(
-    onNavigateMovieDetail: (Int) -> Unit
+    onNavigateMovieDetail: (Int) -> Unit,
+    onNavigateExploreFilterScreen: () -> Unit
 ) {
     val systemUiController = rememberSystemUiController()
     val systemBarColor = MaterialTheme.colorScheme.primary
@@ -167,15 +168,12 @@ fun MainScreen(
                 }
             }
             composable<Explore> {
-                ExploreScreen()
+                ExploreScreen(
+                    onNavigateExploreFilterScreen = onNavigateExploreFilterScreen
+                )
             }
             composable<Favourites> { HomeScreen(navController = navHostController) }
             composable<Profile> { HomeScreen(navController = navHostController) }
-
-            composable<MovieDetail> {  backStackEntry ->
-                val movieDetail = backStackEntry.toRoute<MovieDetail>()
-                MovieDetailScreen(movieDetail.id)
-            }
         }
     }
 }

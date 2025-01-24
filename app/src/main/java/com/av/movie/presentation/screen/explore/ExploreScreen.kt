@@ -66,6 +66,7 @@ import com.av.movie.ui.theme.Cyan90
 
 @Composable
 fun ExploreScreen(
+    onNavigateExploreFilterScreen: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -75,7 +76,7 @@ fun ExploreScreen(
         Column(
             modifier = modifier.fillMaxSize(),
         ) {
-            ExploreToolBar()
+            ExploreToolBar(modifier = Modifier.fillMaxWidth())
 
             Spacer(modifier = Modifier.height(32.dp))
 
@@ -101,7 +102,7 @@ fun ExploreScreen(
 
         //TODO: Display this button only when the search is available
         ElevatedButton(
-            onClick = { /*TODO*/ },
+            onClick = onNavigateExploreFilterScreen,
             modifier = Modifier
                 .align(Alignment.BottomCenter),
             colors = ButtonDefaults.elevatedButtonColors(
@@ -217,17 +218,10 @@ fun ExploreToolBar(
     var query by remember { mutableStateOf("") }
 
     Row(
-        modifier = modifier,
+        modifier = modifier
+            .padding(horizontal = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(
-            onClick = {}
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = null
-            )
-        }
         SearchBar(
             inputField = {
                 SearchBarDefaults.InputField(
@@ -247,6 +241,7 @@ fun ExploreToolBar(
                             )
                         }
                     },
+                    modifier = Modifier.fillMaxWidth()
                 )
             },
             expanded = false,
@@ -273,7 +268,9 @@ fun ExploreToolBarPreview() {
 @Preview
 @Composable
 fun ExploreScreenPreview() {
-    ExploreScreen()
+    ExploreScreen(
+        onNavigateExploreFilterScreen = {}
+    )
 }
 
 
