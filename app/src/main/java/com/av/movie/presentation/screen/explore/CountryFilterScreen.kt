@@ -13,6 +13,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.Text
@@ -45,6 +46,7 @@ fun CountryFilterScreen(
     selectedCountry: String?,
     onCountrySelected: (String) -> Unit,
     onReset: () -> Unit,
+    onNavigateUp: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
@@ -53,10 +55,14 @@ fun CountryFilterScreen(
         CenterAlignedTopAppBar(
             title = { Text(text = "Country") },
             navigationIcon = {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Close"
-                )
+                IconButton(
+                    onClick = onNavigateUp
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Close"
+                    )
+                }
             },
             actions = {
                 TextButton(
@@ -154,6 +160,7 @@ fun CountryFilterScreenPreview() {
         availableCountries = listOf("America", "China", "Vietnam"),
         selectedCountry = selectedCountry,
         onCountrySelected = { selectedCountry = it },
-        onReset = { selectedCountry = null }
+        onReset = { selectedCountry = null },
+        onNavigateUp = {  }
     )
 }

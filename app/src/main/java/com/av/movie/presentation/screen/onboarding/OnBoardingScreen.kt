@@ -62,7 +62,7 @@ fun OnBoardingScreen(
             modifier =
                 Modifier.padding(it)
         ) {
-            var selectedGenres by remember { mutableStateOf(emptyList<Int>()) }
+            var selectedGenres by remember { mutableStateOf(emptyList<Genre>()) }
 
             GenreSelection(
                 genres = ALL_GENRES,
@@ -70,11 +70,11 @@ fun OnBoardingScreen(
                     .fillMaxWidth()
                     .weight(1f),
                 selectedGenres = selectedGenres,
-                onGenreSelected = { genreId ->
-                    selectedGenres = if (selectedGenres.contains(genreId)) {
-                        selectedGenres.filter { genre -> genre != genreId }
+                onGenreSelected = { genre ->
+                    selectedGenres = if (selectedGenres.contains(genre)) {
+                        selectedGenres.filter { genre -> genre != genre }
                     } else {
-                        selectedGenres + genreId
+                        selectedGenres + genre
                     }
                 }
             )
@@ -131,8 +131,8 @@ fun FooterAction(
 fun GenreSelection(
     genres: List<Genre>,
     modifier: Modifier = Modifier,
-    selectedGenres: List<Int> = emptyList(),
-    onGenreSelected: (Int) -> Unit = {}
+    selectedGenres: List<Genre> = emptyList(),
+    onGenreSelected: (Genre) -> Unit = {}
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
@@ -148,7 +148,7 @@ fun GenreSelection(
             GenreItem(
                 genres[it],
                 modifier = Modifier.fillMaxWidth(),
-                isSelected = selectedGenres.contains(genres[it].id),
+                isSelected = selectedGenres.contains(genres[it]),
                 onGenreSelected = onGenreSelected
             )
 
@@ -161,7 +161,7 @@ fun GenreItem(
     genre: Genre,
     modifier: Modifier = Modifier,
     isSelected: Boolean = false,
-    onGenreSelected: (Int) -> Unit = {}
+    onGenreSelected: (Genre) -> Unit = {}
 ) {
     Box(
         modifier = modifier
@@ -175,7 +175,7 @@ fun GenreItem(
                 color = Blue90
             )
             .clickable {
-                onGenreSelected(genre.id)
+                onGenreSelected(genre)
             }
     ) {
         Box(

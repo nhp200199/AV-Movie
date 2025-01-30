@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -31,21 +32,32 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
+import com.av.movie.dataTest.ALL_GENRES
 import com.av.movie.presentation.navigation.CategoryDetail
+import com.av.movie.presentation.navigation.CountryFilter
 import com.av.movie.presentation.navigation.Explore
+import com.av.movie.presentation.navigation.ExploreFilter
+import com.av.movie.presentation.navigation.ExploreNested
 import com.av.movie.presentation.navigation.Favourites
+import com.av.movie.presentation.navigation.GenreFilter
 import com.av.movie.presentation.navigation.Home
-import com.av.movie.presentation.navigation.MovieDetail
 import com.av.movie.presentation.navigation.Nested
 import com.av.movie.presentation.navigation.Profile
+import com.av.movie.presentation.navigation.YearFilter
 import com.av.movie.presentation.screen.categoryDetail.CategoryDetailScreen
+import com.av.movie.presentation.screen.explore.CountryFilterScreen
+import com.av.movie.presentation.screen.explore.ExploreFilterScreen
 import com.av.movie.presentation.screen.explore.ExploreScreen
+import com.av.movie.presentation.screen.explore.ExploreViewModel
+import com.av.movie.presentation.screen.explore.Filter
+import com.av.movie.presentation.screen.explore.GenreFilterScreen
+import com.av.movie.presentation.screen.explore.YearFilterScreen
 import com.av.movie.presentation.screen.home.HomeScreen
 import com.av.movie.presentation.screen.home.MyHomeScreen
-import com.av.movie.presentation.screen.movieDetail.MovieDetailScreen
 import com.av.movie.ui.theme.Blue90
 import com.av.movie.ui.theme.Cyan90
 import com.av.movie.ui.theme.Grey10
+import com.av.movie.utils.sharedViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 data class TopLevelRoute<T: Any>(
@@ -56,15 +68,14 @@ data class TopLevelRoute<T: Any>(
 
 val topLevelScreens = listOf(
     TopLevelRoute("Home", Nested, Icons.Filled.Home),
-    TopLevelRoute("Explore", Explore, Icons.Filled.Search),
+    TopLevelRoute("Explore", ExploreNested, Icons.Filled.Search),
     TopLevelRoute("Favourites", Favourites, Icons.Filled.Favorite),
     TopLevelRoute("Profile", Profile, Icons.Filled.AccountCircle)
 )
 
 @Composable
 fun MainScreen(
-    onNavigateMovieDetail: (Int) -> Unit,
-    onNavigateExploreFilterScreen: () -> Unit
+    onNavigateMovieDetail: (Int) -> Unit
 ) {
     val systemUiController = rememberSystemUiController()
     val systemBarColor = MaterialTheme.colorScheme.primary
@@ -167,10 +178,75 @@ fun MainScreen(
                     }
                 }
             }
-            composable<Explore> {
-                ExploreScreen(
-                    onNavigateExploreFilterScreen = onNavigateExploreFilterScreen
-                )
+
+            navigation<ExploreNested>(startDestination = Explore) {
+                composable<Explore> { entry ->
+                    val viewModel = entry.sharedViewModel<ExploreViewModel>(navHostController)
+                    val filterState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                    ExploreScreen(
+                        onNavigateExploreFilterScreen = {
+                            navHostController.navigate(ExploreFilter)
+                        }
+                    )
+                }
+                composable<ExploreFilter> { entry ->
+                    val viewModel = entry.sharedViewModel<ExploreViewModel>(navHostController)
+                    val filterState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                    ExploreFilterScreen(
+                        sortFilterData = filterState,
+                        onBackClick = { navHostController.navigateUp() },
+                        onNavigateToFilterScreen = { filterName ->
+                            when (filterName) {
+                                Filter.GENRE -> navHostController.navigate(GenreFilter)
+                                Filter.COUNTRY -> navHostController.navigate(CountryFilter)
+                                Filter.YEAR -> navHostController.navigate(YearFilter)
+                            }
+                        },
+                        onReset = { viewModel.resetAllSortFilter() },
+                        onSortSelected = { viewModel.sortBy(it) }
+                    )
+                }
+
+                composable<YearFilter> { entry ->
+                    val viewModel = entry.sharedViewModel<ExploreViewModel>(navHostController)
+                    val filterState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                    YearFilterScreen(
+                        availableYear = listOf(2024, 2022, 2021, 2020),
+                        selectedYear = filterState.year,
+                        onYearSelected = { viewModel.filterByYear(it) },
+                        onReset = { viewModel.filterByYear(null) },
+                        onNavigateUp = { navHostController.navigateUp() }
+                    )
+                }
+
+                composable<GenreFilter> { entry ->
+                    val viewModel = entry.sharedViewModel<ExploreViewModel>(navHostController)
+                    val filterState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                    GenreFilterScreen(
+                        availableGenres = ALL_GENRES,
+                        selectedGenres = filterState.genre,
+                        onGenreSelected = { viewModel.toggleGenre(it) },
+                        onReset = { viewModel.resetGenreFilter() },
+                        onNavigateUp = { navHostController.navigateUp() }
+                    )
+                }
+
+                composable<CountryFilter> { entry ->
+                    val viewModel = entry.sharedViewModel<ExploreViewModel>(navHostController)
+                    val filterState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                    CountryFilterScreen(
+                        availableCountries = listOf("VN", "USA", "UK"),
+                        selectedCountry = filterState.country,
+                        onCountrySelected = { viewModel.filterByCountry(it) },
+                        onReset = { viewModel.filterByCountry(null) },
+                        onNavigateUp = { navHostController.navigateUp() }
+                    )
+                }
             }
             composable<Favourites> { HomeScreen(navController = navHostController) }
             composable<Profile> { HomeScreen(navController = navHostController) }
