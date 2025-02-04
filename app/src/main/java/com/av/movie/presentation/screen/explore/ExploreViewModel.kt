@@ -18,7 +18,7 @@ data class SortFilterData(
 
 
 class ExploreViewModel: ViewModel() {
-    private val _uiState = MutableStateFlow(SortFilterData())
+    private val _uiState = MutableStateFlow(SortFilterData.EMPTY)
     val uiState = _uiState.asStateFlow()
 
     fun sortBy(sort: SortOption) {

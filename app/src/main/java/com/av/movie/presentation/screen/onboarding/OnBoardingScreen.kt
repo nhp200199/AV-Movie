@@ -45,6 +45,7 @@ import com.av.movie.presentation.screen.home.Genre
 import com.av.movie.ui.theme.Blue90
 import com.av.movie.ui.theme.Grey10
 import com.av.movie.ui.theme.LightGrey30
+import com.av.movie.utils.conditional
 
 @Composable
 fun OnBoardingScreen(
@@ -72,7 +73,7 @@ fun OnBoardingScreen(
                 selectedGenres = selectedGenres,
                 onGenreSelected = { genre ->
                     selectedGenres = if (selectedGenres.contains(genre)) {
-                        selectedGenres.filter { genre -> genre != genre }
+                        selectedGenres.filter { selected -> selected != genre }
                     } else {
                         selectedGenres + genre
                     }
@@ -170,9 +171,9 @@ fun GenreItem(
                 contentScale = ContentScale.FillWidth,
                 alpha = if (isSelected) 1f else 0.9f
             )
-            .border(
-                width = 1.dp,
-                color = Blue90
+            .conditional(
+                condition = isSelected,
+                ifTrue = { border(width = 1.dp, color = Blue90) }
             )
             .clickable {
                 onGenreSelected(genre)
