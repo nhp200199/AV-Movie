@@ -1,6 +1,6 @@
 package com.av.movie.data.api
 
-import com.av.movie.domain.model.Movie
+import com.av.movie.domain.model.OldMovie
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -9,8 +9,8 @@ interface MovieApi {
     @GET("/movie/{movieId}")
     suspend fun getMovie(
         @Path("movieId") movieId: Int
-    ): Response<Movie>
+    ): Response<OldMovie>
 
     @GET("movie/latest")
-    suspend fun getLatest(): Response<List<Movie>>
+    suspend fun getLatest(): Response<List<OldMovie>>
 }

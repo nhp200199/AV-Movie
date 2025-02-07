@@ -1,18 +1,18 @@
 package com.av.movie.data.repository
 
 import com.av.movie.data.repository.datasource.MovieRemoteDataSource
-import com.av.movie.domain.model.Movie
+import com.av.movie.domain.model.OldMovie
 import com.av.movie.domain.repository.MovieRepository
 import kotlinx.coroutines.flow.Flow
 
 class MovieRepositoryImp(
     private val movieRemoteDataSource: MovieRemoteDataSource
 ): MovieRepository {
-    override fun getMovie(movieId: Int): Flow<Movie> {
+    override fun getMovie(movieId: Int): Flow<OldMovie> {
         return movieRemoteDataSource.getMovie(movieId)
     }
 
-    override fun getLatest(): Flow<List<Movie>> {
+    override fun getLatest(): Flow<List<OldMovie>> {
         return movieRemoteDataSource.getLatest()
     }
 }

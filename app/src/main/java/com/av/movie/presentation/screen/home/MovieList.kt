@@ -15,11 +15,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.av.movie.domain.model.Movie
+import com.av.movie.domain.model.OldMovie
 import com.av.movie.presentation.navigation.Screen
 
 @Composable
-fun MovieList(movies: List<Movie>, navController: NavController) {
+fun MovieList(movies: List<OldMovie>, navController: NavController) {
     Column (
         Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
     ){
@@ -31,7 +31,7 @@ fun MovieList(movies: List<Movie>, navController: NavController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MovieItem(movie: Movie, navController: NavController) {
+fun MovieItem(movie: OldMovie, navController: NavController) {
 
     Card (
         modifier = Modifier

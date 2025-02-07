@@ -66,6 +66,7 @@ import com.av.movie.dataTest.GLADIATOR_II
 import com.av.movie.dataTest.MODEL_POPULAR_MOVIES
 import com.av.movie.dataTest.getFullBackdropPath
 import com.av.movie.dataTest.getFullPosterPath
+import com.av.movie.domain.model.Movie
 import com.av.movie.ui.theme.Blue90
 import com.av.movie.ui.theme.Cyan90
 import com.av.movie.ui.theme.LightGrey30
@@ -74,24 +75,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.math.RoundingMode
-
-data class Movie(
-    val adult: Boolean,
-    val backdropPath: String,
-    val genreIds: List<Int>,
-    val id: Int,
-    val originalLanguage: String,
-    val originalTitle: String,
-    val overview: String,
-    val popularity: Double,
-    val posterPath: String,
-    val releaseDate: String,
-    val title: String,
-    val video: Boolean,
-    val voteAverage: Double,
-    val voteCount: Int,
-    val isFavorite: Boolean = false
-)
 
 data class Video(
     val id: String,

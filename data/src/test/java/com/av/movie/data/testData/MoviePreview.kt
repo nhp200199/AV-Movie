@@ -1,11 +1,9 @@
-package com.av.movie.dataTest
+package com.av.movie.data.testData
 
-import com.av.movie.domain.model.Movie
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.Date
+import com.av.movie.data.api.model.MoviePreviewDTO
 
-val SONIC_THE_HEDGEHOG_3 = Movie(
+// >>>>>> DTO
+val SONIC_THE_HEDGEHOG_3 = MoviePreviewDTO(
     adult = false,
     backdropPath = "/zOpe0eHsq0A2NvNyBbtT6sj53qV.jpg",
     genreIds = listOf(28, 878, 35, 10751),
@@ -22,7 +20,7 @@ val SONIC_THE_HEDGEHOG_3 = Movie(
     voteCount = 397
 )
 
-val GLADIATOR_II = Movie(
+val GLADIATOR_II = MoviePreviewDTO(
     adult = false,
     backdropPath = "/euYIwmwkmz95mnXvufEmbL6ovhZ.jpg",
     genreIds = listOf(28, 12, 18),
@@ -39,7 +37,7 @@ val GLADIATOR_II = Movie(
     voteCount = 2136
 )
 
-val CULPA_TUYA = Movie(
+val CULPA_TUYA = MoviePreviewDTO(
     adult = false,
     backdropPath = "/k24eZq5I3jyz4htPkZCRpnUmBzE.jpg",
     genreIds = listOf(10749, 18),
@@ -56,7 +54,7 @@ val CULPA_TUYA = Movie(
     voteCount = 750
 )
 
-val MUFASA_THE_LION_KING = Movie(
+val MUFASA_THE_LION_KING = MoviePreviewDTO(
     adult = false,
     backdropPath = "/oHPoF0Gzu8xwK4CtdXDaWdcuZxZ.jpg",
     genreIds = listOf(12, 10751, 16),
@@ -73,7 +71,7 @@ val MUFASA_THE_LION_KING = Movie(
     voteCount = 517
 )
 
-val VENOM_THE_LAST_DANCE = Movie(
+val VENOM_THE_LAST_DANCE = MoviePreviewDTO(
     adult = false,
     backdropPath = "/vZG7PrX9HmdgL5qfZRjhJsFYEIA.jpg",
     genreIds = listOf(28, 878, 12),
@@ -90,7 +88,7 @@ val VENOM_THE_LAST_DANCE = Movie(
     voteCount = 2213
 )
 
-val WICKED = Movie(
+val WICKED = MoviePreviewDTO(
     adult = false,
     backdropPath = "/uKb22E0nlzr914bA9KyA5CVCOlV.jpg",
     genreIds = listOf(18, 10749, 14),
@@ -116,22 +114,4 @@ val MODEL_POPULAR_MOVIES = listOf(
     GLADIATOR_II
 )
 
-fun getFullPosterPath(path: String): String = "https://image.tmdb.org/t/p/w440_and_h660_face${path}"
-fun getFullBackdropPath(path: String) = "https://media.themoviedb.org/t/p/w250_and_h141_face${path}"
-
-fun formatDate(pattern: String, date: String, originPattern: String = "yyyy-MM-dd"): String {
-    val sdf = SimpleDateFormat(originPattern)
-    val requiredSdf = SimpleDateFormat(pattern)
-
-    return try {
-        val dateObj: Date? = sdf.parse(date)
-
-         if (dateObj == null) "" else requiredSdf.format(dateObj)
-    } catch (e: ParseException) {
-        ""
-    }
-}
-
-fun formatTime(timeInt: Int): String {
-    return "${timeInt /60}h ${timeInt % 60}m"
-}
+// >>>>>> MODEL

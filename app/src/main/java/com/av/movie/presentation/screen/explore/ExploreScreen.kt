@@ -59,7 +59,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.av.movie.dataTest.MODEL_POPULAR_MOVIES
-import com.av.movie.presentation.screen.home.Movie
+import com.av.movie.domain.model.Movie
 import com.av.movie.presentation.screen.home.MovieItem
 import com.av.movie.ui.theme.Blue90
 import com.av.movie.ui.theme.Cyan90
