@@ -50,7 +50,7 @@ class NetworkCall<T: Any, E: Any>(
 
             override fun onFailure(call: Call<T>, t: Throwable) {
                 val networkResponse = when (t) {
-                    is IOException -> NetworkResponse.NetworkError(t)
+                    is IOException -> NetworkResponse.NetworkError
                     else -> NetworkResponse.UnknownError
                 }
                 callback.onResponse(this@NetworkCall, Response.success(networkResponse))

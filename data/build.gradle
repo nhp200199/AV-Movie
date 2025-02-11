@@ -44,6 +44,8 @@ dependencies {
     testImplementation libs.strikt.core
     testImplementation libs.strikt.mockk
     testImplementation libs.kotlinx.coroutines.core
+    testImplementation libs.kotlinx.coroutines.test
+    testImplementation libs.hamcrest.library
 
     implementation libs.retrofit
     implementation libs.retrofit.converter.gson

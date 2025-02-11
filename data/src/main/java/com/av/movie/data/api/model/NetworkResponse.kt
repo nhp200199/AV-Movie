@@ -16,7 +16,7 @@ sealed class NetworkResponse<out T : Any, out E: Any> {
     /**
      * Network error
      */
-    data class NetworkError(val error: IOException) : NetworkResponse<Nothing, Nothing>()
+    object NetworkError : NetworkResponse<Nothing, Nothing>()
 
     /**
      * For example, json parsing error
@@ -26,7 +26,7 @@ sealed class NetworkResponse<out T : Any, out E: Any> {
     override fun toString(): String {
         return when(this) {
             is ApiError -> "ApiError[code=$code]"
-            is NetworkError -> "NetworkError[exception=$error]"
+            is NetworkError -> "NetworkError"
             is Success -> "Success[body=$body]"
             UnknownError -> "UnknownError"
         }
