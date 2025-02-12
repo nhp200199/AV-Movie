@@ -1,6 +1,6 @@
 package com.av.movie.dataTest
 
-import com.av.movie.domain.model.Movie
+import com.av.movie.data.api.model.Movie
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date

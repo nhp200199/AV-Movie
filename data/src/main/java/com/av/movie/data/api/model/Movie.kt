@@ -1,4 +1,4 @@
-package com.av.movie.domain.model
+package com.av.movie.data.api.model
 
 data class Movie(
     val adult: Boolean,

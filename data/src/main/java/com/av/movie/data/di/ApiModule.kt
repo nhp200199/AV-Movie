@@ -19,7 +19,7 @@ object ApiModule {
     @Provides
     @Singleton
     fun retrofit(@ApplicationContext context: Context): Retrofit = Retrofit.Builder()
-        .baseUrl("https://moviesdatabase.p.rapidapi.com")
+        .baseUrl("https://api.themoviedb.org/3") //TODO: Use Build Config instead
         .client(HttpClientBuilder.default(context).build())
         .addConverterFactory(GsonConverterFactory.create())
         .addCallAdapterFactory(NetworkAdapterFactory())

@@ -4,8 +4,8 @@ import com.av.movie.data.api.model.ResultData
 import com.av.movie.data.datasource.remote.IBaseRemoteDataSource
 
 interface IMovieListRemoteDataSource<T: Any, R>: IBaseRemoteDataSource<T, R> {
-    suspend fun getNowPlayingMovies(): ResultData<List<R>>
-    suspend fun getPopularMovies(): ResultData<List<R>>
-    suspend fun getTopRatedMovies(): ResultData<List<R>>
-    suspend fun getUpcomingMovies(): ResultData<List<R>>
+    suspend fun getNowPlayingMovies(page: Int = 1): ResultData<List<R>>
+    suspend fun getPopularMovies(page: Int = 1): ResultData<List<R>>
+    suspend fun getTopRatedMovies(page: Int = 1): ResultData<List<R>>
+    suspend fun getUpcomingMovies(page: Int = 1): ResultData<List<R>>
 }

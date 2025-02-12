@@ -2,7 +2,7 @@ package com.av.movie.data.mapper.movie
 
 import com.av.movie.data.api.model.MoviePreviewDTO
 import com.av.movie.data.mapper.Mapper
-import com.av.movie.domain.model.Movie
+import com.av.movie.data.api.model.Movie
 
 class MoviePreviewDTO2Movie: Mapper<MoviePreviewDTO, Movie> {
     override fun map(input: MoviePreviewDTO): Movie {

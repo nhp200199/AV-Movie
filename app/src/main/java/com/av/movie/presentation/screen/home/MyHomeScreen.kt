@@ -66,7 +66,7 @@ import com.av.movie.dataTest.GLADIATOR_II
 import com.av.movie.dataTest.MODEL_POPULAR_MOVIES
 import com.av.movie.dataTest.getFullBackdropPath
 import com.av.movie.dataTest.getFullPosterPath
-import com.av.movie.domain.model.Movie
+import com.av.movie.data.api.model.Movie
 import com.av.movie.ui.theme.Blue90
 import com.av.movie.ui.theme.Cyan90
 import com.av.movie.ui.theme.LightGrey30

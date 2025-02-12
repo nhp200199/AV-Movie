@@ -2,7 +2,7 @@ package com.av.movie.data.mapper
 
 import com.av.movie.data.api.model.MoviePreviewDTO
 import com.av.movie.data.mapper.movie.MoviePreviewDTO2Movie
-import com.av.movie.domain.model.Movie
+import com.av.movie.data.api.model.Movie
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
