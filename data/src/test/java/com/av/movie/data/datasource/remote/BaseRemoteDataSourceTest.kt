@@ -1,6 +1,7 @@
 package com.av.movie.data.datasource.remote
 
 import com.av.movie.data.api.model.NetworkResponse
+import com.av.movie.data.api.model.PagingDTO
 import com.av.movie.data.api.model.ResultData
 import com.av.movie.data.common.exception.NoNetworkConnectionException
 import com.av.movie.data.common.exception.UnknownException
@@ -47,13 +48,15 @@ class BaseRemoteDataSourceTest {
         // Arrange
         val testDataList = listOf(TestData(1, "Test1"), TestData(2, "Test2"))
         val mappedDataList = listOf(MappedTestData(1, "Test1 Full"), MappedTestData(2, "Test2 Full"))
-        val mockResponse = NetworkResponse.Success(testDataList)
+        val mockResponse = NetworkResponse.Success(
+            PagingDTO<TestData>(1, testDataList, 2, 34)
+        )
 
         every { mockMapper.map(testDataList[0]) } returns MappedTestData(1, "Test1 Full")
         every { mockMapper.map(testDataList[1]) } returns MappedTestData(2, "Test2 Full")
 
         // Act
-        val result = baseRemoteDataSource.getRemoteData(
+        val result = baseRemoteDataSource.getRemoteDataPaging(
             networkCall = { mockResponse },
         )
 
@@ -68,7 +71,7 @@ class BaseRemoteDataSourceTest {
         val mockResponse = NetworkResponse.ApiError<String>("Api Error", 400)
 
         // Act
-        val result = baseRemoteDataSource.getRemoteData(
+        val result = baseRemoteDataSource.getRemoteDataPaging(
             networkCall = { mockResponse },
         )
 
@@ -83,7 +86,7 @@ class BaseRemoteDataSourceTest {
         val mockResponse = NetworkResponse.NetworkError
 
         // Act
-        val result = baseRemoteDataSource.getRemoteData(
+        val result = baseRemoteDataSource.getRemoteDataPaging(
             networkCall = { mockResponse },
         )
 
@@ -98,7 +101,7 @@ class BaseRemoteDataSourceTest {
         val mockResponse = NetworkResponse.UnknownError
 
         // Act
-        val result = baseRemoteDataSource.getRemoteData(
+        val result = baseRemoteDataSource.getRemoteDataPaging(
             networkCall = { mockResponse },
         )
 

@@ -14,25 +14,25 @@ class MovieListRemoteDataSource @Inject constructor(
 ): BaseRemoteDataSource<MoviePreviewDTO, Movie>(mapper),
     IMovieListRemoteDataSource<MoviePreviewDTO, Movie> {
     override suspend fun getNowPlayingMovies(): ResultData<List<Movie>> {
-        return getRemoteData(
+        return getRemoteDataPaging(
             networkCall = { movieService.getNowPlayingMovies() },
         )
     }
 
     override suspend fun getPopularMovies(): ResultData<List<Movie>> {
-        return getRemoteData(
+        return getRemoteDataPaging(
             networkCall = { movieService.getPopularMovies() },
         )
     }
 
     override suspend fun getTopRatedMovies(): ResultData<List<Movie>> {
-        return getRemoteData(
+        return getRemoteDataPaging(
             networkCall = { movieService.getTopRatedMovies() },
         )
     }
 
     override suspend fun getUpcomingMovies(): ResultData<List<Movie>> {
-        return getRemoteData(
+        return getRemoteDataPaging(
             networkCall = { movieService.getUpcomingMovies() },
         )
     }
