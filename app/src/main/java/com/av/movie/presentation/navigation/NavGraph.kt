@@ -34,9 +34,6 @@ fun NavGraph() {
             MainScreen(
                 onNavigateMovieDetail = { movieId ->
                     navController.navigate(MovieDetail(movieId))
-                },
-                onNavigateExploreFilterScreen = {
-                    navController.navigate(ExploreFilter)
                 }
             )
         }

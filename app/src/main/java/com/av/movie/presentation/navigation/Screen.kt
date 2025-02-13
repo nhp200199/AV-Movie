@@ -49,3 +49,6 @@ data class CategoryDetail(val category: String)
 
 @Serializable
 object Nested
+
+@Serializable
+object ExploreNested

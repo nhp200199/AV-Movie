@@ -13,8 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
@@ -25,14 +24,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -45,10 +39,18 @@ import com.av.movie.ui.theme.Cyan90
 import com.av.movie.ui.theme.Grey10
 import com.av.movie.ui.theme.LightGrey10
 import com.av.movie.ui.theme.LightGrey30
-import kotlin.reflect.KProperty
+import com.av.movie.ui.theme.LightGrey50
 
-enum class ExploreFilters(
-    private val genre: String
+enum class SortOption(
+    val sortName: String
+) {
+    POPULAR("Popular"),
+    NEW("New"),
+    RATING("Rating IMDB"),
+}
+
+enum class Filter(
+    val genre: String
 ) {
     GENRE("Genre"),
     COUNTRY("Country"),
@@ -58,8 +60,11 @@ enum class ExploreFilters(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExploreFilterScreen(
+    sortFilterData: SortFilterData,
     onBackClick: () -> Unit,
-    onNavigateToFilterScreen: (ExploreFilters) -> Unit
+    onNavigateToFilterScreen: (Filter) -> Unit,
+    onReset: () -> Unit,
+    onSortSelected: (SortOption) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -79,7 +84,16 @@ fun ExploreFilterScreen(
                 }
             },
             actions = {
-                Text(text = "Reset")
+                TextButton(
+                    onClick = onReset,
+                    enabled = sortFilterData != SortFilterData.EMPTY,
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = Color.White,
+                        disabledContentColor = LightGrey50
+                    )
+                ) {
+                    Text(text = "Reset")
+                }
             },
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = Grey10,
@@ -90,11 +104,16 @@ fun ExploreFilterScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        SortSection(modifier = Modifier.padding(horizontal = 8.dp))
+        SortSection(
+            modifier = Modifier.padding(horizontal = 8.dp),
+            selectedSortOption = sortFilterData.sort,
+            onSortSelected = onSortSelected
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         FilterSection(
+            filterData = sortFilterData,
             modifier = Modifier.padding(horizontal = 8.dp),
             onNavigateToFilterScreen = onNavigateToFilterScreen
         )
@@ -103,13 +122,11 @@ fun ExploreFilterScreen(
 
 @Composable
 fun SortSection(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    sortOptions: List<SortOption> = SortOption.entries.toList(),
+    selectedSortOption: SortOption? = null,
+    onSortSelected: (SortOption) -> Unit
 ) {
-    val sortOptions = listOf("Popular", "New", "Rating IMDB")
-    var selectedOption by remember<MutableState<String?>> {
-        mutableStateOf(null)
-    }
-
     val brush = Brush.horizontalGradient(
         colors = listOf(
             Blue90,
@@ -131,9 +148,9 @@ fun SortSection(
         ) {
             sortOptions.forEach {
                 FilterChip(
-                    selected = selectedOption === it,
-                    onClick = { selectedOption = it },
-                    label = { Text(text = it) },
+                    selected = selectedSortOption == it,
+                    onClick = { onSortSelected(it) },
+                    label = { Text(text = it.sortName) },
                     colors = FilterChipDefaults.filterChipColors(
                         containerColor = LightGrey10,
                         selectedContainerColor = LightGrey30,
@@ -141,7 +158,7 @@ fun SortSection(
                         labelColor = Color.White,
                     ),
                     shape = RoundedCornerShape(50),
-                    border = if (selectedOption == it) {
+                    border = if (selectedSortOption == it) {
                         BorderStroke(width = 1.dp, brush = brush)
                     } else null
                 )
@@ -152,9 +169,17 @@ fun SortSection(
 
 @Composable
 fun FilterSection(
+    filterData: SortFilterData,
     modifier: Modifier = Modifier,
-    onNavigateToFilterScreen: (ExploreFilters) -> Unit
+    onNavigateToFilterScreen: (Filter) -> Unit
 ) {
+    val brush = Brush.horizontalGradient(
+        colors = listOf(
+            Blue90,
+            Cyan90
+        )
+    )
+
     Column(modifier = modifier) {
         Text(
             text = "Filters",
@@ -164,13 +189,13 @@ fun FilterSection(
             )
         )
 
-        ExploreFilters.entries.toTypedArray().forEach {
+        Filter.entries.toTypedArray().forEach {
             ListItem(
                 headlineContent = {
                     Text(
-                        text = it.name,
+                        text = it.genre,
                         style = TextStyle(
-                            color = Color.White,
+                          color = Color.White,
                             fontSize = 14.sp
 
                         )
@@ -178,9 +203,9 @@ fun FilterSection(
                 },
                 trailingContent = {
                     Text(
-                        text = "See all",
+                        text = getFilterDescription(it, filterData),
                         style = TextStyle(
-                            color = Color.White,
+                            brush = brush,
                             fontSize = 12.sp
                         )
                     )
@@ -199,11 +224,34 @@ fun FilterSection(
     }
 }
 
+private fun getFilterDescription(filter: Filter, filterData: SortFilterData): String {
+    return when (filter) {
+        Filter.GENRE -> getGenreDescription(filterData.genre?.map { it.name })
+        Filter.COUNTRY -> filterData.country ?: "All"
+        Filter.YEAR -> filterData.year?.toString() ?: "All"
+    }
+}
+
+private fun getGenreDescription(genres: List<String>?): String {
+    return if (genres.isNullOrEmpty()) {
+        "All"
+    } else {
+        if (genres.size > 1) {
+            genres[0] + ", +${genres.size - 1}"
+        } else {
+            genres[0]
+        }
+    }
+}
+
 @Preview
 @Composable
 fun ExploreFilterScreenPreview() {
     ExploreFilterScreen(
+        sortFilterData = SortFilterData(),
         onBackClick = {},
-        onNavigateToFilterScreen = {}
+        onNavigateToFilterScreen = {},
+        onReset = {},
+        onSortSelected = {}
     )
 }

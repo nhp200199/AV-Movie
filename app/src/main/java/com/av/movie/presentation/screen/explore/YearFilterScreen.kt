@@ -13,6 +13,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.Text
@@ -45,6 +46,7 @@ fun YearFilterScreen(
     selectedYear: Int?,
     onYearSelected: (Int) -> Unit,
     onReset: () -> Unit,
+    onNavigateUp: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
@@ -53,10 +55,14 @@ fun YearFilterScreen(
         CenterAlignedTopAppBar(
             title = { Text(text = "Year") },
             navigationIcon = {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Close"
-                )
+                IconButton(
+                    onClick = onNavigateUp
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Close"
+                    )
+                }
             },
             actions = {
                 TextButton(
@@ -154,6 +160,7 @@ fun YearFilterScreenPreview() {
         availableYear = listOf(2023, 2022, 2021, 2020),
         selectedYear = selectedYear,
         onYearSelected = { selectedYear = it },
-        onReset = { selectedYear = null }
+        onReset = { selectedYear = null },
+        onNavigateUp = {}
     )
 }
