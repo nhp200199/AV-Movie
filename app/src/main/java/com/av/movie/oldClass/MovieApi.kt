@@ -1,6 +1,5 @@
-package com.av.movie.data.api
+package com.av.movie.oldClass
 
-import com.av.movie.domain.model.OldMovie
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path

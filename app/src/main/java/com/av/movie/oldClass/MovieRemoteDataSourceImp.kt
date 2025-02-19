@@ -1,12 +1,10 @@
-package com.av.movie.data.repository.datasourceimp
+package com.av.movie.oldClass
 
-import com.av.movie.data.api.MovieApi
-import com.av.movie.data.repository.datasource.MovieRemoteDataSource
-import com.av.movie.domain.model.OldMovie
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class MovieRemoteDataSourceImp(private val api: MovieApi) : MovieRemoteDataSource {
+class MovieRemoteDataSourceImp(private val api: com.av.movie.oldClass.MovieApi) :
+    com.av.movie.oldClass.MovieRemoteDataSource {
     override fun getMovie(movieId: Int): Flow<OldMovie> {
         return flow {
             api.getMovie(movieId)

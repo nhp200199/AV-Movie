@@ -1,8 +1,8 @@
 package com.av.movie.di
 
-import com.av.movie.data.api.MovieApi
-import com.av.movie.data.repository.datasource.MovieRemoteDataSource
-import com.av.movie.data.repository.datasourceimp.MovieRemoteDataSourceImp
+import com.av.movie.oldClass.MovieApi
+import com.av.movie.oldClass.MovieRemoteDataSource
+import com.av.movie.oldClass.MovieRemoteDataSourceImp
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -1,4 +1,4 @@
-package com.av.movie.domain.usecase
+package com.av.movie.oldClass
 
 data class MovieUseCase(
     val getMovieUseCase: GetMovieUseCase,

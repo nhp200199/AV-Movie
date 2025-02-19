@@ -15,7 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.av.movie.domain.model.OldMovie
+import com.av.movie.oldClass.OldMovie
 import com.av.movie.presentation.navigation.Screen
 
 @Composable

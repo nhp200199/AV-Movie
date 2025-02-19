@@ -1,4 +1,4 @@
-package com.av.movie.domain.model
+package com.av.movie.oldClass
 
 data class OldMovie(
     val movieId: Int,

@@ -1,7 +1,7 @@
 package com.av.movie.di
 
 import com.av.avmovie.BuildConfig
-import com.av.movie.data.api.MovieApi
+import com.av.movie.oldClass.MovieApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,23 +18,23 @@ object NetworkModule {
         BuildConfig.BASE_URL
     }
 
-    @Provides
-    @Singleton
-    fun provideHttpClient(): OkHttpClient {
-        return OkHttpClient.Builder()
-            .readTimeout(10, TimeUnit.SECONDS)
-            .writeTimeout(10, TimeUnit.SECONDS)
-            .build()
-    }
-
-    @Provides
-    @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(BuildConfig.BASE_URL)
-            .client(okHttpClient)
-            .build()
-    }
+//    @Provides
+//    @Singleton
+//    fun provideHttpClient(): OkHttpClient {
+//        return OkHttpClient.Builder()
+//            .readTimeout(10, TimeUnit.SECONDS)
+//            .writeTimeout(10, TimeUnit.SECONDS)
+//            .build()
+//    }
+//
+//    @Provides
+//    @Singleton
+//    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+//        return Retrofit.Builder()
+//            .baseUrl(BuildConfig.BASE_URL)
+//            .client(okHttpClient)
+//            .build()
+//    }
 
     @Provides
     @Singleton

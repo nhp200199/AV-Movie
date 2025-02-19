@@ -1,9 +1,9 @@
 package com.av.movie.di
 
-import com.av.movie.domain.repository.MovieRepository
-import com.av.movie.domain.usecase.GetLatestMovieUseCase
-import com.av.movie.domain.usecase.GetMovieUseCase
-import com.av.movie.domain.usecase.MovieUseCase
+import com.av.movie.oldClass.MovieRepository
+import com.av.movie.oldClass.GetLatestMovieUseCase
+import com.av.movie.oldClass.GetMovieUseCase
+import com.av.movie.oldClass.MovieUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

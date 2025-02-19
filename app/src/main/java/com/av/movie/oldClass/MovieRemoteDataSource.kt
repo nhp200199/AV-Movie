@@ -1,6 +1,5 @@
-package com.av.movie.data.repository.datasource
+package com.av.movie.oldClass
 
-import com.av.movie.domain.model.OldMovie
 import kotlinx.coroutines.flow.Flow
 
 interface MovieRemoteDataSource {

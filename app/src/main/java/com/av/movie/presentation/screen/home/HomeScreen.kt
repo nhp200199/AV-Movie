@@ -8,7 +8,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.av.movie.domain.model.OldMovie
+import com.av.movie.oldClass.OldMovie
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
