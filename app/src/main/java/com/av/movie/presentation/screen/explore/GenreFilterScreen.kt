@@ -19,11 +19,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.av.movie.presentation.screen.home.Genre
+import com.av.movie.data.api.model.Genre
 import com.av.movie.presentation.screen.onboarding.GenreItem
 import com.av.movie.ui.theme.Grey10
 import com.av.movie.ui.theme.LightGrey50

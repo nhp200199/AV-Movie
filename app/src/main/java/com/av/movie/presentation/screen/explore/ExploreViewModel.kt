@@ -1,7 +1,7 @@
 package com.av.movie.presentation.screen.explore
 
 import androidx.lifecycle.ViewModel
-import com.av.movie.presentation.screen.home.Genre
+import com.av.movie.data.api.model.Genre
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 

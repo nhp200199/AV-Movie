@@ -1,6 +1,6 @@
 package com.av.movie.dataTest
 
-import com.av.movie.presentation.screen.home.Genre
+import com.av.movie.data.api.model.Genre
 
 val MODEL_GENRE_ACTION = Genre(id = 28, name = "Action")
 val MODEL_GENRE_ADVENTURE = Genre(id = 12, name = "Adventure")

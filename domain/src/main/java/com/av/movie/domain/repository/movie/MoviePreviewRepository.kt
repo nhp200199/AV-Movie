@@ -2,12 +2,12 @@ package com.av.movie.domain.repository.movie
 
 import com.av.movie.data.api.model.Movie
 import com.av.movie.data.api.model.ResultData
-import com.av.movie.data.datasource.remote.movie.MovieListRemoteDataSource
+import com.av.movie.data.datasource.remote.movie.MoviePreviewRemoteDataSource
 import javax.inject.Inject
 
-class MovieListRepository @Inject constructor(
-    private val movieListDataSource: MovieListRemoteDataSource
-) : IMovieListRepository {
+class MoviePreviewRepository @Inject constructor(
+    private val movieListDataSource: MoviePreviewRemoteDataSource
+) : IMoviePreviewRepository {
     override suspend fun getNowPlayingMovies(): ResultData<List<Movie>> {
         return movieListDataSource.getNowPlayingMovies()
     }

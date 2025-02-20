@@ -4,7 +4,7 @@ import com.av.movie.data.api.model.Movie
 import com.av.movie.data.api.model.ResultData
 
 
-interface IMovieListRepository {
+interface IMoviePreviewRepository {
     suspend fun getNowPlayingMovies(): ResultData<List<Movie>>
     suspend fun getPopularMovies(): ResultData<List<Movie>>
     suspend fun getTopRatedMovies(): ResultData<List<Movie>>

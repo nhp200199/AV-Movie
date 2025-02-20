@@ -1,5 +1,6 @@
 package com.av.movie.presentation.screen.home
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -38,6 +39,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -59,14 +61,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import com.av.avmovie.R
+import com.av.movie.data.api.model.Genre
 import com.av.movie.dataTest.ALL_GENRES
 import com.av.movie.dataTest.GLADIATOR_II
 import com.av.movie.dataTest.MODEL_POPULAR_MOVIES
 import com.av.movie.dataTest.getFullBackdropPath
 import com.av.movie.dataTest.getFullPosterPath
 import com.av.movie.data.api.model.Movie
+import com.av.movie.presentation.screen.home.viewmodel.HomeData
+import com.av.movie.presentation.screen.home.viewmodel.HomeUiState
+import com.av.movie.presentation.screen.home.viewmodel.HomeViewModel
 import com.av.movie.ui.theme.Blue90
 import com.av.movie.ui.theme.Cyan90
 import com.av.movie.ui.theme.LightGrey30
@@ -87,13 +94,31 @@ data class Video(
     val publishedAt: String,
 )
 
-data class Genre(
-    val id: Int,
-    val name: String
-)
+@Composable
+fun MyHomeScreenVM(
+    viewModel: HomeViewModel = hiltViewModel(),
+    onNavigateToCategoryDetail: (category: String) -> Unit,
+    onNavigateToMovieDetail: (id: Int) -> Unit
+) {
+    val uiState by viewModel.uiState.collectAsState()
+    LaunchedEffect(Unit) {
+        viewModel.getInitialData()
+    }
+
+    LaunchedEffect(uiState) {
+        Log.d("PhucNguyen", "MyHomeScreen: $uiState")
+    }
+
+    MyHomeScreen(
+        uiState = uiState,
+        onNavigateToCategoryDetail = onNavigateToCategoryDetail,
+        onNavigateToMovieDetail = onNavigateToMovieDetail
+    )
+}
 
 @Composable
 fun MyHomeScreen(
+    uiState: HomeUiState,
     onNavigateToCategoryDetail: (category: String) -> Unit,
     onNavigateToMovieDetail: (id: Int) -> Unit
 ) {
@@ -105,7 +130,7 @@ fun MyHomeScreen(
             MovieCarousel(
                 modifier = Modifier
                     .fillMaxWidth(),
-                movies = MODEL_POPULAR_MOVIES,
+                movies = (uiState as? HomeUiState.Success)?.data?.nowPlayingMovies ?: MODEL_POPULAR_MOVIES,
                 onNavigateToMovieDetail = onNavigateToMovieDetail
             )
         }
@@ -113,7 +138,7 @@ fun MyHomeScreen(
         item {
             Category(
                 name = "Popular",
-                movies = MODEL_POPULAR_MOVIES,
+                movies = (uiState as? HomeUiState.Success)?.data?.popularMovies ?: MODEL_POPULAR_MOVIES,
                 modifier = Modifier.padding(8.dp),
                 onNavigateToCategoryDetail = onNavigateToCategoryDetail,
                 onNavigateToMovieDetail = onNavigateToMovieDetail
@@ -122,7 +147,7 @@ fun MyHomeScreen(
 
         item {
             Genres(
-                genres = ALL_GENRES,
+                genres = (uiState as? HomeUiState.Success)?.data?.genres ?: ALL_GENRES,
                 modifier = Modifier
                     .padding(8.dp)
             )
@@ -130,8 +155,8 @@ fun MyHomeScreen(
 
         item {
             MovieCategory(
-                name = "Now on TV",
-                movies = MODEL_POPULAR_MOVIES,
+                name = "Top rated",
+                movies = (uiState as? HomeUiState.Success)?.data?.topRatedMovies ?: MODEL_POPULAR_MOVIES,
                 modifier = Modifier.padding(8.dp),
                 onNavigateToCategoryDetail = {},
                 onNavigateToMovieDetail = {}
@@ -566,6 +591,7 @@ fun MovieItemPreview() {
 @Composable
 fun MyHomeScreenPreview() {
     MyHomeScreen(
+        uiState = HomeUiState.Success(HomeData(nowPlayingMovies = MODEL_POPULAR_MOVIES)),
         onNavigateToMovieDetail = {},
         onNavigateToCategoryDetail = {}
     )

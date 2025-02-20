@@ -5,7 +5,7 @@ import com.av.movie.data.api.model.PagingDTO
 import com.av.movie.data.api.model.ResultData
 
 interface IBaseRemoteDataSource<T: Any, R> {
-    suspend fun getRemoteDataPaging(
-        networkCall: suspend () -> NetworkResponse<PagingDTO<T>, String>,
-    ): ResultData<List<R>>
+    suspend fun getData(
+        networkCall: suspend () -> NetworkResponse<T, String>
+    ): ResultData<R>
 }

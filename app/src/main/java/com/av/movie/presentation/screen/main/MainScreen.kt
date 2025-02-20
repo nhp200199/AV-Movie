@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -54,6 +55,8 @@ import com.av.movie.presentation.screen.explore.GenreFilterScreen
 import com.av.movie.presentation.screen.explore.YearFilterScreen
 import com.av.movie.presentation.screen.home.HomeScreen
 import com.av.movie.presentation.screen.home.MyHomeScreen
+import com.av.movie.presentation.screen.home.MyHomeScreenVM
+import com.av.movie.presentation.screen.home.viewmodel.HomeViewModel
 import com.av.movie.ui.theme.Blue90
 import com.av.movie.ui.theme.Cyan90
 import com.av.movie.ui.theme.Grey10
@@ -162,7 +165,7 @@ fun MainScreen(
 
             navigation<Nested>(startDestination = Home) {
                 composable<Home> {
-                    MyHomeScreen(
+                    MyHomeScreenVM(
                         onNavigateToCategoryDetail = { category ->
                             navHostController.navigate(CategoryDetail(category))
                         },

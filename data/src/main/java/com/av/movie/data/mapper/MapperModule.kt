@@ -1,8 +1,11 @@
 package com.av.movie.data.mapper
 
+import com.av.movie.data.api.model.Genre
+import com.av.movie.data.api.model.GenreDTO
 import com.av.movie.data.api.model.MoviePreviewDTO
 import com.av.movie.data.mapper.movie.MoviePreviewDTO2Movie
 import com.av.movie.data.api.model.Movie
+import com.av.movie.data.mapper.genre.GenreDTO2Genre
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -14,8 +17,12 @@ import javax.inject.Singleton
 abstract class MapperModule {
 
     @Binds
-    @Singleton
     abstract fun bindMoviePreviewDTO2Movie(
         moviePreviewDTO2Movie: MoviePreviewDTO2Movie
     ): Mapper<MoviePreviewDTO, Movie>
+
+    @Binds
+    abstract fun bindGenreDTO2Genre(
+        genreDTO2Genre: GenreDTO2Genre
+    ): Mapper<GenreDTO, GenreDTO>
 }

@@ -12,7 +12,7 @@ import com.av.movie.oldClass.OldMovie
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
-fun HomeScreen(navController: NavController, viewModel: HomeViewModel = hiltViewModel()) {
+fun HomeScreen(navController: NavController, viewModel: OldHomeViewModel = hiltViewModel()) {
     val systemUiController = rememberSystemUiController()
     val systemBarColor = MaterialTheme.colorScheme.primary
 //    val allMovies = viewModel.latestMovie

@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
+class OldHomeViewModel @Inject constructor(
     private val movieUseCase: MovieUseCase
 ): ViewModel() {
 
