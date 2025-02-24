@@ -23,4 +23,8 @@ class MoviePreviewRepository @Inject constructor(
     override suspend fun getUpcomingMovies(): ResultData<List<Movie>> {
         return movieListDataSource.getUpcomingMovies()
     }
+
+    override suspend fun searchMovie(query: String): ResultData<List<Movie>> {
+        return movieListDataSource.searchMovie(query)
+    }
 }

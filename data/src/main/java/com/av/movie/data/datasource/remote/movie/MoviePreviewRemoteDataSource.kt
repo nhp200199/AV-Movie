@@ -36,4 +36,10 @@ class MoviePreviewRemoteDataSource @Inject constructor(
             networkCall = { movieService.getUpcomingMovies(page) },
         )
     }
+
+    override suspend fun searchMovie(query: String): ResultData<List<Movie>> {
+        return getRemoteDataPaging(
+            networkCall = { movieService.searchMovie(query) }
+        )
+    }
 }

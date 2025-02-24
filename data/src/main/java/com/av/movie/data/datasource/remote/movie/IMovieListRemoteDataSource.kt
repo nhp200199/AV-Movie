@@ -8,4 +8,5 @@ interface IMovieListRemoteDataSource<T: Any, R>: IBaseRemoteDataSource<T, R> {
     suspend fun getPopularMovies(page: Int = 1): ResultData<List<R>>
     suspend fun getTopRatedMovies(page: Int = 1): ResultData<List<R>>
     suspend fun getUpcomingMovies(page: Int = 1): ResultData<List<R>>
+    suspend fun searchMovie(query: String): ResultData<List<R>>
 }

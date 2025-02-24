@@ -49,6 +49,7 @@ import com.av.movie.presentation.screen.categoryDetail.CategoryDetailScreen
 import com.av.movie.presentation.screen.explore.CountryFilterScreen
 import com.av.movie.presentation.screen.explore.ExploreFilterScreen
 import com.av.movie.presentation.screen.explore.ExploreScreen
+import com.av.movie.presentation.screen.explore.ExploreScreenVM
 import com.av.movie.presentation.screen.explore.ExploreViewModel
 import com.av.movie.presentation.screen.explore.Filter
 import com.av.movie.presentation.screen.explore.GenreFilterScreen
@@ -187,7 +188,8 @@ fun MainScreen(
                     val viewModel = entry.sharedViewModel<ExploreViewModel>(navHostController)
                     val filterState by viewModel.uiState.collectAsStateWithLifecycle()
 
-                    ExploreScreen(
+                    ExploreScreenVM(
+                        vm = viewModel,
                         onNavigateExploreFilterScreen = {
                             navHostController.navigate(ExploreFilter)
                         }

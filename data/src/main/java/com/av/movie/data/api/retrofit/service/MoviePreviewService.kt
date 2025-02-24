@@ -15,4 +15,6 @@ interface MoviePreviewService {
     suspend fun getTopRatedMovies(@Query("page") page: Int): NetworkResponse<PagingDTO<MoviePreviewDTO>, String>
     @GET("movie/upcoming")
     suspend fun getUpcomingMovies(@Query("page") page: Int): NetworkResponse<PagingDTO<MoviePreviewDTO>, String>
+    @GET("search/movie")
+    suspend fun searchMovie(@Query("query") query: String): NetworkResponse<PagingDTO<MoviePreviewDTO>, String>
 }

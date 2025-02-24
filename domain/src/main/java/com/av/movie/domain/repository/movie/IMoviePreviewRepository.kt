@@ -9,4 +9,5 @@ interface IMoviePreviewRepository {
     suspend fun getPopularMovies(): ResultData<List<Movie>>
     suspend fun getTopRatedMovies(): ResultData<List<Movie>>
     suspend fun getUpcomingMovies(): ResultData<List<Movie>>
+    suspend fun searchMovie(query: String): ResultData<List<Movie>>
 }

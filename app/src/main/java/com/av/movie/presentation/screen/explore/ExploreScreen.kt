@@ -1,5 +1,6 @@
 package com.av.movie.presentation.screen.explore
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,6 +38,7 @@ import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,15 +55,36 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.av.movie.dataTest.MODEL_POPULAR_MOVIES
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.av.movie.data.api.model.Movie
+import com.av.movie.dataTest.MODEL_POPULAR_MOVIES
 import com.av.movie.presentation.screen.home.MovieItem
 
 @Composable
+fun ExploreScreenVM(
+    vm: ExploreViewModel,
+    onNavigateExploreFilterScreen: () -> Unit
+) {
+    val searchUiState by vm.searchUiState.collectAsStateWithLifecycle()
+
+    ExploreScreen(
+        searchUiState = searchUiState,
+        onMovieSearch = { vm.onSearchMovie(it) },
+        onNavigateExploreFilterScreen = onNavigateExploreFilterScreen
+    )
+}
+
+@Composable
 fun ExploreScreen(
+    searchUiState: SearchUiState,
+    onMovieSearch: (query: String) -> Unit,
     onNavigateExploreFilterScreen: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    LaunchedEffect(searchUiState) {
+        Log.d("PhucNguyen", "ExploreScreen: $searchUiState")
+    }
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -69,7 +92,10 @@ fun ExploreScreen(
         Column(
             modifier = modifier.fillMaxSize(),
         ) {
-            ExploreToolBar(modifier = Modifier.fillMaxWidth())
+            ExploreToolBar(
+                onMovieSearch = onMovieSearch,
+                modifier = Modifier.fillMaxWidth()
+            )
 
             Spacer(modifier = Modifier.height(32.dp))
 
@@ -80,7 +106,7 @@ fun ExploreScreen(
 //        )
 
         SearchResult(
-            movies = MODEL_POPULAR_MOVIES,
+            movies = (searchUiState as? SearchUiState.Success)?.movies ?: MODEL_POPULAR_MOVIES,
             TVs = MODEL_POPULAR_MOVIES,
             modifier = Modifier
                 .padding(horizontal = 8.dp)
@@ -206,6 +232,7 @@ fun SearchHistory(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExploreToolBar(
+    onMovieSearch: (query: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var query by remember { mutableStateOf("") }
@@ -220,7 +247,7 @@ fun ExploreToolBar(
                 SearchBarDefaults.InputField(
                     onQueryChange = { query = it },
                     query = query,
-                    onSearch = {},
+                    onSearch = onMovieSearch,
                     expanded = false,
                     onExpandedChange = {},
                     placeholder = { Text("Search movies, TV shows, ...") },
@@ -255,13 +282,17 @@ fun SearchHistoryPreview() {
 @Preview
 @Composable
 fun ExploreToolBarPreview() {
-    ExploreToolBar()
+    ExploreToolBar(
+        onMovieSearch = {}
+    )
 }
 
 @Preview
 @Composable
 fun ExploreScreenPreview() {
     ExploreScreen(
+        searchUiState = SearchUiState.Initial,
+        onMovieSearch = {},
         onNavigateExploreFilterScreen = {}
     )
 }

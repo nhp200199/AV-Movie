@@ -7,6 +7,8 @@ import com.av.movie.data.api.model.ResultData
 import com.av.movie.data.common.exception.NoNetworkConnectionException
 import com.av.movie.data.common.exception.UnknownException
 import com.av.movie.data.mapper.Mapper
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 open class BaseRemoteDataPaging<T : Any, R>(
     mapper: Mapper<T, R>
@@ -15,7 +17,9 @@ open class BaseRemoteDataPaging<T : Any, R>(
     override suspend fun getRemoteDataPaging(
         networkCall: suspend () -> NetworkResponse<PagingDTO<T>, String>,
     ): ResultData<List<R>> {
-        val data = networkCall()
+        val data = withContext(Dispatchers.IO) {
+            networkCall()
+        }
         return when (data) {
             is NetworkResponse.ApiError -> ResultData.Error(Exception("Api Error"))
             NetworkResponse.NetworkError -> ResultData.Error(NoNetworkConnectionException())

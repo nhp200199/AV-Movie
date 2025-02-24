@@ -1,5 +1,6 @@
 package com.av.movie.data.mapper.movie
 
+import com.av.movie.data.R
 import com.av.movie.data.api.model.MoviePreviewDTO
 import com.av.movie.data.mapper.Mapper
 import com.av.movie.data.api.model.Movie
@@ -9,14 +10,14 @@ class MoviePreviewDTO2Movie @Inject constructor() : Mapper<MoviePreviewDTO, Movi
     override fun map(input: MoviePreviewDTO): Movie {
         return Movie(
             adult = input.adult,
-            backdropPath = input.backdropPath,
+            backdropPath = input.backdropPath ?: "",
             genreIds = input.genreIds,
             id = input.id,
             originalLanguage = input.originalLanguage,
             originalTitle = input.originalTitle,
             overview = input.overview,
             popularity = input.popularity,
-            posterPath = input.posterPath,
+            posterPath = input.posterPath ?: "",
             title = input.title,
             releaseDate = input.releaseDate,
             video = input.video,
