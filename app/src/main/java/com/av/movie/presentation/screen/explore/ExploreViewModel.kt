@@ -79,13 +79,17 @@ class ExploreViewModel @Inject constructor(
 
     private val _selectedGenres = MutableStateFlow<List<Int>?>(null)
     private val _selectedCountry = MutableStateFlow<String?>(null)
+    private val _selectedSortOption = MutableStateFlow<SortOption?>(null)
 
-    val mergedSortFilterData = combine(_selectedGenres,
-        _selectedCountry
-    ) { genres, country ->
+    val mergedSortFilterData = combine(
+        _selectedGenres,
+        _selectedCountry,
+        _selectedSortOption
+    ) { genres, country, sortOption ->
         SortFilterData(
             genre = genres?.map { Genre(it, it.toString()) },
-            country = country
+            country = country,
+            sort = sortOption
         )
     }.stateIn(
         scope = viewModelScope,
@@ -106,8 +110,16 @@ class ExploreViewModel @Inject constructor(
                 sortFilterData.country?.let { it == movie.originalLanguage } ?: true
             }
 
+        val sortFilteredValue = filteredValue.sortedByDescending {
+            return@sortedByDescending when (sortFilterData.sort) {
+                SortOption.POPULAR -> it.popularity
+                SortOption.NEW -> it.popularity
+                SortOption.RATING -> it.voteAverage
+                null -> null
+            }
+        }
 
-        return@combine searchUiState.copy(movies = filteredValue)
+        return@combine searchUiState.copy(movies = sortFilteredValue)
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
@@ -146,7 +158,7 @@ class ExploreViewModel @Inject constructor(
     }
 
     fun sortBy(sort: SortOption) {
-        _uiState.value = _uiState.value.copy(sort = sort)
+        _selectedSortOption.value = sort
     }
 
     fun filterByYear(year: Int?) {
@@ -175,5 +187,6 @@ class ExploreViewModel @Inject constructor(
     fun resetAllSortFilter() {
         _selectedGenres.value = null
         _selectedCountry.value = null
+        _selectedSortOption.value = null
     }
 }
