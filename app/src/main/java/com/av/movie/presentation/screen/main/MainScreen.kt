@@ -217,9 +217,10 @@ fun MainScreen(
                 composable<YearFilter> { entry ->
                     val viewModel = entry.sharedViewModel<ExploreViewModel>(navHostController)
                     val filterState by viewModel.mergedSortFilterData.collectAsStateWithLifecycle()
+                    val availableYear by viewModel.years.collectAsStateWithLifecycle()
 
                     YearFilterScreen(
-                        availableYear = listOf(2024, 2022, 2021, 2020),
+                        availableYear = availableYear,
                         selectedYear = filterState.year,
                         onYearSelected = { viewModel.filterByYear(it) },
                         onReset = { viewModel.filterByYear(null) },

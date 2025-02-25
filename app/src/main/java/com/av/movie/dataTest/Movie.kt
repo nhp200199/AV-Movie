@@ -135,3 +135,13 @@ fun formatDate(pattern: String, date: String, originPattern: String = "yyyy-MM-d
 fun formatTime(timeInt: Int): String {
     return "${timeInt /60}h ${timeInt % 60}m"
 }
+
+fun parseDateString(dateString: String, pattern: String = "yyyy-MM-dd"): Date? {
+    val sdf = SimpleDateFormat(pattern)
+
+    return try {
+        sdf.parse(dateString)
+    } catch (e: ParseException) {
+        null
+    }
+}

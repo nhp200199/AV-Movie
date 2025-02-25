@@ -1,11 +1,13 @@
 package com.av.movie.presentation.screen.explore
 
+import android.icu.util.Calendar
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.av.movie.data.api.model.Genre
 import com.av.movie.data.api.model.Movie
 import com.av.movie.data.api.model.ResultData
+import com.av.movie.dataTest.parseDateString
 import com.av.movie.domain.repository.movie.IMoviePreviewRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,6 +17,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.util.Date
 import javax.inject.Inject
 
 data class SortFilterData(
@@ -39,9 +42,6 @@ sealed class SearchUiState {
 class ExploreViewModel @Inject constructor(
     private val movieRepository: IMoviePreviewRepository
 ): ViewModel() {
-    private val _uiState = MutableStateFlow(SortFilterData.EMPTY)
-    val uiState = _uiState.asStateFlow()
-
     private val _searchUiState = MutableStateFlow<SearchUiState>(SearchUiState.Initial)
     val searchUiState = _searchUiState.asStateFlow()
 
@@ -69,27 +69,44 @@ class ExploreViewModel @Inject constructor(
             initialValue = emptyList()
         )
 
-//    private val _years = searchUiState
-//        .map {
-//            when (it) {
-//                is SearchUiState.Success -> it.movies.map { movie -> movie.releaseDate }.distinct()
-//                else -> emptyList<String>()
-//            }
-//        }
+    val years = searchUiState
+        .map {
+            when (it) {
+                is SearchUiState.Success -> it.movies.map { movie ->
+                    extractYearFromDateString(movie.releaseDate)
+                }
+                    .distinct()
+                    .sortedDescending()
+                else -> emptyList<Int>()
+            }
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
+
+    private fun extractYearFromDateString(releaseDate: String): Int {
+        val calendar = Calendar.getInstance()
+        calendar.time = parseDateString(releaseDate) ?: Date()
+        return calendar.get(Calendar.YEAR)
+    }
 
     private val _selectedGenres = MutableStateFlow<List<Int>?>(null)
     private val _selectedCountry = MutableStateFlow<String?>(null)
     private val _selectedSortOption = MutableStateFlow<SortOption?>(null)
+    private val _selectedYear = MutableStateFlow<Int?>(null)
 
     val mergedSortFilterData = combine(
         _selectedGenres,
         _selectedCountry,
-        _selectedSortOption
-    ) { genres, country, sortOption ->
+        _selectedSortOption,
+        _selectedYear
+    ) { genres, country, sortOption , year ->
         SortFilterData(
             genre = genres?.map { Genre(it, it.toString()) },
             country = country,
-            sort = sortOption
+            sort = sortOption,
+            year = year
         )
     }.stateIn(
         scope = viewModelScope,
@@ -109,11 +126,14 @@ class ExploreViewModel @Inject constructor(
             .filter { movie ->
                 sortFilterData.country?.let { it == movie.originalLanguage } ?: true
             }
+            .filter { movie ->
+                sortFilterData.year?.let { it == extractYearFromDateString(movie.releaseDate) } ?: true
+            }
 
         val sortFilteredValue = filteredValue.sortedByDescending {
             return@sortedByDescending when (sortFilterData.sort) {
                 SortOption.POPULAR -> it.popularity
-                SortOption.NEW -> it.popularity
+                SortOption.NEW -> extractYearFromDateString(it.releaseDate).toDouble()
                 SortOption.RATING -> it.voteAverage
                 null -> null
             }
@@ -136,6 +156,12 @@ class ExploreViewModel @Inject constructor(
         viewModelScope.launch {
             countries.collect {
                 _selectedCountry.value = null
+            }
+        }
+
+        viewModelScope.launch {
+            years.collect {
+                _selectedYear.value = null
             }
         }
     }
@@ -162,7 +188,7 @@ class ExploreViewModel @Inject constructor(
     }
 
     fun filterByYear(year: Int?) {
-        _uiState.value = _uiState.value.copy(year = year)
+        _selectedYear.value = year
     }
 
     fun toggleGenre(id: Int) {
@@ -188,5 +214,6 @@ class ExploreViewModel @Inject constructor(
         _selectedGenres.value = null
         _selectedCountry.value = null
         _selectedSortOption.value = null
+        _selectedYear.value = null
     }
 }
