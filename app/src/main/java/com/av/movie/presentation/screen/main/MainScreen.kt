@@ -33,6 +33,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
+import com.av.movie.data.api.model.Genre
 import com.av.movie.dataTest.ALL_GENRES
 import com.av.movie.presentation.navigation.CategoryDetail
 import com.av.movie.presentation.navigation.CountryFilter
@@ -186,7 +187,6 @@ fun MainScreen(
             navigation<ExploreNested>(startDestination = Explore) {
                 composable<Explore> { entry ->
                     val viewModel = entry.sharedViewModel<ExploreViewModel>(navHostController)
-                    val filterState by viewModel.uiState.collectAsStateWithLifecycle()
 
                     ExploreScreenVM(
                         vm = viewModel,
@@ -197,7 +197,7 @@ fun MainScreen(
                 }
                 composable<ExploreFilter> { entry ->
                     val viewModel = entry.sharedViewModel<ExploreViewModel>(navHostController)
-                    val filterState by viewModel.uiState.collectAsStateWithLifecycle()
+                    val filterState by viewModel.mergedSortFilterData.collectAsStateWithLifecycle()
 
                     ExploreFilterScreen(
                         sortFilterData = filterState,
@@ -216,7 +216,7 @@ fun MainScreen(
 
                 composable<YearFilter> { entry ->
                     val viewModel = entry.sharedViewModel<ExploreViewModel>(navHostController)
-                    val filterState by viewModel.uiState.collectAsStateWithLifecycle()
+                    val filterState by viewModel.mergedSortFilterData.collectAsStateWithLifecycle()
 
                     YearFilterScreen(
                         availableYear = listOf(2024, 2022, 2021, 2020),
@@ -229,12 +229,13 @@ fun MainScreen(
 
                 composable<GenreFilter> { entry ->
                     val viewModel = entry.sharedViewModel<ExploreViewModel>(navHostController)
-                    val filterState by viewModel.uiState.collectAsStateWithLifecycle()
+                    val filterState by viewModel.mergedSortFilterData.collectAsStateWithLifecycle()
+                    val availableGenres by viewModel.genres.collectAsStateWithLifecycle()
 
                     GenreFilterScreen(
-                        availableGenres = ALL_GENRES,
+                        availableGenres = availableGenres.map { Genre(it, it.toString()) },
                         selectedGenres = filterState.genre,
-                        onGenreSelected = { viewModel.toggleGenre(it) },
+                        onGenreSelected = { viewModel.toggleGenre(it.id) },
                         onReset = { viewModel.resetGenreFilter() },
                         onNavigateUp = { navHostController.navigateUp() }
                     )
@@ -242,10 +243,11 @@ fun MainScreen(
 
                 composable<CountryFilter> { entry ->
                     val viewModel = entry.sharedViewModel<ExploreViewModel>(navHostController)
-                    val filterState by viewModel.uiState.collectAsStateWithLifecycle()
+                    val filterState by viewModel.mergedSortFilterData.collectAsStateWithLifecycle()
+                    val availableCountries by viewModel.countries.collectAsStateWithLifecycle()
 
                     CountryFilterScreen(
-                        availableCountries = listOf("VN", "USA", "UK"),
+                        availableCountries = availableCountries,
                         selectedCountry = filterState.country,
                         onCountrySelected = { viewModel.filterByCountry(it) },
                         onReset = { viewModel.filterByCountry(null) },

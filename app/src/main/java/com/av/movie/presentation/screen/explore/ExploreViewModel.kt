@@ -7,10 +7,13 @@ import com.av.movie.data.api.model.Genre
 import com.av.movie.data.api.model.Movie
 import com.av.movie.data.api.model.ResultData
 import com.av.movie.domain.repository.movie.IMoviePreviewRepository
-import com.av.movie.oldClass.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -42,6 +45,89 @@ class ExploreViewModel @Inject constructor(
     private val _searchUiState = MutableStateFlow<SearchUiState>(SearchUiState.Initial)
     val searchUiState = _searchUiState.asStateFlow()
 
+    val genres = searchUiState
+        .map {
+            when (it) {
+                is SearchUiState.Success -> it.movies.map { movie -> movie.genreIds }.flatten().distinct()
+                else -> emptyList<Int>()
+            }
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
+
+    val countries = searchUiState
+        .map {
+            when (it) {
+                is SearchUiState.Success -> it.movies.map { movie -> movie.originalLanguage }.distinct()
+                else -> emptyList<String>()
+            }
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
+
+//    private val _years = searchUiState
+//        .map {
+//            when (it) {
+//                is SearchUiState.Success -> it.movies.map { movie -> movie.releaseDate }.distinct()
+//                else -> emptyList<String>()
+//            }
+//        }
+
+    private val _selectedGenres = MutableStateFlow<List<Int>?>(null)
+    private val _selectedCountry = MutableStateFlow<String?>(null)
+
+    val mergedSortFilterData = combine(_selectedGenres,
+        _selectedCountry
+    ) { genres, country ->
+        SortFilterData(
+            genre = genres?.map { Genre(it, it.toString()) },
+            country = country
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = SortFilterData.EMPTY
+    )
+
+    val filteredSearchUiState = combine(
+        searchUiState,
+        mergedSortFilterData
+    ) { searchUiState, sortFilterData ->
+        if (searchUiState !is SearchUiState.Success) return@combine searchUiState
+
+        val value = searchUiState
+        val filteredValue = value.movies
+            .filter { movie -> movie.genreIds.any { sortFilterData.genre?.contains(Genre(it, it.toString())) ?: true }}
+            .filter { movie ->
+                sortFilterData.country?.let { it == movie.originalLanguage } ?: true
+            }
+
+
+        return@combine searchUiState.copy(movies = filteredValue)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = SearchUiState.Initial
+    )
+
+    init {
+        viewModelScope.launch {
+            genres.collect {
+                _selectedGenres.value = null
+            }
+        }
+
+        viewModelScope.launch {
+            countries.collect {
+                _selectedCountry.value = null
+            }
+        }
+    }
+
     fun onSearchMovie(query: String) {
         Log.d("PhucNguyen", "onSearchMovie()")
         _searchUiState.value = SearchUiState.Loading
@@ -67,28 +153,27 @@ class ExploreViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(year = year)
     }
 
-    fun toggleGenre(genre: Genre) {
-        val currentGenre = _uiState.value.genre
+    fun toggleGenre(id: Int) {
+        val currentGenre = _selectedGenres.value
         if (currentGenre == null) {
-            _uiState.value = _uiState.value.copy(genre = listOf(genre))
+            _selectedGenres.value = listOf(id)
             return
         }
 
-        _uiState.value = _uiState.value.copy(
-            genre = if (currentGenre.contains(genre)) currentGenre.minus(genre)
-                else currentGenre.plus(genre)
-        )
+        _selectedGenres.value = if (currentGenre.contains(id)) currentGenre.minus(id)
+            else currentGenre.plus(id)
     }
 
     fun resetGenreFilter() {
-        _uiState.value = _uiState.value.copy(genre = null)
+        _selectedGenres.value = null
     }
 
     fun filterByCountry(country: String?) {
-        _uiState.value = _uiState.value.copy(country = country)
+        _selectedCountry.value = country
     }
 
     fun resetAllSortFilter() {
-        _uiState.value = SortFilterData.EMPTY
+        _selectedGenres.value = null
+        _selectedCountry.value = null
     }
 }

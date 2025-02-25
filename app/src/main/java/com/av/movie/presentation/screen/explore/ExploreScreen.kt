@@ -65,7 +65,7 @@ fun ExploreScreenVM(
     vm: ExploreViewModel,
     onNavigateExploreFilterScreen: () -> Unit
 ) {
-    val searchUiState by vm.searchUiState.collectAsStateWithLifecycle()
+    val searchUiState by vm.filteredSearchUiState.collectAsStateWithLifecycle()
 
     ExploreScreen(
         searchUiState = searchUiState,
