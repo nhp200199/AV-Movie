@@ -33,7 +33,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
-import com.av.movie.data.api.model.Genre
+import com.av.movie.data.model.Genre
 import com.av.movie.dataTest.ALL_GENRES
 import com.av.movie.presentation.navigation.CategoryDetail
 import com.av.movie.presentation.navigation.CountryFilter

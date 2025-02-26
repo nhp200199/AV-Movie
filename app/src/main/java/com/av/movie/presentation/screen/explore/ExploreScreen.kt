@@ -56,7 +56,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.av.movie.data.api.model.Movie
+import com.av.movie.data.model.Movie
 import com.av.movie.dataTest.MODEL_POPULAR_MOVIES
 import com.av.movie.presentation.screen.home.MovieItem
 

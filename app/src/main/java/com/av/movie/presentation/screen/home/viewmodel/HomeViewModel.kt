@@ -2,10 +2,10 @@ package com.av.movie.presentation.screen.home.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.av.movie.data.api.model.Movie
-import com.av.movie.data.api.model.ResultData
+import com.av.movie.data.model.Movie
+import com.av.movie.data.model.ResultData
 import com.av.movie.domain.repository.movie.IMoviePreviewRepository
-import com.av.movie.data.api.model.Genre
+import com.av.movie.data.model.Genre
 import com.av.movie.domain.repository.movie.IGenreRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async

@@ -1,10 +1,10 @@
 package com.av.movie.data.mapper
 
-import com.av.movie.data.api.model.Genre
-import com.av.movie.data.api.model.GenreDTO
-import com.av.movie.data.api.model.MoviePreviewDTO
+import com.av.movie.data.model.Genre
+import com.av.movie.data.model.GenreDTO
+import com.av.movie.data.model.MoviePreviewDTO
 import com.av.movie.data.mapper.movie.MoviePreviewDTO2Movie
-import com.av.movie.data.api.model.Movie
+import com.av.movie.data.model.Movie
 import com.av.movie.data.mapper.genre.GenreDTO2Genre
 import dagger.Binds
 import dagger.Module

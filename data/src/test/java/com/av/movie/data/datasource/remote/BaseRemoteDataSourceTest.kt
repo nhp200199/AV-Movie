@@ -1,8 +1,8 @@
 package com.av.movie.data.datasource.remote
 
-import com.av.movie.data.api.model.NetworkResponse
-import com.av.movie.data.api.model.PagingDTO
-import com.av.movie.data.api.model.ResultData
+import com.av.movie.data.model.NetworkResponse
+import com.av.movie.data.model.PagingDTO
+import com.av.movie.data.model.ResultData
 import com.av.movie.data.common.exception.NoNetworkConnectionException
 import com.av.movie.data.common.exception.UnknownException
 import com.av.movie.data.mapper.Mapper

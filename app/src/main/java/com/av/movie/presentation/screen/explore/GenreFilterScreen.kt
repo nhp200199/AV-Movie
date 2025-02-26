@@ -22,7 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.av.movie.data.api.model.Genre
+import com.av.movie.data.model.Genre
 import com.av.movie.presentation.screen.onboarding.GenreItem
 import com.av.movie.ui.theme.Grey10
 import com.av.movie.ui.theme.LightGrey50

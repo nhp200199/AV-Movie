@@ -50,7 +50,7 @@ import com.av.movie.dataTest.formatDate
 import com.av.movie.dataTest.formatTime
 import com.av.movie.dataTest.getFullBackdropPath
 import com.av.movie.dataTest.getFullPosterPath
-import com.av.movie.data.api.model.Movie
+import com.av.movie.data.model.Movie
 import com.av.movie.presentation.screen.home.MovieAction
 import com.av.movie.presentation.screen.home.MovieInfo
 import com.av.movie.presentation.screen.home.MovieItem

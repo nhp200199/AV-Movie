@@ -1,9 +1,9 @@
 package com.av.movie.data.datasource.remote.movie
 
-import com.av.movie.data.api.model.MoviePreviewDTO
-import com.av.movie.data.api.model.ResultData
+import com.av.movie.data.model.MoviePreviewDTO
+import com.av.movie.data.model.ResultData
 import com.av.movie.data.api.retrofit.service.MoviePreviewService
-import com.av.movie.data.api.model.Movie
+import com.av.movie.data.model.Movie
 import com.av.movie.data.datasource.remote.BaseRemoteDataPaging
 import com.av.movie.data.mapper.Mapper
 import javax.inject.Inject
@@ -12,7 +12,7 @@ class MoviePreviewRemoteDataSource @Inject constructor(
     private val movieService: MoviePreviewService,
     mapper: Mapper<MoviePreviewDTO, Movie>
 ): BaseRemoteDataPaging<MoviePreviewDTO, Movie>(mapper),
-    IMovieListRemoteDataSource<MoviePreviewDTO, Movie> {
+    IMoviePreviewRemoteDataSource<MoviePreviewDTO, Movie> {
     override suspend fun getNowPlayingMovies(page: Int): ResultData<List<Movie>> {
         return getRemoteDataPaging(
             networkCall = { movieService.getNowPlayingMovies(page) },
@@ -41,5 +41,11 @@ class MoviePreviewRemoteDataSource @Inject constructor(
         return getRemoteDataPaging(
             networkCall = { movieService.searchMovie(query) }
         )
+    }
+
+    override suspend fun getRecommendations(id: Int): ResultData<List<Movie>> {
+        return getRemoteDataPaging {
+            movieService.getRecommendations(id)
+        }
     }
 }

@@ -1,7 +1,7 @@
 package com.av.movie.domain.repository.movie
 
-import com.av.movie.data.api.model.Movie
-import com.av.movie.data.api.model.ResultData
+import com.av.movie.data.model.Movie
+import com.av.movie.data.model.ResultData
 import com.av.movie.data.datasource.remote.movie.MoviePreviewRemoteDataSource
 import javax.inject.Inject
 

@@ -64,13 +64,13 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import com.av.avmovie.R
-import com.av.movie.data.api.model.Genre
+import com.av.movie.data.model.Genre
 import com.av.movie.dataTest.ALL_GENRES
 import com.av.movie.dataTest.GLADIATOR_II
 import com.av.movie.dataTest.MODEL_POPULAR_MOVIES
 import com.av.movie.dataTest.getFullBackdropPath
 import com.av.movie.dataTest.getFullPosterPath
-import com.av.movie.data.api.model.Movie
+import com.av.movie.data.model.Movie
 import com.av.movie.presentation.screen.home.viewmodel.HomeData
 import com.av.movie.presentation.screen.home.viewmodel.HomeUiState
 import com.av.movie.presentation.screen.home.viewmodel.HomeViewModel

@@ -1,7 +1,7 @@
 package com.av.movie.data.datasource.remote
 
-import com.av.movie.data.api.model.NetworkResponse
-import com.av.movie.data.api.model.ResultData
+import com.av.movie.data.model.NetworkResponse
+import com.av.movie.data.model.ResultData
 
 interface IBaseRemoteDataListSource<T: Any, R>: IBaseRemoteDataSource<T, R> {
     suspend fun getDataList(

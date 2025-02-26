@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.sp
 import com.av.avmovie.R
 import com.av.movie.dataTest.ALL_GENRES
 import com.av.movie.dataTest.MODEL_GENRE_ACTION
-import com.av.movie.data.api.model.Genre
+import com.av.movie.data.model.Genre
 import com.av.movie.ui.theme.Blue90
 import com.av.movie.ui.theme.Grey10
 import com.av.movie.ui.theme.LightGrey30

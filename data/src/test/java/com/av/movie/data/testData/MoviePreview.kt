@@ -1,7 +1,7 @@
 package com.av.movie.data.testData
 
-import com.av.movie.data.api.model.MoviePreviewDTO
-import com.av.movie.data.api.model.Movie
+import com.av.movie.data.model.MoviePreviewDTO
+import com.av.movie.data.model.Movie
 
 // >>>>>> DTO
 val SONIC_THE_HEDGEHOG_3 = MoviePreviewDTO(

@@ -1,9 +1,9 @@
 package com.av.movie.data.mapper.movie
 
 import com.av.movie.data.R
-import com.av.movie.data.api.model.MoviePreviewDTO
+import com.av.movie.data.model.MoviePreviewDTO
 import com.av.movie.data.mapper.Mapper
-import com.av.movie.data.api.model.Movie
+import com.av.movie.data.model.Movie
 import javax.inject.Inject
 
 class MoviePreviewDTO2Movie @Inject constructor() : Mapper<MoviePreviewDTO, Movie> {

@@ -1,8 +1,8 @@
 package com.av.movie.domain.repository.movie
 
-import com.av.movie.data.api.model.Genre
-import com.av.movie.data.api.model.GenreDTO
-import com.av.movie.data.api.model.ResultData
+import com.av.movie.data.model.Genre
+import com.av.movie.data.model.GenreDTO
+import com.av.movie.data.model.ResultData
 import com.av.movie.data.datasource.remote.genre.IGenreRemoteDataSource
 import javax.inject.Inject
 

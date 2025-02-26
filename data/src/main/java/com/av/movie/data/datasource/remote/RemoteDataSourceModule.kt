@@ -1,11 +1,11 @@
 package com.av.movie.data.datasource.remote
 
-import com.av.movie.data.api.model.GenreDTO
-import com.av.movie.data.api.model.Movie
-import com.av.movie.data.api.model.MoviePreviewDTO
+import com.av.movie.data.model.GenreDTO
+import com.av.movie.data.model.Movie
+import com.av.movie.data.model.MoviePreviewDTO
 import com.av.movie.data.datasource.remote.genre.GenreRemoteDataSource
 import com.av.movie.data.datasource.remote.genre.IGenreRemoteDataSource
-import com.av.movie.data.datasource.remote.movie.IMovieListRemoteDataSource
+import com.av.movie.data.datasource.remote.movie.IMoviePreviewRemoteDataSource
 import com.av.movie.data.datasource.remote.movie.MoviePreviewRemoteDataSource
 import dagger.Binds
 import dagger.Module
@@ -19,7 +19,7 @@ abstract class RemoteDataSourceModule {
     @Binds
     abstract fun bindMoviePreviewDataSource(
         moviePreviewRemoteDataSource: MoviePreviewRemoteDataSource
-    ): IMovieListRemoteDataSource<MoviePreviewDTO, Movie>
+    ): IMoviePreviewRemoteDataSource<MoviePreviewDTO, Movie>
 
     @Binds
     abstract fun bindGenreDataSource(

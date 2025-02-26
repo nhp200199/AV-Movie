@@ -1,7 +1,7 @@
 package com.av.movie.data.mapper.genre
 
-import com.av.movie.data.api.model.Genre
-import com.av.movie.data.api.model.GenreDTO
+import com.av.movie.data.model.Genre
+import com.av.movie.data.model.GenreDTO
 import com.av.movie.data.mapper.Mapper
 import javax.inject.Inject
 

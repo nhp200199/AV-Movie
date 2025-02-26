@@ -1,6 +1,6 @@
 package com.av.movie.data.api.retrofit
 
-import com.av.movie.data.api.model.NetworkResponse
+import com.av.movie.data.model.NetworkResponse
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.CallAdapter
