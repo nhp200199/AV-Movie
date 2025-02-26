@@ -1,4 +1,4 @@
-package com.av.movie.data.datasource.remote.movie
+package com.av.movie.data.datasource.remote.movie.video
 
 import com.av.movie.data.api.retrofit.service.IVideoService
 import com.av.movie.data.datasource.remote.BaseRemoteDataListSource
