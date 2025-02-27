@@ -6,7 +6,7 @@ import com.av.movie.data.model.Movie
 import com.av.movie.data.model.ResultData
 import com.av.movie.domain.repository.movie.IMoviePreviewRepository
 import com.av.movie.data.model.Genre
-import com.av.movie.domain.repository.movie.IGenreRepository
+import com.av.movie.domain.repository.genre.IGenreRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow

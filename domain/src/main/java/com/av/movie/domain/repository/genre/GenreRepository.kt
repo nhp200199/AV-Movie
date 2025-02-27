@@ -1,6 +1,5 @@
-package com.av.movie.domain.repository.movie
+package com.av.movie.domain.repository.genre
 
-import com.av.movie.data.model.Genre
 import com.av.movie.data.model.GenreDTO
 import com.av.movie.data.model.ResultData
 import com.av.movie.data.datasource.remote.genre.IGenreRemoteDataSource

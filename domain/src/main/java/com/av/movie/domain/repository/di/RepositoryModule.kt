@@ -1,7 +1,7 @@
 package com.av.movie.domain.repository.di
 
-import com.av.movie.domain.repository.movie.GenreRepository
-import com.av.movie.domain.repository.movie.IGenreRepository
+import com.av.movie.domain.repository.genre.GenreRepository
+import com.av.movie.domain.repository.genre.IGenreRepository
 import com.av.movie.domain.repository.movie.IMoviePreviewRepository
 import com.av.movie.domain.repository.movie.MoviePreviewRepository
 import dagger.Binds
