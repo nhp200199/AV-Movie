@@ -43,7 +43,7 @@ class MoviePreviewRemoteDataSource @Inject constructor(
         )
     }
 
-    override suspend fun getRecommendations(id: Int): ResultData<List<Movie>> {
+    override suspend fun getRecommendationsForMovie(id: Int): ResultData<List<Movie>> {
         return getRemoteDataPaging {
             movieService.getRecommendations(id)
         }

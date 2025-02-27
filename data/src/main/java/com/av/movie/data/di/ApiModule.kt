@@ -4,6 +4,11 @@ import android.content.Context
 import com.av.movie.data.api.retrofit.HttpClientBuilder
 import com.av.movie.data.api.retrofit.NetworkAdapterFactory
 import com.av.movie.data.api.retrofit.service.GenreService
+import com.av.movie.data.api.retrofit.service.IActorService
+import com.av.movie.data.api.retrofit.service.ICastService
+import com.av.movie.data.api.retrofit.service.ICreditService
+import com.av.movie.data.api.retrofit.service.IMovieDetailService
+import com.av.movie.data.api.retrofit.service.IVideoService
 import com.av.movie.data.api.retrofit.service.MoviePreviewService
 import dagger.Module
 import dagger.Provides
@@ -35,4 +40,29 @@ object ApiModule {
     @Singleton
     fun genreService(retrofit: Retrofit): GenreService =
         retrofit.create(GenreService::class.java)
+
+    @Provides
+    @Singleton
+    fun creditService(retrofit: Retrofit): ICreditService =
+        retrofit.create(ICreditService::class.java)
+
+    @Provides
+    @Singleton
+    fun actorService(retrofit: Retrofit): IActorService =
+        retrofit.create(IActorService::class.java)
+
+    @Provides
+    @Singleton
+    fun videoService(retrofit: Retrofit): IVideoService =
+        retrofit.create(IVideoService::class.java)
+
+    @Provides
+    @Singleton
+    fun movieDetailService(retrofit: Retrofit): IMovieDetailService =
+        retrofit.create(IMovieDetailService::class.java)
+
+    @Provides
+    @Singleton
+    fun castService(retrofit: Retrofit): ICastService =
+        retrofit.create(ICastService::class.java)
 }

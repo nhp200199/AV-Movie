@@ -7,6 +7,6 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class MovieDetailViewModel @Inject constructor(private val movieUseCase: MovieUseCase): ViewModel() {
+class OldMovieDetailViewModel @Inject constructor(private val movieUseCase: MovieUseCase): ViewModel() {
 
 }

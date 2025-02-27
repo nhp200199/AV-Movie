@@ -13,10 +13,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 
 @Composable
-fun MovieDetailScreen(
+fun OldMovieDetailScreen(
     movieId: String,
     navController: NavController,
-    viewModel: MovieDetailViewModel = hiltViewModel()
+    viewModel: OldMovieDetailViewModel = hiltViewModel()
 ) {
     Scaffold (
         Modifier.background(MaterialTheme.colorScheme.primary),

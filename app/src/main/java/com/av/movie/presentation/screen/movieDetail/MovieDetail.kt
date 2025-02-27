@@ -1,5 +1,6 @@
 package com.av.movie.presentation.screen.movieDetail
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -27,6 +28,8 @@ import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,23 +41,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.av.avmovie.R
 import com.av.movie.dataTest.GLADIATOR_II
-import com.av.movie.dataTest.MODEL_GLADIATOR_VIDEO
-import com.av.movie.dataTest.MODEL_POPULAR_MOVIES
 import com.av.movie.dataTest.formatDate
 import com.av.movie.dataTest.formatTime
 import com.av.movie.dataTest.getFullBackdropPath
 import com.av.movie.dataTest.getFullPosterPath
 import com.av.movie.data.model.Movie
+import com.av.movie.data.model.MovieDetail
+import com.av.movie.data.model.VideoDTO
 import com.av.movie.presentation.screen.home.MovieAction
 import com.av.movie.presentation.screen.home.MovieInfo
 import com.av.movie.presentation.screen.home.MovieItem
-import com.av.movie.presentation.screen.home.Video
 import com.av.movie.ui.theme.Blue90
 import com.av.movie.ui.theme.Cyan90
 import com.av.movie.ui.theme.Grey10
@@ -72,42 +75,67 @@ enum class OtherInformationScreen(
 }
 
 @Composable
-fun MovieDetailScreen(
+fun MovieDetailScreenVM(
     movieId: Int,
+    viewModel: MovieDetailViewModel = hiltViewModel(),
 ) {
-    val movie = MODEL_POPULAR_MOVIES.find { it.id == movieId }
+    LaunchedEffect(Unit) {
+        viewModel.loadMovieDetail(movieId)
+    }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Grey10),
-    ) {
-        Headline(
-            movie = movie!!,
-            modifier = Modifier.fillMaxWidth()
-                .height(300.dp)
-        )
+    val uiState by viewModel.detailMovieState.collectAsStateWithLifecycle()
 
-        Spacer(modifier = Modifier.height(32.dp))
+    Log.d("MovieDetail", "uiState = $uiState")
 
-        Overview(
-            movie = movie
-        )
+    MovieDetailScreen(uiState)
+}
 
-        Spacer(modifier = Modifier.height(32.dp))
+@Composable
+fun MovieDetailScreen(
+    uiState: MovieDetailUiState
+) {
+    if (uiState is MovieDetailUiState.Success) {
+        val data = uiState.data
+        val movie = data.movieDetail
+        val recommendations = data.recommendations
+        val videos = data.videos.results
 
-        OtherInformation(
-            movie = movie,
+        Column(
             modifier = Modifier
-                .weight(3f)
-                .fillMaxWidth()
-        )
+                .fillMaxSize()
+                .background(color = Grey10),
+        ) {
+            Headline(
+                movie = movie,
+                modifier = Modifier.fillMaxWidth()
+                    .height(300.dp)
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Overview(
+                movie = movie
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            OtherInformation(
+                movie = movie,
+                recommendations = recommendations,
+                modifier = Modifier
+                    .weight(3f)
+                    .fillMaxWidth(),
+                videos = videos,
+            )
+        }
     }
 }
 
 @Composable
 fun OtherInformation(
-    movie: Movie,
+    videos: List<VideoDTO>,
+    movie: MovieDetail,
+    recommendations: List<Movie>,
     modifier: Modifier = Modifier,
     pages: Array<OtherInformationScreen> = OtherInformationScreen.entries.toTypedArray()
 ) {
@@ -172,8 +200,8 @@ fun OtherInformation(
                 .padding(top = 8.dp)
         ) {
             when(pages[it]) {
-                OtherInformationScreen.VIDEOS -> VideoSection(MODEL_GLADIATOR_VIDEO)
-                OtherInformationScreen.MORE_LIKE_THIS -> MoreLikeThisSection(MODEL_POPULAR_MOVIES)
+                OtherInformationScreen.VIDEOS -> VideoSection(videos)
+                OtherInformationScreen.MORE_LIKE_THIS -> MoreLikeThisSection(recommendations)
                 OtherInformationScreen.ABOUT -> AboutSection(movie = movie)
             }
         }
@@ -211,7 +239,7 @@ fun GenreChip(
 
 @Composable
 fun VideoSection(
-    data: List<Video>,
+    data: List<VideoDTO>,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -262,13 +290,13 @@ fun MoreLikeThisSection(
 
 @Composable
 fun AboutSection(
-    movie: Movie,
+    movie: MovieDetail,
     modifier: Modifier = Modifier
 ) {
     val aboutData = listOf(
         Pair<String, String>("Country", movie.originalLanguage),
         Pair<String, String>("Year", formatDate("yyyy", movie.releaseDate, originPattern = "yyyy-MM-dd")),
-        Pair<String, String>("Duration", formatTime(147)),
+        Pair<String, String>("Duration", formatTime(movie.duration)),
         Pair<String, String>("Language", movie.originalLanguage)
     )
 
@@ -324,7 +352,7 @@ fun AboutItem(
 
 @Composable
 fun Overview(
-    movie: Movie,
+    movie: MovieDetail,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -343,7 +371,7 @@ fun Overview(
 
 @Composable
 fun Headline(
-    movie: Movie,
+    movie: MovieDetail,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -380,8 +408,8 @@ fun Headline(
             Spacer(Modifier.height(16.dp))
 
             Row {
-                movie.genreIds.forEach {
-                    GenreChip(name = it.toString())
+                movie.genres.forEach {
+                    GenreChip(name = it.name)
                     Spacer(modifier = Modifier.width(8.dp))
                 }
             }
@@ -394,7 +422,7 @@ fun Headline(
 
 @Composable
 fun TrailerItem(
-    data: Video,
+    data: VideoDTO,
     backdrop: String,
     modifier: Modifier = Modifier
 ) {
@@ -436,11 +464,11 @@ fun TrailerItem(
     }
 }
 
-@Preview(
-    showBackground = true,
-    backgroundColor = 0xFF090E17
-)
-@Composable
-fun  MovieDetailScreenPreview() {
-    MovieDetailScreen(movieId = MODEL_POPULAR_MOVIES[0].id)
-}
+//@Preview(
+//    showBackground = true,
+//    backgroundColor = 0xFF090E17
+//)
+//@Composable
+//fun  MovieDetailScreenPreview() {
+//    MovieDetailScreen(movieId = MODEL_POPULAR_MOVIES[0].id)
+//}

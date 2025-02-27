@@ -6,14 +6,15 @@ import com.av.movie.data.mapper.Mapper
 import com.av.movie.data.model.ResultData
 import com.av.movie.data.model.Video
 import com.av.movie.data.model.VideoDTO
+import com.av.movie.data.model.VideoListDTO
 import javax.inject.Inject
 
 class VideoRemoteDataSource @Inject constructor(
     private val videoService: IVideoService,
-    mapper: Mapper<VideoDTO, Video>
+    mapper: Mapper<VideoListDTO, VideoListDTO>
 ) : IVideoRemoteDataSource,
-    BaseRemoteDataListSource<VideoDTO, Video>(mapper) {
-    override suspend fun getVideoForMovie(id: Int): ResultData<List<Video>> {
-        return getDataList { videoService.getVideosForMovie(id) }
+    BaseRemoteDataListSource<VideoListDTO, VideoListDTO>(mapper) {
+    override suspend fun getVideoForMovie(id: Int): ResultData<VideoListDTO> {
+        return getData { videoService.getVideosForMovie(id) }
     }
 }

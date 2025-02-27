@@ -22,6 +22,7 @@ class MovieDetailDTO2Movie @Inject constructor(): Mapper<MovieDetailDTO, MovieDe
             backdropPath = input.backdropPath ?: "",
             originalLanguage = input.originalLanguage,
             posterPath = input.posterPath ?: "",
+            duration = input.runtime ?: 0,
             isFavorite = false
         )
     }

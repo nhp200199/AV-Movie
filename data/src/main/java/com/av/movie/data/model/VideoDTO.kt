@@ -1,6 +1,13 @@
 package com.av.movie.data.model
 import com.google.gson.annotations.SerializedName
 
+data class VideoListDTO(
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("results")
+    val results: List<VideoDTO>
+)
+
 data class VideoDTO(
     @SerializedName("iso_639_1")
     val iso6391: String,

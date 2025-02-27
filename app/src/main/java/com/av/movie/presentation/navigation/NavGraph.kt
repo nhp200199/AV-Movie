@@ -9,6 +9,7 @@ import androidx.navigation.toRoute
 import com.av.movie.presentation.screen.login.AuthenticationScreen
 import com.av.movie.presentation.screen.main.MainScreen
 import com.av.movie.presentation.screen.movieDetail.MovieDetailScreen
+import com.av.movie.presentation.screen.movieDetail.MovieDetailScreenVM
 import com.av.movie.presentation.screen.onboarding.OnBoardingScreen
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
@@ -60,7 +61,7 @@ fun NavGraph() {
 
         composable<MovieDetail> {  backStackEntry ->
             val movieDetail = backStackEntry.toRoute<MovieDetail>()
-            MovieDetailScreen(movieDetail.id)
+            MovieDetailScreenVM(movieDetail.id)
         }
     }
 }

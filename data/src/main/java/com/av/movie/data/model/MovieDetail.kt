@@ -15,5 +15,6 @@ data class MovieDetail(
     val video: Boolean,
     val voteAverage: Double,
     val voteCount: Int,
+    val duration: Int,
     val isFavorite: Boolean = false
 )

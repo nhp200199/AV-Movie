@@ -4,7 +4,8 @@ import com.av.movie.data.datasource.remote.IBaseRemoteDataSource
 import com.av.movie.data.model.ResultData
 import com.av.movie.data.model.Video
 import com.av.movie.data.model.VideoDTO
+import com.av.movie.data.model.VideoListDTO
 
-interface IVideoRemoteDataSource : IBaseRemoteDataSource<VideoDTO, Video> {
-    suspend fun getVideoForMovie(id: Int): ResultData<List<Video>>
+interface IVideoRemoteDataSource : IBaseRemoteDataSource<VideoListDTO, VideoListDTO> {
+    suspend fun getVideoForMovie(id: Int): ResultData<VideoListDTO>
 }
