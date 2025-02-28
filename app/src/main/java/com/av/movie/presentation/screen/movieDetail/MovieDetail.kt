@@ -33,7 +33,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,7 +46,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -430,12 +437,34 @@ fun Overview(
     movie: MovieDetail,
     modifier: Modifier = Modifier
 ) {
+    val lengthThreshold = 200
+    val shouldShowMore = movie.overview.length > lengthThreshold
+
+    var showFullText by remember { mutableStateOf(false) }
+
+    val description = if (showFullText) {
+        movie.overview
+    } else {
+        movie.overview.take(lengthThreshold)
+    }
+
+    val action = if (showFullText) " Show less"
+        else " Show more"
+
     Column(
         modifier = modifier
             .padding(horizontal = 8.dp),
     ) {
         Text(
-            text = movie.overview,
+            buildAnnotatedString {
+                append(description)
+                if (shouldShowMore) withStyle(style = SpanStyle(color = Blue90)) {
+                    pushLink(LinkAnnotation.Clickable(action) {
+                        showFullText = !showFullText
+                    })
+                    append(action)
+                }
+            },
             style = TextStyle(
                 color = LightGrey10,
                 fontSize = 14.sp
