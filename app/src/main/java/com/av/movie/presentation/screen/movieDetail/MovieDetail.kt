@@ -3,6 +3,7 @@ package com.av.movie.presentation.screen.movieDetail
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,7 +17,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -41,12 +44,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.av.avmovie.R
+import com.av.movie.data.model.CastDTO
 import com.av.movie.dataTest.GLADIATOR_II
 import com.av.movie.dataTest.formatDate
 import com.av.movie.dataTest.formatTime
@@ -55,9 +60,16 @@ import com.av.movie.dataTest.getFullPosterPath
 import com.av.movie.data.model.Movie
 import com.av.movie.data.model.MovieDetail
 import com.av.movie.data.model.VideoDTO
+import com.av.movie.dataTest.MODEL_CASTS
+import com.av.movie.dataTest.MODEL_GLADIATOR_VIDEO
+import com.av.movie.dataTest.MODEL_MOVIE_DETAIL
+import com.av.movie.dataTest.MODEL_POPULAR_MOVIES
+import com.av.movie.dataTest.getCastProfilePath
+import com.av.movie.domain.usecase.FullDetailMovie
 import com.av.movie.presentation.screen.home.MovieAction
 import com.av.movie.presentation.screen.home.MovieInfo
 import com.av.movie.presentation.screen.home.MovieItem
+import com.av.movie.presentation.screen.home.RatingChip
 import com.av.movie.ui.theme.Blue90
 import com.av.movie.ui.theme.Cyan90
 import com.av.movie.ui.theme.Grey10
@@ -99,6 +111,7 @@ fun MovieDetailScreen(
         val movie = data.movieDetail
         val recommendations = data.recommendations
         val videos = data.videos.results
+        val casts = data.casts.cast
 
         Column(
             modifier = Modifier
@@ -126,6 +139,7 @@ fun MovieDetailScreen(
                     .weight(3f)
                     .fillMaxWidth(),
                 videos = videos,
+                casts = casts
             )
         }
     }
@@ -133,6 +147,7 @@ fun MovieDetailScreen(
 
 @Composable
 fun OtherInformation(
+    casts: List<CastDTO>,
     videos: List<VideoDTO>,
     movie: MovieDetail,
     recommendations: List<Movie>,
@@ -202,7 +217,7 @@ fun OtherInformation(
             when(pages[it]) {
                 OtherInformationScreen.VIDEOS -> VideoSection(videos)
                 OtherInformationScreen.MORE_LIKE_THIS -> MoreLikeThisSection(recommendations)
-                OtherInformationScreen.ABOUT -> AboutSection(movie = movie)
+                OtherInformationScreen.ABOUT -> AboutSection(movie = movie, casts = casts)
             }
         }
     }
@@ -290,6 +305,7 @@ fun MoreLikeThisSection(
 
 @Composable
 fun AboutSection(
+    casts: List<CastDTO>,
     movie: MovieDetail,
     modifier: Modifier = Modifier
 ) {
@@ -320,6 +336,65 @@ fun AboutSection(
                 description = aboutData[it].second
             )
         }
+
+        item(
+            span = { GridItemSpan(2) },
+            content = {
+                Text("Casts", fontSize = 14.sp, color = Color.White)
+            }
+        )
+
+        item(
+            span = { GridItemSpan(2) },
+            content = {
+                Casts(casts)
+            }
+        )
+    }
+}
+
+@Composable
+fun Casts(
+    casts: List<CastDTO>
+) {
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        items(
+            count = casts.size,
+            key = { casts[it].id },
+            itemContent = { CastItem(cast = casts[it], modifier = Modifier.width(138.dp)) }
+        )
+    }
+}
+
+@Composable
+fun CastItem(
+    cast: CastDTO,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+//            .clickable { onNavigateToMovieDetail(movie.id) },
+    ) {
+        AsyncImage(
+            model = getCastProfilePath(cast.profilePath),
+            placeholder = painterResource(id = R.drawable.ic_launcher_background),
+            error = painterResource(id = R.drawable.ic_launcher_background),
+            contentDescription = cast.name,
+            contentScale = ContentScale.FillWidth,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(8.dp))
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(fontSize = 14.sp, color = Color.White, text = cast.name)
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Text(fontSize = 14.sp, color = LightGrey10, text = cast.character)
     }
 }
 
@@ -464,11 +539,20 @@ fun TrailerItem(
     }
 }
 
-//@Preview(
-//    showBackground = true,
-//    backgroundColor = 0xFF090E17
-//)
-//@Composable
-//fun  MovieDetailScreenPreview() {
-//    MovieDetailScreen(movieId = MODEL_POPULAR_MOVIES[0].id)
-//}
+@Preview(
+    showBackground = true,
+    backgroundColor = 0xFF090E17
+)
+@Composable
+fun  MovieDetailScreenPreview() {
+    MovieDetailScreen(
+        uiState = MovieDetailUiState.Success(
+            data = FullDetailMovie(
+                movieDetail = MODEL_MOVIE_DETAIL,
+                casts = MODEL_CASTS,
+                videos = MODEL_GLADIATOR_VIDEO,
+                recommendations = MODEL_POPULAR_MOVIES
+            )
+        )
+    )
+}
