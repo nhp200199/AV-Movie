@@ -521,7 +521,6 @@ fun Headline(
             ) {
                 movie.genres.forEach {
                     GenreChip(name = it.name)
-                    GenreChip(name = it.name)
                     Spacer(modifier = Modifier.width(8.dp))
                 }
             }

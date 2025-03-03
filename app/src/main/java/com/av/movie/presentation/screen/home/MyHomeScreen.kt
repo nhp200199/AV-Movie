@@ -71,6 +71,7 @@ import com.av.movie.dataTest.MODEL_POPULAR_MOVIES
 import com.av.movie.dataTest.getFullBackdropPath
 import com.av.movie.dataTest.getFullPosterPath
 import com.av.movie.data.model.Movie
+import com.av.movie.presentation.screen.categoryDetail.Category
 import com.av.movie.presentation.screen.home.viewmodel.HomeData
 import com.av.movie.presentation.screen.home.viewmodel.HomeUiState
 import com.av.movie.presentation.screen.home.viewmodel.HomeViewModel
@@ -97,7 +98,7 @@ data class Video(
 @Composable
 fun MyHomeScreenVM(
     viewModel: HomeViewModel = hiltViewModel(),
-    onNavigateToCategoryDetail: (category: String) -> Unit,
+    onNavigateToCategoryDetail: (category: Category) -> Unit,
     onNavigateToMovieDetail: (id: Int) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -119,7 +120,7 @@ fun MyHomeScreenVM(
 @Composable
 fun MyHomeScreen(
     uiState: HomeUiState,
-    onNavigateToCategoryDetail: (category: String) -> Unit,
+    onNavigateToCategoryDetail: (category: Category) -> Unit,
     onNavigateToMovieDetail: (id: Int) -> Unit
 ) {
     LazyColumn(
@@ -155,11 +156,11 @@ fun MyHomeScreen(
 
         item {
             MovieCategory(
-                name = "Top rated",
+                category = Category.TOP_RATED,
                 movies = (uiState as? HomeUiState.Success)?.data?.topRatedMovies ?: MODEL_POPULAR_MOVIES,
                 modifier = Modifier.padding(8.dp),
-                onNavigateToCategoryDetail = {},
-                onNavigateToMovieDetail = {}
+                onNavigateToCategoryDetail = onNavigateToCategoryDetail,
+                onNavigateToMovieDetail = onNavigateToMovieDetail
             )
         }
     }
@@ -414,7 +415,7 @@ fun Category(
     name: String,
     movies: List<Movie>,
     modifier: Modifier = Modifier,
-    onNavigateToCategoryDetail: (category: String) -> Unit,
+    onNavigateToCategoryDetail: (category: Category) -> Unit,
     onNavigateToMovieDetail: (id: Int) -> Unit
 ) {
     Column(modifier = modifier) {
@@ -425,7 +426,7 @@ fun Category(
         ) {
             Text(fontSize = 16.sp, color = Color.White, text = name, fontWeight = FontWeight.SemiBold)
             TextButton(
-                onClick = { onNavigateToCategoryDetail("Popular Movies") },
+                onClick = { onNavigateToCategoryDetail(Category.POPULAR) },
                 colors = ButtonDefaults.textButtonColors(
 
                 )
@@ -462,10 +463,10 @@ fun Category(
 
 @Composable
 fun MovieCategory(
-    name: String,
+    category: Category,
     movies: List<Movie>,
     modifier: Modifier = Modifier,
-    onNavigateToCategoryDetail: (category: String) -> Unit,
+    onNavigateToCategoryDetail: (category: Category) -> Unit,
     onNavigateToMovieDetail: (id: Int) -> Unit
 ) {
     Column(modifier = modifier) {
@@ -474,9 +475,9 @@ fun MovieCategory(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(fontSize = 16.sp, color = Color.White, text = name, fontWeight = FontWeight.SemiBold)
+            Text(fontSize = 16.sp, color = Color.White, text = category.categoryName, fontWeight = FontWeight.SemiBold)
             TextButton(
-                onClick = { onNavigateToCategoryDetail("Popular Movies") },
+                onClick = { onNavigateToCategoryDetail(category) },
                 colors = ButtonDefaults.textButtonColors(
 
                 )
@@ -547,7 +548,9 @@ fun MovieItem(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        Text(fontSize = 14.sp, color = Color.White, text = movie.title)
+        //only show text for horizontal images movie
+        if (isBackdrop)
+            Text(fontSize = 14.sp, color = Color.White, text = movie.title)
     }
 }
 

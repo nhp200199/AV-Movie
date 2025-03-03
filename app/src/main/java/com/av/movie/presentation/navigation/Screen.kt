@@ -1,5 +1,6 @@
 package com.av.movie.presentation.navigation
 
+import com.av.movie.presentation.screen.categoryDetail.Category
 import kotlinx.serialization.Serializable
 
 sealed class Screen(val route: String) {
@@ -45,7 +46,7 @@ object Authentication
 object Onboarding
 
 @Serializable
-data class CategoryDetail(val category: String)
+data class CategoryDetail(val category: Category)
 
 @Serializable
 object Nested

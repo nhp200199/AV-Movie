@@ -11,10 +11,11 @@ import androidx.compose.material.Icon
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,19 +24,45 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.av.movie.presentation.screen.home.MovieItem
 import com.av.movie.dataTest.MODEL_POPULAR_MOVIES
 import com.av.movie.ui.theme.Grey10
 
+enum class Category(
+    val categoryName: String
+) {
+    POPULAR("Popular Movies"),
+    TOP_RATED("Top rated")
+}
+
+@Composable
+fun CategoryDetailScreenVM(
+    category: Category,
+    onNavigatingUp: () -> Unit,
+    viewmodel: CategoryDetailViewModel = hiltViewModel()
+) {
+    val uiState by viewmodel.uiState.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) {
+        viewmodel.getCategoryDetail(category)
+    }
+
+    CategoryDetailScreen(
+        uiState = uiState,
+        category = category,
+        onNavigatingUp = onNavigatingUp
+    )
+}
+
+
 @Composable
 fun CategoryDetailScreen(
-    name: String,
-    modifier: Modifier = Modifier,
+    uiState: CategoryUIState,
+    category: Category,
     onNavigatingUp: () -> Unit
 ) {
-    Column(
-        modifier = modifier
-    ) {
+    Column {
         TopAppBar(
             backgroundColor = Grey10
         ) {
@@ -52,7 +79,7 @@ fun CategoryDetailScreen(
                     )
                 }
                 Text(
-                    text = name,
+                    text = category.categoryName,
                     modifier = Modifier.align(Alignment.Center),
                     style = TextStyle(
                         color = Color.White,
@@ -69,14 +96,12 @@ fun CategoryDetailScreen(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-
-            items(MODEL_POPULAR_MOVIES.size) {idx ->
+            val movies = (uiState as? CategoryUIState.Success)?.movies ?: MODEL_POPULAR_MOVIES
+            items(movies.size) {idx ->
                 MovieItem(
-                    movie = MODEL_POPULAR_MOVIES[idx]
+                    movie = movies[idx]
                 )
             }
-
-
         }
     }
 }
@@ -84,5 +109,8 @@ fun CategoryDetailScreen(
 @Preview(showBackground = true)
 @Composable
 fun CategoryDetailScreenPreview() {
-    CategoryDetailScreen(name = "test") {}
+    CategoryDetailScreen(
+        uiState = CategoryUIState.Success(MODEL_POPULAR_MOVIES),
+        category = Category.POPULAR
+    ) {}
 }
