@@ -63,14 +63,16 @@ import com.av.movie.presentation.screen.home.MovieItem
 @Composable
 fun ExploreScreenVM(
     vm: ExploreViewModel,
-    onNavigateExploreFilterScreen: () -> Unit
+    onNavigateExploreFilterScreen: () -> Unit,
+    onNavigateToMovieDetail: (Int) -> Unit
 ) {
     val searchUiState by vm.filteredSearchUiState.collectAsStateWithLifecycle()
 
     ExploreScreen(
         searchUiState = searchUiState,
         onMovieSearch = { vm.onSearchMovie(it) },
-        onNavigateExploreFilterScreen = onNavigateExploreFilterScreen
+        onNavigateExploreFilterScreen = onNavigateExploreFilterScreen,
+        onNavigateToMovieDetail = onNavigateToMovieDetail
     )
 }
 
@@ -79,6 +81,7 @@ fun ExploreScreen(
     searchUiState: SearchUiState,
     onMovieSearch: (query: String) -> Unit,
     onNavigateExploreFilterScreen: () -> Unit,
+    onNavigateToMovieDetail: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LaunchedEffect(searchUiState) {
@@ -109,7 +112,8 @@ fun ExploreScreen(
             movies = (searchUiState as? SearchUiState.Success)?.movies ?: MODEL_POPULAR_MOVIES,
             TVs = MODEL_POPULAR_MOVIES,
             modifier = Modifier
-                .padding(horizontal = 8.dp)
+                .padding(horizontal = 8.dp),
+            onNavigateToMovieDetail = onNavigateToMovieDetail
         )
 
 //        if (true) {
@@ -138,6 +142,7 @@ fun ExploreScreen(
 fun SearchResult(
     movies: List<Movie>,
     TVs: List<Movie>,
+    onNavigateToMovieDetail: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -148,7 +153,8 @@ fun SearchResult(
             SectionWithItems(sectionName = "Movies", count = movies.size, key = { movies[it].id }) {
                 MovieItem(
                     movie = movies[it],
-                    modifier = Modifier.width(110.dp)
+                    modifier = Modifier.width(110.dp),
+                    onNavigateToMovieDetail = onNavigateToMovieDetail
                 )
             }
         }
@@ -159,6 +165,7 @@ fun SearchResult(
                     movie = TVs[it],
                     modifier = Modifier.width(250.dp),
                     isBackdrop = true,
+                    onNavigateToMovieDetail = onNavigateToMovieDetail
                 )
             }
         }
@@ -293,7 +300,8 @@ fun ExploreScreenPreview() {
     ExploreScreen(
         searchUiState = SearchUiState.Initial,
         onMovieSearch = {},
-        onNavigateExploreFilterScreen = {}
+        onNavigateExploreFilterScreen = {},
+        onNavigateToMovieDetail = {}
     )
 }
 

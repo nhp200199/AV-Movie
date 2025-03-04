@@ -178,6 +178,9 @@ fun MainScreen(
                         category = categoryDetail.category,
                         onNavigatingUp = {
                             navHostController.navigateUp()
+                        },
+                        onNavigateToMovieDetail = {
+                            onNavigateMovieDetail(it)
                         }
                     )
                 }
@@ -191,7 +194,8 @@ fun MainScreen(
                         vm = viewModel,
                         onNavigateExploreFilterScreen = {
                             navHostController.navigate(ExploreFilter)
-                        }
+                        },
+                        onNavigateToMovieDetail = onNavigateMovieDetail
                     )
                 }
                 composable<ExploreFilter> { entry ->

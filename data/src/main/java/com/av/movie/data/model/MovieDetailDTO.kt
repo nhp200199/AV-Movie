@@ -7,8 +7,8 @@ data class MovieDetailDTO(
     val adult: Boolean,
     @SerializedName("backdrop_path")
     val backdropPath: String? = null,
-    @SerializedName("belongs_to_collection")
-    val belongsToCollection: Any? = null, // Can be null or an object, using Any? for simplicity
+//    @SerializedName("belongs_to_collection")
+//    val belongsToCollection: Any? = null, // Can be null or an object, using Any? for simplicity
     @SerializedName("budget")
     val budget: Int,
     @SerializedName("genres")
@@ -38,7 +38,7 @@ data class MovieDetailDTO(
     @SerializedName("release_date")
     val releaseDate: String? = null,
     @SerializedName("revenue")
-    val revenue: Int,
+    val revenue: Long,
     @SerializedName("runtime")
     val runtime: Int? = 0,
     @SerializedName("spoken_languages")

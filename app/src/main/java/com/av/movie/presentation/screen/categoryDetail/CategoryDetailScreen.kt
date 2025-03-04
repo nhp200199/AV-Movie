@@ -41,6 +41,7 @@ enum class Category(
 fun CategoryDetailScreenVM(
     category: Category,
     onNavigatingUp: () -> Unit,
+    onNavigateToMovieDetail: (Int) -> Unit,
     viewmodel: CategoryDetailViewModel = hiltViewModel()
 ) {
     val uiState by viewmodel.uiState.collectAsStateWithLifecycle()
@@ -51,7 +52,8 @@ fun CategoryDetailScreenVM(
     CategoryDetailScreen(
         uiState = uiState,
         category = category,
-        onNavigatingUp = onNavigatingUp
+        onNavigatingUp = onNavigatingUp,
+        onNavigateToMovieDetail = onNavigateToMovieDetail
     )
 }
 
@@ -60,7 +62,8 @@ fun CategoryDetailScreenVM(
 fun CategoryDetailScreen(
     uiState: CategoryUIState,
     category: Category,
-    onNavigatingUp: () -> Unit
+    onNavigatingUp: () -> Unit,
+    onNavigateToMovieDetail: (Int) -> Unit
 ) {
     Column {
         TopAppBar(
@@ -99,7 +102,8 @@ fun CategoryDetailScreen(
             val movies = (uiState as? CategoryUIState.Success)?.movies ?: MODEL_POPULAR_MOVIES
             items(movies.size) {idx ->
                 MovieItem(
-                    movie = movies[idx]
+                    movie = movies[idx],
+                    onNavigateToMovieDetail = onNavigateToMovieDetail
                 )
             }
         }
@@ -111,6 +115,8 @@ fun CategoryDetailScreen(
 fun CategoryDetailScreenPreview() {
     CategoryDetailScreen(
         uiState = CategoryUIState.Success(MODEL_POPULAR_MOVIES),
-        category = Category.POPULAR
-    ) {}
+        category = Category.POPULAR,
+        onNavigateToMovieDetail = {},
+        onNavigatingUp = {}
+    )
 }
