@@ -6,7 +6,11 @@ data class VideoListDTO(
     val id: Int,
     @SerializedName("results")
     val results: List<VideoDTO>
-)
+) {
+    companion object {
+        val DEFAULT = VideoListDTO(0, emptyList())
+    }
+}
 
 data class VideoDTO(
     @SerializedName("iso_639_1")

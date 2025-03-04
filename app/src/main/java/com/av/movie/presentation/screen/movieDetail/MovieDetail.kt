@@ -3,7 +3,6 @@ package com.av.movie.presentation.screen.movieDetail
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -79,7 +78,6 @@ import com.av.movie.domain.usecase.FullDetailMovie
 import com.av.movie.presentation.screen.home.MovieAction
 import com.av.movie.presentation.screen.home.MovieInfo
 import com.av.movie.presentation.screen.home.MovieItem
-import com.av.movie.presentation.screen.home.RatingChip
 import com.av.movie.ui.theme.Blue90
 import com.av.movie.ui.theme.Cyan90
 import com.av.movie.ui.theme.Grey10
@@ -116,12 +114,12 @@ fun MovieDetailScreenVM(
 fun MovieDetailScreen(
     uiState: MovieDetailUiState
 ) {
-    if (uiState is MovieDetailUiState.Success) {
-        val data = uiState.data
-        val movie = data.movieDetail
-        val recommendations = data.recommendations
-        val videos = data.videos.results
-        val casts = data.casts.cast
+    val detail = uiState.data;
+    if (detail != null) {
+        val movie = detail.movieDetail
+        val recommendations = detail.recommendations
+        val videos = detail.videos.results
+        val casts = detail.casts.cast
 
         Column(
             modifier = Modifier
@@ -583,7 +581,7 @@ fun TrailerItem(
 fun  MovieDetailScreenPreview() {
     MovieDetailScreen(
         uiState = MovieDetailUiState.Success(
-            data = FullDetailMovie(
+            successData = FullDetailMovie(
                 movieDetail = MODEL_MOVIE_DETAIL,
                 casts = MODEL_CASTS,
                 videos = MODEL_GLADIATOR_VIDEO,

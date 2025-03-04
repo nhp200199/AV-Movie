@@ -7,7 +7,11 @@ data class CastListDTO(
     val cast: List<CastDTO>,
     @SerializedName("id")
     val id: Int
-)
+) {
+    companion object {
+        val DEFAULT = CastListDTO(emptyList(), 0)
+    }
+}
 
 data class CastDTO(
     @SerializedName("adult")
