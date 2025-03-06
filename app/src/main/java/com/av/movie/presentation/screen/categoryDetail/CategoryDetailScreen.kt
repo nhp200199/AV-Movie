@@ -14,20 +14,20 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import com.av.movie.data.model.Movie
 import com.av.movie.presentation.screen.home.MovieItem
-import com.av.movie.dataTest.MODEL_POPULAR_MOVIES
 import com.av.movie.ui.theme.Grey10
 
 enum class Category(
@@ -45,11 +45,10 @@ fun CategoryDetailScreenVM(
     viewmodel: CategoryDetailViewModel = hiltViewModel()
 ) {
     val uiState by viewmodel.uiState.collectAsStateWithLifecycle()
-    LaunchedEffect(Unit) {
-        viewmodel.getCategoryDetail(category)
-    }
+    val flowState = viewmodel.flow.collectAsLazyPagingItems()
 
     CategoryDetailScreen(
+        pagingState = flowState,
         uiState = uiState,
         category = category,
         onNavigatingUp = onNavigatingUp,
@@ -60,6 +59,7 @@ fun CategoryDetailScreenVM(
 
 @Composable
 fun CategoryDetailScreen(
+    pagingState: LazyPagingItems<Movie>,
     uiState: CategoryUIState,
     category: Category,
     onNavigatingUp: () -> Unit,
@@ -99,24 +99,26 @@ fun CategoryDetailScreen(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            val movies = (uiState as? CategoryUIState.Success)?.movies ?: MODEL_POPULAR_MOVIES
-            items(movies.size) {idx ->
-                MovieItem(
-                    movie = movies[idx],
-                    onNavigateToMovieDetail = onNavigateToMovieDetail
-                )
+
+            items(pagingState.itemCount) {idx ->
+                pagingState[idx]?.let {
+                    MovieItem(
+                        movie = it,
+                        onNavigateToMovieDetail = onNavigateToMovieDetail
+                    )
+                }
             }
         }
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun CategoryDetailScreenPreview() {
-    CategoryDetailScreen(
-        uiState = CategoryUIState.Success(MODEL_POPULAR_MOVIES),
-        category = Category.POPULAR,
-        onNavigateToMovieDetail = {},
-        onNavigatingUp = {}
-    )
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun CategoryDetailScreenPreview() {
+//    CategoryDetailScreen(
+//        uiState = CategoryUIState.Success(MODEL_POPULAR_MOVIES),
+//        category = Category.POPULAR,
+//        onNavigateToMovieDetail = {},
+//        onNavigatingUp = {}
+//    )
+//}

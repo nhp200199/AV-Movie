@@ -6,7 +6,7 @@ import com.av.movie.data.model.ResultData
 
 interface IMoviePreviewRepository {
     suspend fun getNowPlayingMovies(): ResultData<List<Movie>>
-    suspend fun getPopularMovies(): ResultData<List<Movie>>
+    suspend fun getPopularMovies(page: Int = 1): ResultData<List<Movie>>
     suspend fun getTopRatedMovies(): ResultData<List<Movie>>
     suspend fun getUpcomingMovies(): ResultData<List<Movie>>
     suspend fun searchMovie(query: String): ResultData<List<Movie>>
