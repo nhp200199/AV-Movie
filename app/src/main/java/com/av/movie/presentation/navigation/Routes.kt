@@ -3,21 +3,12 @@ package com.av.movie.presentation.navigation
 import com.av.movie.presentation.screen.categoryDetail.Category
 import kotlinx.serialization.Serializable
 
-sealed class Screen(val route: String) {
-
-    data object Home: Screen("home_screen")
-
-    data object MovieDetail: Screen("movie_detail_screen/{movieId}") {
-        fun gotoMovie(movieId: String) = "movie_detail_screen/$movieId"
-    }
-
-    data object Main: Screen("main_screen")
-}
+@Serializable
+object Authentication
 
 @Serializable
-data class MovieDetail(val id: Int)
+object Onboarding
 
-// Top level screens
 @Serializable
 object Main
 
@@ -33,23 +24,17 @@ object GenreFilter
 object YearFilter
 @Serializable
 object CountryFilter
-
-
 @Serializable
 object Profile
 @Serializable
 object Favourites
 @Serializable
-object Authentication
-
-@Serializable
-object Onboarding
-
-@Serializable
 data class CategoryDetail(val category: Category)
-
 @Serializable
-object Nested
-
+object NestedHome
 @Serializable
 object ExploreNested
+
+@Serializable
+data class MovieDetail(val id: Int)
+

@@ -8,7 +8,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.av.movie.presentation.screen.login.AuthenticationScreen
 import com.av.movie.presentation.screen.main.MainScreen
-import com.av.movie.presentation.screen.movieDetail.MovieDetailScreen
 import com.av.movie.presentation.screen.movieDetail.MovieDetailScreenVM
 import com.av.movie.presentation.screen.onboarding.OnBoardingScreen
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -16,7 +15,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 const val MOVIE_ID_ARGUMENT_KEY = "movieId"
 
 @Composable
-fun NavGraph() {
+fun AVMovieNavGraph() {
     val systemUiController = rememberSystemUiController()
 
     LaunchedEffect(key1 = systemUiController) {

@@ -41,10 +41,9 @@ import com.av.movie.presentation.navigation.ExploreNested
 import com.av.movie.presentation.navigation.Favourites
 import com.av.movie.presentation.navigation.GenreFilter
 import com.av.movie.presentation.navigation.Home
-import com.av.movie.presentation.navigation.Nested
+import com.av.movie.presentation.navigation.NestedHome
 import com.av.movie.presentation.navigation.Profile
 import com.av.movie.presentation.navigation.YearFilter
-import com.av.movie.presentation.screen.categoryDetail.CategoryDetailScreen
 import com.av.movie.presentation.screen.categoryDetail.CategoryDetailScreenVM
 import com.av.movie.presentation.screen.explore.CountryFilterScreen
 import com.av.movie.presentation.screen.explore.ExploreFilterScreen
@@ -68,7 +67,7 @@ data class TopLevelRoute<T: Any>(
 )
 
 val topLevelScreens = listOf(
-    TopLevelRoute("Home", Nested, Icons.Filled.Home),
+    TopLevelRoute<NestedHome>("Home", NestedHome, Icons.Filled.Home),
     TopLevelRoute("Explore", ExploreNested, Icons.Filled.Search),
     TopLevelRoute("Favourites", Favourites, Icons.Filled.Favorite),
     TopLevelRoute("Profile", Profile, Icons.Filled.AccountCircle)
@@ -157,11 +156,11 @@ fun MainScreen(
     ) { innerPadding ->
         NavHost(
             navController = navHostController,
-            startDestination = Nested,
+            startDestination = NestedHome,
             Modifier.padding(innerPadding)
         ) {
 
-            navigation<Nested>(startDestination = Home) {
+            navigation<NestedHome>(startDestination = Home) {
                 composable<Home> {
                     MyHomeScreenVM(
                         onNavigateToCategoryDetail = { category ->

@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.av.movie.oldClass.OldMovie
-import com.av.movie.presentation.navigation.Screen
 
 @Composable
 fun MovieList(movies: List<OldMovie>, navController: NavController) {
@@ -39,7 +38,7 @@ fun MovieItem(movie: OldMovie, navController: NavController) {
             .height(100.dp)
             .fillMaxWidth(),
         onClick = {
-            navController.navigate(route = Screen.MovieDetail.gotoMovie("abc"))
+//            navController.navigate(route = Screen.MovieDetail.gotoMovie("abc"))
         }
     ) {
         Row (
