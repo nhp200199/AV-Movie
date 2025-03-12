@@ -2,6 +2,7 @@ package com.av.movie.presentation.screen.explore
 
 import android.icu.util.Calendar
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.av.movie.data.model.Genre
@@ -38,9 +39,12 @@ sealed class SearchUiState {
     data object Error: SearchUiState()
 }
 
+const val SAVED_STATE_QUERY = "SAVED_QUERY"
+
 @HiltViewModel
 class ExploreViewModel @Inject constructor(
-    private val movieRepository: IMoviePreviewRepository
+    private val movieRepository: IMoviePreviewRepository,
+    private val savedStateHandle: SavedStateHandle
 ): ViewModel() {
     private val _searchUiState = MutableStateFlow<SearchUiState>(SearchUiState.Initial)
     val searchUiState = _searchUiState.asStateFlow()
@@ -147,6 +151,8 @@ class ExploreViewModel @Inject constructor(
     )
 
     init {
+        restoreQueryResults()
+
         viewModelScope.launch {
             genres.collect {
                 _selectedGenres.value = null
@@ -166,8 +172,19 @@ class ExploreViewModel @Inject constructor(
         }
     }
 
+    private fun restoreQueryResults() {
+        if (savedStateHandle.contains(SAVED_STATE_QUERY)) {
+            val query = savedStateHandle.get<String>(SAVED_STATE_QUERY)
+            query?.let {
+                onSearchMovie(it)
+            }
+        }
+    }
+
     fun onSearchMovie(query: String) {
         Log.d("PhucNguyen", "onSearchMovie()")
+        savedStateHandle[SAVED_STATE_QUERY] = query
+
         _searchUiState.value = SearchUiState.Loading
         viewModelScope.launch {
             val result = movieRepository.searchMovie(query)

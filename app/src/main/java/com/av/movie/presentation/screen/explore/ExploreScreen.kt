@@ -242,7 +242,7 @@ fun ExploreToolBar(
     onMovieSearch: (query: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var query by remember { mutableStateOf("") }
+    var query by rememberSaveable { mutableStateOf("") }
 
     Row(
         modifier = modifier
