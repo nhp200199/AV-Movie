@@ -1,29 +1,13 @@
 package com.av.movie.data.datasource.remote
 
-import com.av.movie.data.model.NetworkResponse
-import com.av.movie.data.model.PagingDTO
-import com.av.movie.data.model.ResultData
-import com.av.movie.data.common.exception.NoNetworkConnectionException
-import com.av.movie.data.common.exception.UnknownException
-import com.av.movie.data.mapper.Mapper
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.junit4.MockKRule
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runTest
-import org.hamcrest.CoreMatchers.instanceOf
-import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.MatcherAssert.assertThat
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import com.av.movie.data.Mapper
 
 // Dummy data classes for testing
 data class TestData(val id: Int, val name: String)
 data class MappedTestData(val id: Int, val fullName: String)
 
 // Dummy Mapper for testing
-class TestMapper : Mapper<TestData, MappedTestData> {
+class TestMapper : com.av.movie.data.Mapper<TestData, MappedTestData> {
     override fun map(input: TestData): MappedTestData {
         return MappedTestData(input.id, "${input.name} Full")
     }

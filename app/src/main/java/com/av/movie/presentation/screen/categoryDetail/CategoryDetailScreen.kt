@@ -36,8 +36,6 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.av.movie.data.model.Movie
 import com.av.movie.presentation.screen.home.MovieItem
 import com.av.movie.ui.theme.Grey10
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.map
 
 enum class Category(
     val categoryName: String
