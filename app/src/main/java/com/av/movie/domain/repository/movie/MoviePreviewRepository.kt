@@ -10,8 +10,8 @@ class MoviePreviewRepository @Inject constructor(
 ) : IMoviePreviewRepository {
     private val moviePreviews: MutableSet<Movie> = mutableSetOf()
 
-    override suspend fun getNowPlayingMovies(): ResultData<List<Movie>> {
-        val result = movieListDataSource.getNowPlayingMovies()
+    override suspend fun getNowPlayingMovies(page: Int): ResultData<List<Movie>> {
+        val result = movieListDataSource.getNowPlayingMovies(page = page)
         handleMoviesResult(result)
         return result
     }
@@ -28,8 +28,8 @@ class MoviePreviewRepository @Inject constructor(
         return result
     }
 
-    override suspend fun getUpcomingMovies(): ResultData<List<Movie>> {
-        val result = movieListDataSource.getUpcomingMovies()
+    override suspend fun getUpcomingMovies(page: Int): ResultData<List<Movie>> {
+        val result = movieListDataSource.getUpcomingMovies(page = page)
         handleMoviesResult(result)
         return result
     }
