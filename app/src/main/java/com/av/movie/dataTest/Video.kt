@@ -2,7 +2,6 @@ package com.av.movie.dataTest
 
 import com.av.movie.data.model.VideoDTO
 import com.av.movie.data.model.VideoListDTO
-import com.av.movie.presentation.screen.home.Video
 
 val video1 = VideoDTO(
     id = "67771f4515521f83d9667cb8",

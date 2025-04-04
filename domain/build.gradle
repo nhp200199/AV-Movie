@@ -34,6 +34,9 @@ android {
 dependencies {
     implementation project(path: ':data')
 
+    implementation libs.paging3
+    implementation libs.paging.compose
+
     implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat
     implementation libs.material
