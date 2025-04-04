@@ -51,12 +51,10 @@ fun CategoryDetailScreenVM(
     onNavigateToMovieDetail: (Int) -> Unit,
     viewmodel: CategoryDetailViewModel = hiltViewModel()
 ) {
-    val uiState by viewmodel.uiState.collectAsStateWithLifecycle()
     val flowState = viewmodel.flow.collectAsLazyPagingItems()
 
     CategoryDetailScreen(
         pagingState = flowState,
-        uiState = uiState,
         category = category,
         onNavigatingUp = onNavigatingUp,
         onNavigateToMovieDetail = onNavigateToMovieDetail
@@ -67,7 +65,6 @@ fun CategoryDetailScreenVM(
 @Composable
 fun CategoryDetailScreen(
     pagingState: LazyPagingItems<Movie>,
-    uiState: CategoryUIState,
     category: Category,
     onNavigatingUp: () -> Unit,
     onNavigateToMovieDetail: (Int) -> Unit

@@ -5,10 +5,11 @@ import androidx.paging.PagingState
 import com.av.movie.data.model.Movie
 import com.av.movie.data.model.ResultData
 import com.av.movie.domain.repository.movie.IMoviePreviewRepository
-import javax.inject.Inject
+import com.av.movie.presentation.screen.categoryDetail.Category
 
-class MoviePagingSource @Inject constructor(
-    private val movieRepository: IMoviePreviewRepository
+class MoviePagingSource(
+    private val movieRepository: IMoviePreviewRepository,
+    private val _category: Category = Category.POPULAR
 ): PagingSource<Int, Movie>() {
     override fun getRefreshKey(state: PagingState<Int, Movie>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
@@ -19,7 +20,11 @@ class MoviePagingSource @Inject constructor(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
         val nextPageNumber = params.key ?: 1
-        val response = movieRepository.getPopularMovies(nextPageNumber)
+
+        val response = when (_category) {
+            Category.POPULAR -> movieRepository.getPopularMovies(nextPageNumber)
+            Category.TOP_RATED -> movieRepository.getTopRatedMovies(nextPageNumber)
+        }
 
         return when(response) {
             is ResultData.Error -> LoadResult.Error(response.exception)

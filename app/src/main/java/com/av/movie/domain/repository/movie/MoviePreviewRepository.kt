@@ -22,8 +22,8 @@ class MoviePreviewRepository @Inject constructor(
         return result
     }
 
-    override suspend fun getTopRatedMovies(): ResultData<List<Movie>> {
-        val result = movieListDataSource.getTopRatedMovies()
+    override suspend fun getTopRatedMovies(page: Int): ResultData<List<Movie>> {
+        val result = movieListDataSource.getTopRatedMovies(page = page)
         handleMoviesResult(result)
         return result
     }
