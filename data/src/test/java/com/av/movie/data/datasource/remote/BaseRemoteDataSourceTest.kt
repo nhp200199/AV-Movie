@@ -1,19 +1,17 @@
 package com.av.movie.data.datasource.remote
 
-import com.av.movie.data.Mapper
-
-// Dummy data classes for testing
-data class TestData(val id: Int, val name: String)
-data class MappedTestData(val id: Int, val fullName: String)
-
-// Dummy Mapper for testing
-class TestMapper : com.av.movie.data.Mapper<TestData, MappedTestData> {
-    override fun map(input: TestData): MappedTestData {
-        return MappedTestData(input.id, "${input.name} Full")
-    }
-}
-
-class BaseRemoteDataSourceTest {
+//// Dummy data classes for testing
+//data class TestData(val id: Int, val name: String)
+//data class MappedTestData(val id: Int, val fullName: String)
+//
+//// Dummy Mapper for testing
+//class TestMapper : com.av.movie.data.Mapper<TestData, MappedTestData> {
+//    override fun map(input: TestData): MappedTestData {
+//        return MappedTestData(input.id, "${input.name} Full")
+//    }
+//}
+//
+//class BaseRemoteDataSourceTest {
 
 //    @get:Rule
 //    val mockkRule = MockKRule(this)
@@ -93,4 +91,4 @@ class BaseRemoteDataSourceTest {
 //        assertThat(result, instanceOf(ResultData.Error::class.java))
 //        assertThat((result as ResultData.Error).exception, instanceOf(UnknownException::class.java))
 //    }
-}
+//}
