@@ -43,11 +43,8 @@ import com.av.movie.ui.theme.LightGrey30
 
 @Composable
 fun ArchiveScreen() {
-    Box(
-        modifier = Modifier.fillMaxSize()
-
-    ) {
-        MainContent()
+    Box(modifier = Modifier.fillMaxSize()) {
+        MainContent(modifier = Modifier.fillMaxSize())
     }
 }
 
@@ -58,7 +55,6 @@ fun MainContent(
     //TODO: make the whole layout scrollable, not just History list
     Column(
         modifier = modifier
-            .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
         ArchiveCategory(
@@ -66,7 +62,10 @@ fun MainContent(
                 .padding(horizontal = 8.dp, vertical = 12.dp)
         )
         WatchHistory(
-            modifier = Modifier.weight(99f)
+            modifier = Modifier
+                .weight(99f)
+                .fillMaxWidth()
+                .padding(top = 12.dp, start = 8.dp, end = 8.dp)
         )
     }
 }
@@ -81,7 +80,8 @@ fun ArchiveCategory(
         ArchiveItem(
             icon = ImageVector.vectorResource(R.drawable.ic_download),
             title = "Download",
-            onClick = {}
+            onClick = {},
+            modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -89,7 +89,8 @@ fun ArchiveCategory(
         ArchiveItem(
             icon = ImageVector.vectorResource(R.drawable.ic_archive),
             title = "Favorite Movies",
-            onClick = {}
+            onClick = {},
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }
@@ -98,11 +99,11 @@ fun ArchiveCategory(
 fun ArchiveItem(
     icon: ImageVector,
     title: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = modifier
             .clip(RoundedCornerShape(12.dp))
             .border(width = 1.dp, color = LightGrey10, shape = RoundedCornerShape(12.dp))
             .background(
@@ -146,11 +147,7 @@ fun ArchiveItem(
 fun WatchHistory(
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(top = 12.dp, start = 8.dp, end = 8.dp)
-    ) {
+    Column(modifier = modifier) {
         Text(
             text = "History",
             style = TextStyle(
@@ -190,9 +187,6 @@ fun History(
 
         items(movies.size) {idx ->
             MovieItem(
-                modifier = Modifier.onGloballyPositioned {
-
-                },
                 movie = movies[idx],
                 onNavigateToMovieDetail = onNavigateToMovieDetail
             )
