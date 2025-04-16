@@ -29,11 +29,17 @@ object Profile
 @Serializable
 object Favourites
 @Serializable
+object Download
+
+@Serializable
 data class CategoryDetail(val category: Category)
+
 @Serializable
 object NestedHome
 @Serializable
 object ExploreNested
+@Serializable
+object FavouritesNested
 
 @Serializable
 data class MovieDetail(val id: Int)

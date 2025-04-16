@@ -27,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -42,14 +41,20 @@ import com.av.movie.ui.theme.LightGrey10
 import com.av.movie.ui.theme.LightGrey30
 
 @Composable
-fun ArchiveScreen() {
+fun ArchiveScreen(
+    onNavigateToDownload: () -> Unit
+) {
     Box(modifier = Modifier.fillMaxSize()) {
-        MainContent(modifier = Modifier.fillMaxSize())
+        MainContent(
+            onNavigateToDownload = onNavigateToDownload,
+            modifier = Modifier.fillMaxSize()
+        )
     }
 }
 
 @Composable
 fun MainContent(
+    onNavigateToDownload: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     //TODO: make the whole layout scrollable, not just History list
@@ -58,6 +63,7 @@ fun MainContent(
             .verticalScroll(rememberScrollState())
     ) {
         ArchiveCategory(
+            onNavigateToDownload = onNavigateToDownload,
             modifier = Modifier
                 .padding(horizontal = 8.dp, vertical = 12.dp)
         )
@@ -72,6 +78,7 @@ fun MainContent(
 
 @Composable
 fun ArchiveCategory(
+    onNavigateToDownload: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -80,7 +87,7 @@ fun ArchiveCategory(
         ArchiveItem(
             icon = ImageVector.vectorResource(R.drawable.ic_download),
             title = "Download",
-            onClick = {},
+            onClick = onNavigateToDownload,
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -197,7 +204,9 @@ fun History(
 @Preview
 @Composable
 fun ArchiveScreenPreview() {
-    ArchiveScreen()
+    ArchiveScreen(
+        onNavigateToDownload = {}
+    )
 }
 
 @Preview

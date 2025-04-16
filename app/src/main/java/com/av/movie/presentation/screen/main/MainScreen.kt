@@ -36,10 +36,12 @@ import androidx.navigation.toRoute
 import com.av.movie.data.model.Genre
 import com.av.movie.presentation.navigation.CategoryDetail
 import com.av.movie.presentation.navigation.CountryFilter
+import com.av.movie.presentation.navigation.Download
 import com.av.movie.presentation.navigation.Explore
 import com.av.movie.presentation.navigation.ExploreFilter
 import com.av.movie.presentation.navigation.ExploreNested
 import com.av.movie.presentation.navigation.Favourites
+import com.av.movie.presentation.navigation.FavouritesNested
 import com.av.movie.presentation.navigation.GenreFilter
 import com.av.movie.presentation.navigation.Home
 import com.av.movie.presentation.navigation.NestedHome
@@ -47,6 +49,7 @@ import com.av.movie.presentation.navigation.Profile
 import com.av.movie.presentation.navigation.YearFilter
 import com.av.movie.presentation.screen.archive.ArchiveScreen
 import com.av.movie.presentation.screen.categoryDetail.CategoryDetailScreenVM
+import com.av.movie.presentation.screen.downloadMovie.DownloadMovieScreen
 import com.av.movie.presentation.screen.explore.CountryFilterScreen
 import com.av.movie.presentation.screen.explore.ExploreFilterScreen
 import com.av.movie.presentation.screen.explore.ExploreScreenVM
@@ -260,8 +263,21 @@ fun MainScreen(
                     )
                 }
             }
-            composable<Favourites> {
-                ArchiveScreen()
+
+            navigation<FavouritesNested>(startDestination = Favourites) {
+                composable<Favourites> {
+                    ArchiveScreen(
+                        onNavigateToDownload = {
+                            navHostController.navigate(Download)
+                        }
+                    )
+                }
+
+                composable<Download> {
+                    DownloadMovieScreen {
+                        navHostController.navigateUp()
+                    }
+                }
             }
             composable<Profile> { HomeScreen(navController = navHostController) }
         }
