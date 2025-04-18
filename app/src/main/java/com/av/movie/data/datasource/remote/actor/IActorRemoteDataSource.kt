@@ -6,5 +6,5 @@ import com.av.movie.data.model.ActorDTO
 import com.av.movie.data.model.ResultData
 
 interface IActorRemoteDataSource : IBaseRemoteDataSource<ActorDTO, Actor> {
-    suspend fun getActorInfo(id: Int): ResultData<Actor>
+    suspend fun getActorInfo(id: Int): ResultData<Actor, String>
 }

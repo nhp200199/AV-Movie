@@ -193,7 +193,7 @@ class ExploreViewModel @Inject constructor(
                 is ResultData.Success -> {
                     _searchUiState.value = SearchUiState.Success(result.data)
                 }
-                is ResultData.Error -> {
+                else -> {
                     _searchUiState.value = SearchUiState.Error
                 }
             }

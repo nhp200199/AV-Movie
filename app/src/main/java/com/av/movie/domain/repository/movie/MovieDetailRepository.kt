@@ -8,7 +8,7 @@ import javax.inject.Inject
 class MovieDetailRepository @Inject constructor(
     private val movieDetailRemoteDataSource: MovieDetailRemoteDataSource
 ): IMovieDetailRepository {
-    override suspend fun getDetail(id: Int): ResultData<MovieDetail> {
+    override suspend fun getDetail(id: Int): ResultData<MovieDetail, String> {
         return movieDetailRemoteDataSource.getDetail(id)
     }
 }

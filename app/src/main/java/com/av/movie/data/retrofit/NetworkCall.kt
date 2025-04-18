@@ -1,6 +1,8 @@
 package com.av.movie.data.retrofit
 
-import com.av.movie.data.model.NetworkResponse
+import com.av.movie.data.exception.NoNetworkConnectionException
+import com.av.movie.data.exception.UnknownException
+import com.av.movie.data.model.ResultData
 import okhttp3.Request
 import okhttp3.ResponseBody
 import okio.Timeout
@@ -13,8 +15,8 @@ import java.io.IOException
 class NetworkCall<T: Any, E: Any>(
     private val delegate: Call<T>,
     private val errorConverter: Converter<ResponseBody, E>
-) : Call<NetworkResponse<T, E>> {
-    override fun enqueue(callback: Callback<NetworkResponse<T, E>>) {
+) : Call<ResultData<T, E>> {
+    override fun enqueue(callback: Callback<ResultData<T, E>>) {
          delegate.enqueue(object : Callback<T> {
             override fun onResponse(call: Call<T>, response: Response<T>) {
                 val body = response.body()
@@ -23,12 +25,12 @@ class NetworkCall<T: Any, E: Any>(
 
                 if (response.isSuccessful) {
                     if (body != null) {
-                        callback.onResponse(this@NetworkCall, Response.success(NetworkResponse.Success(body)))
+                        callback.onResponse(this@NetworkCall, Response.success(ResultData.Success(body)))
                     }
                     //`else` is optional here. Because there are cases where successful request
                     //does not return anything, just success code, eg: 201
                     else {
-                        callback.onResponse(this@NetworkCall, Response.success(NetworkResponse.UnknownError))
+                        callback.onResponse(this@NetworkCall, Response.success(ResultData.OperationError(UnknownException())))
                     }
                 } else {
                     val errorBody = when {
@@ -41,17 +43,17 @@ class NetworkCall<T: Any, E: Any>(
                         }
                     }
                     if (errorBody != null) {
-                        callback.onResponse(this@NetworkCall, Response.success(NetworkResponse.ApiError(errorBody, code)))
+                        callback.onResponse(this@NetworkCall, Response.success(ResultData.ApiError(errorBody)))
                     } else {
-                        callback.onResponse(this@NetworkCall, Response.success(NetworkResponse.UnknownError))
+                        callback.onResponse(this@NetworkCall, Response.success(ResultData.OperationError(UnknownException())))
                     }
                 }
             }
 
             override fun onFailure(call: Call<T>, t: Throwable) {
                 val networkResponse = when (t) {
-                    is IOException -> NetworkResponse.NetworkError
-                    else -> NetworkResponse.UnknownError
+                    is IOException -> ResultData.OperationError(NoNetworkConnectionException())
+                    else -> ResultData.OperationError(UnknownException())
                 }
                 callback.onResponse(this@NetworkCall, Response.success(networkResponse))
             }
@@ -59,11 +61,11 @@ class NetworkCall<T: Any, E: Any>(
         })
     }
 
-    override fun clone(): Call<NetworkResponse<T, E>> {
+    override fun clone(): Call<ResultData<T, E>> {
         return NetworkCall(delegate.clone(), errorConverter)
     }
 
-    override fun execute(): Response<NetworkResponse<T, E>> = throw UnsupportedOperationException("MyCall doesn't support execute()")
+    override fun execute(): Response<ResultData<T, E>> = throw UnsupportedOperationException("MyCall doesn't support execute()")
 
     override fun isExecuted(): Boolean = delegate.isExecuted
 

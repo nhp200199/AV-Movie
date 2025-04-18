@@ -39,8 +39,8 @@ class MovieDetailViewModel @Inject constructor(
         viewModelScope.launch {
             val fullDetailMovieResult = getFullDetailMovieUseCase(id)
             when (fullDetailMovieResult) {
-                is ResultData.Error -> _detailMovieState.value = MovieDetailUiState.Error
                 is ResultData.Success -> _detailMovieState.value = MovieDetailUiState.Success(fullDetailMovieResult.data)
+                else -> _detailMovieState.value = MovieDetailUiState.Error
             }
         }
     }

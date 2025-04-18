@@ -8,7 +8,7 @@ import javax.inject.Inject
 class VideoRepository @Inject constructor(
     private val videoRemoteDataSource: VideoRemoteDataSource
 ) : IVideoRepository {
-    override suspend fun getVideoForMovie(id: Int): ResultData<VideoListDTO> {
+    override suspend fun getVideoForMovie(id: Int): ResultData<VideoListDTO, String> {
         return videoRemoteDataSource.getVideoForMovie(id)
     }
 }

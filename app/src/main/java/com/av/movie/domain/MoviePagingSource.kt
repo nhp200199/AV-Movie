@@ -27,7 +27,8 @@ class MoviePagingSource(
         }
 
         return when(response) {
-            is ResultData.Error -> LoadResult.Error(response.exception)
+            is ResultData.ApiError -> LoadResult.Error(Exception("API ERROR"))
+            is ResultData.OperationError -> LoadResult.Error(response.exception)
             is ResultData.Success -> LoadResult.Page(
                 data = response.data,
                 prevKey = null,

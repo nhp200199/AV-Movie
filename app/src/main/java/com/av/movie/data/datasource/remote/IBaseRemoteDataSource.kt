@@ -1,10 +1,9 @@
 package com.av.movie.data.datasource.remote
 
-import com.av.movie.data.model.NetworkResponse
 import com.av.movie.data.model.ResultData
 
-interface IBaseRemoteDataSource<T: Any, R> {
+interface IBaseRemoteDataSource<T: Any, R: Any> {
     suspend fun getData(
-        networkCall: suspend () -> NetworkResponse<T, String>
-    ): ResultData<R>
+        networkCall: suspend () -> ResultData<T, String>
+    ): ResultData<R, String>
 }

@@ -13,7 +13,7 @@ class ActorRemoteDataSource(
 ) : IActorRemoteDataSource,
     BaseRemoteDataSource<ActorDTO, Actor>(mapper) {
 
-    override suspend fun getActorInfo(id: Int): ResultData<Actor> {
+    override suspend fun getActorInfo(id: Int): ResultData<Actor, String> {
         return getData { actorService.getActorInfo(id) }
     }
 }

@@ -8,7 +8,7 @@ import javax.inject.Inject
 class MovieCastRepository @Inject constructor(
     private val castRemoteDataSource: CastRemoteDataSource
 ) : IMovieCastRepository {
-    override suspend fun getCastForMovie(id: Int): ResultData<CastListDTO> {
+    override suspend fun getCastForMovie(id: Int): ResultData<CastListDTO, String> {
         return castRemoteDataSource.getCastsOfMovie(id)
     }
 }

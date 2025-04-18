@@ -72,7 +72,7 @@ class HomeViewModel @Inject constructor(
                 topRatedMoviesResult
             )
 
-            if (listOfResults.any { it is ResultData.Error }) {
+            if (listOfResults.any { it !is ResultData.Success }) {
                 _uiState.value = HomeUiState.Error
                 return@launch
             }

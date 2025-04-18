@@ -8,7 +8,7 @@ import javax.inject.Inject
 class CreditRepository @Inject constructor(
     private val creditRemoteDataSource: CreditRemoteDataSource
 ) : ICreditRepository {
-    override suspend fun getCreditOfActor(id: Int): ResultData<CreditsDTO> {
+    override suspend fun getCreditOfActor(id: Int): ResultData<CreditsDTO, String> {
         return creditRemoteDataSource.getCreditOfActor(id)
     }
 }

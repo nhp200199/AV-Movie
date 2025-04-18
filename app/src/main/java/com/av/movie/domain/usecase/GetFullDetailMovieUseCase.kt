@@ -27,7 +27,7 @@ class GetFullDetailMovieUseCase @Inject constructor(
     private val moviePreviewRepository: IMoviePreviewRepository,
     private val movieDetailRepository: IMovieDetailRepository
 ) {
-    suspend operator fun invoke(id: Int): ResultData<FullDetailMovie> {
+    suspend operator fun invoke(id: Int): ResultData<FullDetailMovie, Nothing> {
         return coroutineScope {
             val movieDetailResult = async { movieDetailRepository.getDetail(id) }
             val castsResult = async { movieCastRepository.getCastForMovie(id) }
@@ -51,8 +51,8 @@ class GetFullDetailMovieUseCase @Inject constructor(
                 recommendations
             )
 
-            if (results.any { it is ResultData.Error }) {
-                return@coroutineScope ResultData.Error(Exception("Error"))
+            if (results.any { it !is ResultData.Success }) {
+                return@coroutineScope ResultData.OperationError(Exception("Error"))
             }
 
             return@coroutineScope ResultData.Success(

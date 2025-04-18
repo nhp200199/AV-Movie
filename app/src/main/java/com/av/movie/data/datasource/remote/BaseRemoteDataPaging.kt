@@ -1,29 +1,25 @@
 package com.av.movie.data.datasource.remote
 
-import com.av.movie.data.model.NetworkResponse
 import com.av.movie.data.model.PagingDTO
 import com.av.movie.data.model.ResultData
-import com.av.movie.data.exception.NoNetworkConnectionException
-import com.av.movie.data.exception.UnknownException
 import com.av.movie.data.Mapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-open class BaseRemoteDataPaging<T : Any, R>(
+open class BaseRemoteDataPaging<T : Any, R: Any>(
     mapper: Mapper<T, R>
 ) : IBaseRemoteDataPaging<T, R>,
     BaseRemoteDataListSource<T, R>(mapper) {
-    override suspend fun getRemoteDataPaging(
-        networkCall: suspend () -> NetworkResponse<PagingDTO<T>, String>,
-    ): ResultData<List<R>> {
-        val data = withContext(Dispatchers.IO) {
+        override suspend fun getRemoteDataPaging(
+            networkCall: suspend () -> ResultData<PagingDTO<T>, String>,
+    ): ResultData<List<R>, String> {
+        val result = withContext(Dispatchers.IO) {
             networkCall()
         }
-        return when (data) {
-            is NetworkResponse.ApiError -> ResultData.Error(Exception("Api Error"))
-            NetworkResponse.NetworkError -> ResultData.Error(NoNetworkConnectionException())
-            is NetworkResponse.Success -> ResultData.Success(data.body.results.map { mapper.map(it) })
-            NetworkResponse.UnknownError -> ResultData.Error(UnknownException())
+        return when (result) {
+            is ResultData.ApiError -> ResultData.ApiError(result.body)
+            is ResultData.OperationError -> ResultData.OperationError(result.exception)
+            is ResultData.Success -> ResultData.Success(result.data.results.map { mapper.map(it) })
         }
     }
 }

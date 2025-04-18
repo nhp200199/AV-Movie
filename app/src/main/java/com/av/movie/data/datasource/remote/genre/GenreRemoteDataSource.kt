@@ -13,7 +13,7 @@ class GenreRemoteDataSource @Inject constructor(
 ) : BaseRemoteDataSource<GenreDTO, GenreDTO>(genreDTO2Genre),
     IGenreRemoteDataSource<GenreDTO, GenreDTO> {
 
-    override suspend fun getAllGenres(): ResultData<GenreDTO> {
+    override suspend fun getAllGenres(): ResultData<GenreDTO, String> {
         return getData(
             networkCall = { genreService.getAllGenres() },
         )

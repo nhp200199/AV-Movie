@@ -12,7 +12,7 @@ class VideoRemoteDataSource @Inject constructor(
     mapper: Mapper<VideoListDTO, VideoListDTO>
 ) : IVideoRemoteDataSource,
     BaseRemoteDataListSource<VideoListDTO, VideoListDTO>(mapper) {
-    override suspend fun getVideoForMovie(id: Int): ResultData<VideoListDTO> {
+    override suspend fun getVideoForMovie(id: Int): ResultData<VideoListDTO, String> {
         return getData { videoService.getVideosForMovie(id) }
     }
 }

@@ -12,7 +12,7 @@ class CreditRemoteDataSource(
 ) : ICreditRemoteDataSource,
     BaseRemoteDataSource<CreditsDTO, CreditsDTO>(mapper) {
 
-    override suspend fun getCreditOfActor(id: Int): ResultData<CreditsDTO> {
+    override suspend fun getCreditOfActor(id: Int): ResultData<CreditsDTO, String> {
         return getData { creditService.getCreditOfActor(id) }
     }
 }

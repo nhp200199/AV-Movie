@@ -1,23 +1,19 @@
 package com.av.movie.data.datasource.remote
 
-import com.av.movie.data.model.NetworkResponse
 import com.av.movie.data.model.ResultData
-import com.av.movie.data.exception.NoNetworkConnectionException
-import com.av.movie.data.exception.UnknownException
 import com.av.movie.data.Mapper
 
-open class BaseRemoteDataSource<T: Any, R>(
+open class BaseRemoteDataSource<T: Any, R: Any>(
     open val mapper: Mapper<T, R>
 ) : IBaseRemoteDataSource<T, R> {
     override suspend fun getData(
-        networkCall: suspend () -> NetworkResponse<T, String>
-    ): ResultData<R> {
-        val data = networkCall()
-        return when (data) {
-            is NetworkResponse.ApiError -> ResultData.Error(Exception("Api Error"))
-            NetworkResponse.NetworkError -> ResultData.Error(NoNetworkConnectionException())
-            is NetworkResponse.Success -> ResultData.Success(mapper.map(data.body))
-            NetworkResponse.UnknownError -> ResultData.Error(UnknownException())
+        networkCall: suspend () -> ResultData<T, String>
+    ): ResultData<R, String> {
+        val result = networkCall()
+        return when (result) {
+            is ResultData.ApiError -> ResultData.ApiError(result.body)
+            is ResultData.OperationError -> ResultData.OperationError(result.exception)
+            is ResultData.Success -> ResultData.Success(mapper.map(result.data))
         }
     }
 }

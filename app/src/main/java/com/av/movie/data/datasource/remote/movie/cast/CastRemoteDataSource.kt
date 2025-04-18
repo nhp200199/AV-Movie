@@ -13,7 +13,7 @@ class CastRemoteDataSource @Inject constructor(
 ) : ICastRemoteDataSource,
     BaseRemoteDataSource<CastListDTO, CastListDTO>(mapper) {
 
-    override suspend fun getCastsOfMovie(id: Int): ResultData<CastListDTO> {
+    override suspend fun getCastsOfMovie(id: Int): ResultData<CastListDTO, String> {
         return getData { castService.getCasts(id) }
     }
 }

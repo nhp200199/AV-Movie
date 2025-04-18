@@ -13,7 +13,7 @@ class MovieDetailRemoteDataSource @Inject constructor(
     mapper: Mapper<MovieDetailDTO, MovieDetail>
 ) : IMovieDetailRemoteDataSource, BaseRemoteDataPaging<MovieDetailDTO, MovieDetail>(mapper) {
 
-    override suspend fun getDetail(id: Int): ResultData<MovieDetail> {
+    override suspend fun getDetail(id: Int): ResultData<MovieDetail, String> {
         return getData { service.getDetail(id) }
     }
 }
