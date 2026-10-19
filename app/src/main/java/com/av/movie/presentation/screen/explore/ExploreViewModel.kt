@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.av.movie.data.model.Genre
 import com.av.movie.data.model.Movie
 import com.av.movie.data.model.ResultData
-import com.av.movie.dataTest.parseDateString
+import com.av.movie.core.utils.parseDateString
 import com.av.movie.domain.repository.movie.IMoviePreviewRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

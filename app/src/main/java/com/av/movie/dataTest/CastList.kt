@@ -78,6 +78,3 @@ val MODEL_CASTS = CastListDTO(
         )
     )
 )
-
-fun getCastProfilePath(path: String?) : String
-    = if (path == null) "" else "https://media.themoviedb.org/t/p/w138_and_h175_face/$path"

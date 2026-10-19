@@ -57,7 +57,6 @@ import com.av.movie.presentation.screen.explore.ExploreViewModel
 import com.av.movie.presentation.screen.explore.Filter
 import com.av.movie.presentation.screen.explore.GenreFilterScreen
 import com.av.movie.presentation.screen.explore.YearFilterScreen
-import com.av.movie.presentation.screen.home.HomeScreen
 import com.av.movie.presentation.screen.home.MyHomeScreenVM
 import com.av.movie.ui.theme.Blue90
 import com.av.movie.ui.theme.Cyan90
@@ -279,7 +278,7 @@ fun MainScreen(
                     }
                 }
             }
-            composable<Profile> { HomeScreen(navController = navHostController) }
+            composable<Profile> { }
         }
     }
 }

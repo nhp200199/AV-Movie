@@ -53,8 +53,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.av.avmovie.R
+import com.av.movie.core.utils.getFullPosterPath
 import com.av.movie.dataTest.GLADIATOR_II
-import com.av.movie.dataTest.getFullPosterPath
 import com.av.movie.ui.theme.Blue90
 import com.av.movie.ui.theme.Cyan90
 import com.av.movie.ui.theme.Grey10

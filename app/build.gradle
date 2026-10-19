@@ -69,8 +69,6 @@ dependencies {
     implementation libs.androidx.material3
     implementation libs.navigation.compose
     implementation(libs.androidx.compose.material)
-    implementation project(path: ':domain')
-    implementation project(path: ':data')
     implementation(libs.kotlinx.serialization.json)
 
     testImplementation libs.junit

@@ -53,11 +53,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.av.avmovie.R
+import com.av.movie.core.utils.getFullBackdropPath
+import com.av.movie.core.utils.getFullPosterPath
 import com.av.movie.dataTest.DOWNLOADING_MOVIES
 import com.av.movie.dataTest.DOWNLOADING_SONIC_MOVIES
 import com.av.movie.dataTest.DownloadingMovie
-import com.av.movie.dataTest.getFullBackdropPath
-import com.av.movie.dataTest.getFullPosterPath
 import com.av.movie.presentation.components.CommonCenterAppBar
 import com.av.movie.presentation.components.GradientButton
 import com.av.movie.presentation.components.GradientIcon
