@@ -1,7 +1,5 @@
-package com.av.movie.data.retrofit
+package com.av.movie.core.network
 
-import com.av.movie.data.exception.NoNetworkConnectionException
-import com.av.movie.data.exception.UnknownException
 import com.av.movie.data.model.ResultData
 import okhttp3.Request
 import okhttp3.ResponseBody

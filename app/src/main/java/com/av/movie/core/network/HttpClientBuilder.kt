@@ -1,7 +1,6 @@
-package com.av.movie.data.retrofit
+package com.av.movie.core.network
 
 import android.content.Context
-import com.av.movie.data.networkManager.NetworkManager
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

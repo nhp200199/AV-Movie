@@ -1,8 +1,8 @@
 package com.av.movie.data.di
 
 import android.content.Context
-import com.av.movie.data.retrofit.HttpClientBuilder
-import com.av.movie.data.retrofit.NetworkAdapterFactory
+import com.av.movie.core.network.HttpClientBuilder
+import com.av.movie.core.network.NetworkAdapterFactory
 import com.av.movie.data.retrofit.service.GenreService
 import com.av.movie.data.retrofit.service.IActorService
 import com.av.movie.data.retrofit.service.ICastService

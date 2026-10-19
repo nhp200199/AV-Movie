@@ -45,7 +45,7 @@ import com.av.movie.data.model.Genre
 import com.av.movie.ui.theme.Blue90
 import com.av.movie.ui.theme.Grey10
 import com.av.movie.ui.theme.LightGrey30
-import com.av.movie.utils.conditional
+import com.av.movie.core.utils.conditional
 
 @Composable
 fun OnBoardingScreen(

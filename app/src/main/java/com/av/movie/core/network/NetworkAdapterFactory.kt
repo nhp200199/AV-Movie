@@ -1,4 +1,4 @@
-package com.av.movie.data.retrofit
+package com.av.movie.core.network
 
 import com.av.movie.data.model.ResultData
 import retrofit2.Call

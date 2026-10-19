@@ -1,4 +1,4 @@
-package com.av.movie.data.exception
+package com.av.movie.core.network
 
 import java.io.IOException
 

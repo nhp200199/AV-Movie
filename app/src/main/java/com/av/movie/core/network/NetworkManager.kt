@@ -1,10 +1,9 @@
-package com.av.movie.data.networkManager
+package com.av.movie.core.network
 
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
-
 
 class NetworkManager(private val context: Context) : INetworkManager {
     override fun isNetworkConnected(): Boolean {

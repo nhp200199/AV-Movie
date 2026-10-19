@@ -61,7 +61,7 @@ import com.av.movie.presentation.screen.home.MyHomeScreenVM
 import com.av.movie.ui.theme.Blue90
 import com.av.movie.ui.theme.Cyan90
 import com.av.movie.ui.theme.Grey10
-import com.av.movie.utils.sharedViewModel
+import com.av.movie.core.utils.sharedViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 data class TopLevelRoute<T: Any>(
