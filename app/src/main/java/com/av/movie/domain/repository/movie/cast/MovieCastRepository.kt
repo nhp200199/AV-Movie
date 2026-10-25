@@ -1,14 +1,8 @@
 package com.av.movie.domain.repository.movie.cast
 
-import com.av.movie.data.datasource.remote.movie.cast.CastRemoteDataSource
-import com.av.movie.data.model.CastListDTO
 import com.av.movie.data.model.ResultData
-import javax.inject.Inject
+import com.av.movie.domain.model.Cast
 
-class MovieCastRepository @Inject constructor(
-    private val castRemoteDataSource: CastRemoteDataSource
-) : IMovieCastRepository {
-    override suspend fun getCastForMovie(id: Int): ResultData<CastListDTO, String> {
-        return castRemoteDataSource.getCastsOfMovie(id)
-    }
+interface MovieCastRepository {
+    suspend fun getCastForMovie(id: Int): ResultData<List<Cast>, String>
 }

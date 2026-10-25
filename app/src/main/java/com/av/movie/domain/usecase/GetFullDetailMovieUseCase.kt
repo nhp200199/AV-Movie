@@ -1,31 +1,30 @@
 package com.av.movie.domain.usecase
 
-import android.util.Log
-import com.av.movie.data.model.CastListDTO
-import com.av.movie.data.model.Movie
-import com.av.movie.data.model.MovieDetail
 import com.av.movie.data.model.ResultData
-import com.av.movie.data.model.VideoListDTO
-import com.av.movie.domain.repository.movie.IMovieDetailRepository
-import com.av.movie.domain.repository.movie.IMoviePreviewRepository
-import com.av.movie.domain.repository.movie.cast.IMovieCastRepository
-import com.av.movie.domain.repository.movie.video.IVideoRepository
+import com.av.movie.domain.model.Cast
+import com.av.movie.domain.model.Movie
+import com.av.movie.domain.model.MovieDetail
+import com.av.movie.domain.model.Video
+import com.av.movie.domain.repository.movie.MovieDetailRepository
+import com.av.movie.domain.repository.movie.MoviePreviewRepository
+import com.av.movie.domain.repository.movie.cast.MovieCastRepository
+import com.av.movie.domain.repository.movie.video.VideoRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
 data class FullDetailMovie(
     val movieDetail: MovieDetail,
-    val casts: CastListDTO,
-    val videos: VideoListDTO,
+    val casts: List<Cast>,
+    val videos: List<Video>,
     val recommendations: List<Movie>
 )
 
 class GetFullDetailMovieUseCase @Inject constructor(
-    private val movieCastRepository: IMovieCastRepository,
-    private val videoRepository: IVideoRepository,
-    private val moviePreviewRepository: IMoviePreviewRepository,
-    private val movieDetailRepository: IMovieDetailRepository
+    private val movieCastRepository: MovieCastRepository,
+    private val videoRepository: VideoRepository,
+    private val moviePreviewRepository: MoviePreviewRepository,
+    private val movieDetailRepository: MovieDetailRepository
 ) {
     suspend operator fun invoke(id: Int): ResultData<FullDetailMovie, Nothing> {
         return coroutineScope {
@@ -38,11 +37,6 @@ class GetFullDetailMovieUseCase @Inject constructor(
             val casts = castsResult.await()
             val videos = videosResult.await()
             val recommendations = recommendationsResult.await()
-
-            Log.d("MovieDetail", "videos = $videos")
-            Log.d("MovieDetail", "recommendation = $recommendations")
-            Log.d("MovieDetail", "detail = $movieDetail")
-            Log.d("MovieDetail", "casts = $casts")
 
             val results = listOf(
                 movieDetail,

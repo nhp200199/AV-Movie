@@ -1,6 +1,6 @@
 package com.av.movie.dataTest
 
-import com.av.movie.data.model.Movie
+import com.av.movie.domain.model.Movie
 
 data class DownloadingMovie(
     val movie: Movie,

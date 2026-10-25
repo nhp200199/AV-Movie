@@ -2,12 +2,10 @@ package com.av.movie.presentation.screen.movieDetail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.av.movie.data.model.CastListDTO
-import com.av.movie.data.model.Movie
-import com.av.movie.data.model.MovieDetail
 import com.av.movie.data.model.ResultData
-import com.av.movie.data.model.VideoListDTO
-import com.av.movie.domain.repository.movie.IMoviePreviewRepository
+import com.av.movie.domain.model.Movie
+import com.av.movie.domain.model.MovieDetail
+import com.av.movie.domain.repository.movie.MoviePreviewRepository
 import com.av.movie.domain.usecase.FullDetailMovie
 import com.av.movie.domain.usecase.GetFullDetailMovieUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,7 +24,7 @@ sealed class MovieDetailUiState(val data: FullDetailMovie?) {
 @HiltViewModel
 class MovieDetailViewModel @Inject constructor(
     private val getFullDetailMovieUseCase: GetFullDetailMovieUseCase,
-    private val moviePreviewRepository: IMoviePreviewRepository
+    private val moviePreviewRepository: MoviePreviewRepository
 ) : ViewModel() {
     private val _detailMovieState = MutableStateFlow<MovieDetailUiState>(MovieDetailUiState.Initial)
     val detailMovieState = _detailMovieState.asStateFlow()
@@ -65,8 +63,8 @@ class MovieDetailViewModel @Inject constructor(
                 duration = 0,
                 isFavorite = false
             ),
-            casts = CastListDTO.DEFAULT,
-            videos = VideoListDTO.DEFAULT,
+            casts = emptyList(),
+            videos = emptyList(),
             recommendations = emptyList()
         )
 }

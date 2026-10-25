@@ -1,6 +1,6 @@
 package com.av.movie.dataTest
 
-import com.av.movie.data.model.Movie
+import com.av.movie.domain.model.Movie
 
 val SONIC_THE_HEDGEHOG_3 = Movie(
     adult = false,

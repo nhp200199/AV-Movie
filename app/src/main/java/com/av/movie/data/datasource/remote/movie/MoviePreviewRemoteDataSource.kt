@@ -3,9 +3,9 @@ package com.av.movie.data.datasource.remote.movie
 import com.av.movie.data.model.MoviePreviewDTO
 import com.av.movie.data.model.ResultData
 import com.av.movie.data.retrofit.service.MoviePreviewService
-import com.av.movie.data.model.Movie
 import com.av.movie.data.datasource.remote.BaseRemoteDataPaging
 import com.av.movie.data.Mapper
+import com.av.movie.domain.model.Movie
 import javax.inject.Inject
 
 class MoviePreviewRemoteDataSource @Inject constructor(

@@ -2,7 +2,7 @@ package com.av.movie.data.movie
 
 import com.av.movie.data.model.MoviePreviewDTO
 import com.av.movie.data.Mapper
-import com.av.movie.data.model.Movie
+import com.av.movie.domain.model.Movie
 import javax.inject.Inject
 
 class MoviePreviewDTO2Movie @Inject constructor() : Mapper<MoviePreviewDTO, Movie> {

@@ -1,7 +1,7 @@
 package com.av.movie.dataTest
 
-import com.av.movie.data.model.Genre
-import com.av.movie.data.model.MovieDetail
+import com.av.movie.domain.model.Genre
+import com.av.movie.domain.model.MovieDetail
 
 val MODEL_MOVIE_DETAIL = MovieDetail(
     adult = false,

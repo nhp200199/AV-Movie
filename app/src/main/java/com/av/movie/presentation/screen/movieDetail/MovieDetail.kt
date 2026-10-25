@@ -65,15 +65,15 @@ import com.av.movie.core.utils.formatTime
 import com.av.movie.core.utils.getCastProfilePath
 import com.av.movie.core.utils.getFullBackdropPath
 import com.av.movie.core.utils.getFullPosterPath
-import com.av.movie.data.model.CastDTO
-import com.av.movie.data.model.Movie
-import com.av.movie.data.model.MovieDetail
-import com.av.movie.data.model.VideoDTO
 import com.av.movie.dataTest.GLADIATOR_II
 import com.av.movie.dataTest.MODEL_CASTS
 import com.av.movie.dataTest.MODEL_GLADIATOR_VIDEO
 import com.av.movie.dataTest.MODEL_MOVIE_DETAIL
 import com.av.movie.dataTest.MODEL_POPULAR_MOVIES
+import com.av.movie.domain.model.Cast
+import com.av.movie.domain.model.Movie
+import com.av.movie.domain.model.MovieDetail
+import com.av.movie.domain.model.Video
 import com.av.movie.domain.usecase.FullDetailMovie
 import com.av.movie.presentation.screen.home.MovieAction
 import com.av.movie.presentation.screen.home.MovieInfo
@@ -118,8 +118,8 @@ fun MovieDetailScreen(
     if (detail != null) {
         val movie = detail.movieDetail
         val recommendations = detail.recommendations
-        val videos = detail.videos.results
-        val casts = detail.casts.cast
+        val videos = detail.videos
+        val casts = detail.casts
 
         Column(
             modifier = Modifier
@@ -155,8 +155,8 @@ fun MovieDetailScreen(
 
 @Composable
 fun OtherInformation(
-    casts: List<CastDTO>,
-    videos: List<VideoDTO>,
+    casts: List<Cast>,
+    videos: List<Video>,
     movie: MovieDetail,
     recommendations: List<Movie>,
     modifier: Modifier = Modifier,
@@ -262,7 +262,7 @@ fun GenreChip(
 
 @Composable
 fun VideoSection(
-    data: List<VideoDTO>,
+    data: List<Video>,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -313,7 +313,7 @@ fun MoreLikeThisSection(
 
 @Composable
 fun AboutSection(
-    casts: List<CastDTO>,
+    casts: List<Cast>,
     movie: MovieDetail,
     modifier: Modifier = Modifier
 ) {
@@ -363,7 +363,7 @@ fun AboutSection(
 
 @Composable
 fun Casts(
-    casts: List<CastDTO>
+    casts: List<Cast>
 ) {
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -378,7 +378,7 @@ fun Casts(
 
 @Composable
 fun CastItem(
-    cast: CastDTO,
+    cast: Cast,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -531,7 +531,7 @@ fun Headline(
 
 @Composable
 fun TrailerItem(
-    data: VideoDTO,
+    data: Video,
     backdrop: String,
     modifier: Modifier = Modifier
 ) {

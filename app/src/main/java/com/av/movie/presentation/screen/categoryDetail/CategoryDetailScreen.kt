@@ -33,16 +33,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.av.movie.data.model.Movie
+import com.av.movie.domain.model.Category
+import com.av.movie.domain.model.Movie
 import com.av.movie.presentation.screen.home.MovieItem
 import com.av.movie.ui.theme.Grey10
-
-enum class Category(
-    val categoryName: String
-) {
-    POPULAR("Popular Movies"),
-    TOP_RATED("Top rated")
-}
 
 @Composable
 fun CategoryDetailScreenVM(

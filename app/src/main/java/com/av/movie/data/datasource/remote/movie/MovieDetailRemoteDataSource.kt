@@ -3,9 +3,9 @@ package com.av.movie.data.datasource.remote.movie
 import com.av.movie.data.retrofit.service.IMovieDetailService
 import com.av.movie.data.datasource.remote.BaseRemoteDataPaging
 import com.av.movie.data.Mapper
-import com.av.movie.data.model.MovieDetail
 import com.av.movie.data.model.MovieDetailDTO
 import com.av.movie.data.model.ResultData
+import com.av.movie.domain.model.MovieDetail
 import javax.inject.Inject
 
 class MovieDetailRemoteDataSource @Inject constructor(

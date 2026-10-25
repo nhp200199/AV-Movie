@@ -6,9 +6,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.av.movie.data.model.Movie
-import com.av.movie.domain.MoviePagingSource
-import com.av.movie.domain.repository.movie.IMoviePreviewRepository
+import com.av.movie.data.paging.MoviePagingSource
+import com.av.movie.domain.model.Category
+import com.av.movie.domain.model.Movie
+import com.av.movie.domain.repository.movie.MoviePreviewRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.filterNotNull
@@ -26,7 +27,7 @@ sealed class CategoryUIState {
 @HiltViewModel
 class CategoryDetailViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
-    private val moviePreviewRepository: IMoviePreviewRepository,
+    private val moviePreviewRepository: MoviePreviewRepository,
 ): ViewModel() {
     private val _category = savedStateHandle.getStateFlow<Category?>("category", null)
 

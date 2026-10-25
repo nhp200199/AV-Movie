@@ -1,14 +1,8 @@
 package com.av.movie.domain.repository.genre
 
-import com.av.movie.data.model.GenreDTO
 import com.av.movie.data.model.ResultData
-import com.av.movie.data.datasource.remote.genre.IGenreRemoteDataSource
-import javax.inject.Inject
+import com.av.movie.domain.model.Genre
 
-class GenreRepository @Inject constructor(
-    private val genreRemoteDataSource: IGenreRemoteDataSource<GenreDTO, GenreDTO>
-) : IGenreRepository {
-    override suspend fun getAllGenres(): ResultData<GenreDTO, String> {
-        return genreRemoteDataSource.getAllGenres()
-    }
+interface GenreRepository {
+    suspend fun getAllGenres(): ResultData<List<Genre>, String>
 }

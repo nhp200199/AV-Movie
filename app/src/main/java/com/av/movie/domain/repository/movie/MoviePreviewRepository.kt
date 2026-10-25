@@ -1,56 +1,14 @@
 package com.av.movie.domain.repository.movie
 
-import com.av.movie.data.model.Movie
 import com.av.movie.data.model.ResultData
-import com.av.movie.data.datasource.remote.movie.MoviePreviewRemoteDataSource
-import javax.inject.Inject
+import com.av.movie.domain.model.Movie
 
-class MoviePreviewRepository @Inject constructor(
-    private val movieListDataSource: MoviePreviewRemoteDataSource
-) : IMoviePreviewRepository {
-    private val moviePreviews: MutableSet<Movie> = mutableSetOf()
-
-    override suspend fun getNowPlayingMovies(page: Int): ResultData<List<Movie>, String> {
-        val result = movieListDataSource.getNowPlayingMovies(page = page)
-        handleMoviesResult(result)
-        return result
-    }
-
-    override suspend fun getPopularMovies(page: Int): ResultData<List<Movie>, String> {
-        val result = movieListDataSource.getPopularMovies(page = page)
-        handleMoviesResult(result)
-        return result
-    }
-
-    override suspend fun getTopRatedMovies(page: Int): ResultData<List<Movie>, String> {
-        val result = movieListDataSource.getTopRatedMovies(page = page)
-        handleMoviesResult(result)
-        return result
-    }
-
-    override suspend fun getUpcomingMovies(page: Int): ResultData<List<Movie>, String> {
-        val result = movieListDataSource.getUpcomingMovies(page = page)
-        handleMoviesResult(result)
-        return result
-    }
-
-    override suspend fun searchMovie(query: String): ResultData<List<Movie>, String> {
-        val result = movieListDataSource.searchMovie(query)
-        handleMoviesResult(result)
-        return result
-    }
-
-    override suspend fun getRecommendationsForMovie(id: Int): ResultData<List<Movie>, String> {
-        val result = movieListDataSource.getRecommendationsForMovie(id)
-        handleMoviesResult(result)
-        return result
-    }
-
-    override fun getMoviePreview(id: Int): Movie? = moviePreviews.firstOrNull { it.id == id }
-
-    private fun handleMoviesResult(movieResult: ResultData<List<Movie>, String>) {
-        if (movieResult is ResultData.Success) {
-            moviePreviews.addAll(movieResult.data)
-        }
-    }
+interface MoviePreviewRepository {
+    suspend fun getNowPlayingMovies(page: Int = 1): ResultData<List<Movie>, String>
+    suspend fun getPopularMovies(page: Int = 1): ResultData<List<Movie>, String>
+    suspend fun getTopRatedMovies(page: Int = 1): ResultData<List<Movie>, String>
+    suspend fun getUpcomingMovies(page: Int = 1): ResultData<List<Movie>, String>
+    suspend fun searchMovie(query: String): ResultData<List<Movie>, String>
+    suspend fun getRecommendationsForMovie(id: Int): ResultData<List<Movie>, String>
+    fun getMoviePreview(id: Int): Movie?
 }

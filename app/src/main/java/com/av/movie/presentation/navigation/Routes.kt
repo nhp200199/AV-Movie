@@ -1,6 +1,6 @@
 package com.av.movie.presentation.navigation
 
-import com.av.movie.presentation.screen.categoryDetail.Category
+import com.av.movie.domain.model.Category
 import kotlinx.serialization.Serializable
 
 @Serializable

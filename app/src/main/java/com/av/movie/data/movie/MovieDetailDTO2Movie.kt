@@ -1,15 +1,16 @@
 package com.av.movie.data.movie
 
 import com.av.movie.data.Mapper
-import com.av.movie.data.model.MovieDetail
 import com.av.movie.data.model.MovieDetailDTO
+import com.av.movie.domain.model.Genre
+import com.av.movie.domain.model.MovieDetail
 import javax.inject.Inject
 
 class MovieDetailDTO2Movie @Inject constructor(): Mapper<MovieDetailDTO, MovieDetail> {
     override fun map(input: MovieDetailDTO): MovieDetail {
         return MovieDetail(
             adult = input.adult,
-            genres = input.genres,
+            genres = input.genres.map { Genre(id = it.id, name = it.name) },
             id = input.id,
             originalTitle = input.originalTitle,
             overview = input.overview ?: "",

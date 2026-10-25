@@ -4,9 +4,6 @@ import com.av.movie.data.datasource.remote.actor.ActorRemoteDataSource
 import com.av.movie.data.datasource.remote.actor.IActorRemoteDataSource
 import com.av.movie.data.datasource.remote.credit.CreditRemoteDataSource
 import com.av.movie.data.datasource.remote.credit.ICreditRemoteDataSource
-import com.av.movie.data.model.GenreDTO
-import com.av.movie.data.model.Movie
-import com.av.movie.data.model.MoviePreviewDTO
 import com.av.movie.data.datasource.remote.genre.GenreRemoteDataSource
 import com.av.movie.data.datasource.remote.genre.IGenreRemoteDataSource
 import com.av.movie.data.datasource.remote.movie.IMovieDetailRemoteDataSource
@@ -17,6 +14,10 @@ import com.av.movie.data.datasource.remote.movie.cast.CastRemoteDataSource
 import com.av.movie.data.datasource.remote.movie.cast.ICastRemoteDataSource
 import com.av.movie.data.datasource.remote.movie.video.IVideoRemoteDataSource
 import com.av.movie.data.datasource.remote.movie.video.VideoRemoteDataSource
+import com.av.movie.data.model.GenreDTO
+import com.av.movie.data.model.MoviePreviewDTO
+import com.av.movie.domain.model.Genre
+import com.av.movie.domain.model.Movie
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -34,7 +35,7 @@ abstract class RemoteDataSourceModule {
     @Binds
     abstract fun bindGenreDataSource(
         genreDataSource: GenreRemoteDataSource
-    ): IGenreRemoteDataSource<GenreDTO, GenreDTO>
+    ): IGenreRemoteDataSource<GenreDTO, List<Genre>>
 
     @Binds
     abstract fun bindCreditDataSource(

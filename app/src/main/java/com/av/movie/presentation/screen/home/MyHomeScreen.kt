@@ -64,14 +64,14 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import com.av.avmovie.R
-import com.av.movie.data.model.Genre
 import com.av.movie.core.utils.getFullBackdropPath
 import com.av.movie.core.utils.getFullPosterPath
 import com.av.movie.dataTest.ALL_GENRES
 import com.av.movie.dataTest.GLADIATOR_II
 import com.av.movie.dataTest.MODEL_POPULAR_MOVIES
-import com.av.movie.data.model.Movie
-import com.av.movie.presentation.screen.categoryDetail.Category
+import com.av.movie.domain.model.Category
+import com.av.movie.domain.model.Genre
+import com.av.movie.domain.model.Movie
 import com.av.movie.presentation.screen.home.viewmodel.HomeData
 import com.av.movie.presentation.screen.home.viewmodel.HomeUiState
 import com.av.movie.presentation.screen.home.viewmodel.HomeViewModel
@@ -83,17 +83,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.math.RoundingMode
-
-data class Video(
-    val id: String,
-    val name: String,
-    val size: Int,
-    val key: String,
-    val site: String,
-    val type: String,
-    val official: Boolean,
-    val publishedAt: String,
-)
 
 @Composable
 fun MyHomeScreenVM(

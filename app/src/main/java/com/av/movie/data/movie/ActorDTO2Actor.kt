@@ -1,8 +1,8 @@
 package com.av.movie.data.movie
 
 import com.av.movie.data.Mapper
-import com.av.movie.data.model.Actor
 import com.av.movie.data.model.ActorDTO
+import com.av.movie.domain.model.Actor
 import javax.inject.Inject
 
 class ActorDTO2Actor @Inject constructor() : Mapper<ActorDTO, Actor> {

@@ -33,7 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.av.avmovie.R
-import com.av.movie.data.model.Movie
+import com.av.movie.domain.model.Movie
 import com.av.movie.dataTest.MODEL_POPULAR_MOVIES
 import com.av.movie.presentation.components.GradientIcon
 import com.av.movie.presentation.screen.home.MovieItem

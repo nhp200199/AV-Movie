@@ -2,11 +2,11 @@ package com.av.movie.presentation.screen.home.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.av.movie.data.model.Movie
 import com.av.movie.data.model.ResultData
-import com.av.movie.domain.repository.movie.IMoviePreviewRepository
-import com.av.movie.data.model.Genre
-import com.av.movie.domain.repository.genre.IGenreRepository
+import com.av.movie.domain.model.Genre
+import com.av.movie.domain.model.Movie
+import com.av.movie.domain.repository.genre.GenreRepository
+import com.av.movie.domain.repository.movie.MoviePreviewRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,8 +32,8 @@ sealed class HomeUiState {
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val movieListRepository: IMoviePreviewRepository,
-    private val genreRepository: IGenreRepository
+    private val movieListRepository: MoviePreviewRepository,
+    private val genreRepository: GenreRepository
 ): ViewModel() {
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Initial)
     val uiState = _uiState
@@ -86,7 +86,7 @@ class HomeViewModel @Inject constructor(
                 HomeData(
                     nowPlayingMovies = nowPlayingMovies,
                     popularMovies = popularMovies,
-                    genres = genres.genres,
+                    genres = genres,
                     topRatedMovies = topRatedMovies
                 )
             )

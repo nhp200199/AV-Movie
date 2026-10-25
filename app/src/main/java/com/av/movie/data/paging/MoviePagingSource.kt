@@ -1,14 +1,14 @@
-package com.av.movie.domain
+package com.av.movie.data.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.av.movie.data.model.Movie
 import com.av.movie.data.model.ResultData
-import com.av.movie.domain.repository.movie.IMoviePreviewRepository
-import com.av.movie.presentation.screen.categoryDetail.Category
+import com.av.movie.domain.model.Category
+import com.av.movie.domain.model.Movie
+import com.av.movie.domain.repository.movie.MoviePreviewRepository
 
 class MoviePagingSource(
-    private val movieRepository: IMoviePreviewRepository,
+    private val movieRepository: MoviePreviewRepository,
     private val _category: Category = Category.POPULAR
 ): PagingSource<Int, Movie>() {
     override fun getRefreshKey(state: PagingState<Int, Movie>): Int? {
