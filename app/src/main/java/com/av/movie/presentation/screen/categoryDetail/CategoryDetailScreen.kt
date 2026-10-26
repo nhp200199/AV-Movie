@@ -35,7 +35,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.av.movie.domain.model.Category
 import com.av.movie.domain.model.Movie
-import com.av.movie.presentation.screen.home.MovieItem
+import com.av.movie.presentation.components.MovieItem
 import com.av.movie.ui.theme.Grey10
 
 @Composable
@@ -61,9 +61,10 @@ fun CategoryDetailScreen(
     pagingState: LazyPagingItems<Movie>,
     category: Category,
     onNavigatingUp: () -> Unit,
-    onNavigateToMovieDetail: (Int) -> Unit
+    onNavigateToMovieDetail: (Int) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Column {
+    Column(modifier = modifier) {
         TopAppBar(
             backgroundColor = Grey10
         ) {

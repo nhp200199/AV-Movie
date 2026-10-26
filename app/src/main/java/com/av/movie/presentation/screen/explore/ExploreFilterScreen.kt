@@ -64,10 +64,11 @@ fun ExploreFilterScreen(
     onBackClick: () -> Unit,
     onNavigateToFilterScreen: (Filter) -> Unit,
     onReset: () -> Unit,
-    onSortSelected: (SortOption) -> Unit
+    onSortSelected: (SortOption) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(Grey10)
     ) {

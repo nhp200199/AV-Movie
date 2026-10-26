@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class VideoRemoteDataSourceImp @Inject constructor(
     private val videoApi: VideoApi,
-    mapper: Mapper<VideoListDTO, List<Video>>
+    mapper: Mapper<VideoListDTO, @JvmSuppressWildcards List<Video>>
 ) : VideoRemoteDataSource,
     BaseRemoteDataSource<VideoListDTO, List<Video>>(mapper) {
 

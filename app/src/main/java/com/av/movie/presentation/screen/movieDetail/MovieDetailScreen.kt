@@ -75,9 +75,9 @@ import com.av.movie.domain.model.Movie
 import com.av.movie.domain.model.MovieDetail
 import com.av.movie.domain.model.Video
 import com.av.movie.domain.usecase.FullDetailMovie
-import com.av.movie.presentation.screen.home.MovieAction
-import com.av.movie.presentation.screen.home.MovieInfo
-import com.av.movie.presentation.screen.home.MovieItem
+import com.av.movie.presentation.components.MovieAction
+import com.av.movie.presentation.components.MovieInfo
+import com.av.movie.presentation.components.MovieItem
 import com.av.movie.ui.theme.Blue90
 import com.av.movie.ui.theme.Cyan90
 import com.av.movie.ui.theme.Grey10
@@ -112,9 +112,10 @@ fun MovieDetailScreenVM(
 
 @Composable
 fun MovieDetailScreen(
-    uiState: MovieDetailUiState
+    uiState: MovieDetailUiState,
+    modifier: Modifier = Modifier
 ) {
-    val detail = uiState.data;
+    val detail = uiState.data
     if (detail != null) {
         val movie = detail.movieDetail
         val recommendations = detail.recommendations
@@ -122,13 +123,14 @@ fun MovieDetailScreen(
         val casts = detail.casts
 
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
                 .background(color = Grey10),
         ) {
             Headline(
                 movie = movie,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .height(300.dp)
             )
 
@@ -222,7 +224,7 @@ fun OtherInformation(
                 .weight(1f)
                 .padding(top = 8.dp)
         ) {
-            when(pages[it]) {
+            when (pages[it]) {
                 OtherInformationScreen.VIDEOS -> VideoSection(videos)
                 OtherInformationScreen.MORE_LIKE_THIS -> MoreLikeThisSection(recommendations)
                 OtherInformationScreen.ABOUT -> AboutSection(movie = movie, casts = casts)
@@ -275,7 +277,7 @@ fun VideoSection(
         )
     ) {
         items(
-            count =  data.size,
+            count = data.size,
             key = { data[it].id }
         ) {
             TrailerItem(
@@ -302,8 +304,7 @@ fun MoreLikeThisSection(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = modifier
     ) {
-
-        items(recommendations.size) {idx ->
+        items(recommendations.size) { idx ->
             MovieItem(
                 movie = recommendations[idx]
             )
@@ -318,10 +319,10 @@ fun AboutSection(
     modifier: Modifier = Modifier
 ) {
     val aboutData = listOf(
-        Pair<String, String>("Country", movie.originalLanguage),
-        Pair<String, String>("Year", formatDate("yyyy", movie.releaseDate, originPattern = "yyyy-MM-dd")),
-        Pair<String, String>("Duration", formatTime(movie.duration)),
-        Pair<String, String>("Language", movie.originalLanguage)
+        Pair("Country", movie.originalLanguage),
+        Pair("Year", formatDate("yyyy", movie.releaseDate, originPattern = "yyyy-MM-dd")),
+        Pair("Duration", formatTime(movie.duration)),
+        Pair("Language", movie.originalLanguage)
     )
 
     LazyVerticalGrid(
@@ -363,9 +364,11 @@ fun AboutSection(
 
 @Composable
 fun Casts(
-    casts: List<Cast>
+    casts: List<Cast>,
+    modifier: Modifier = Modifier
 ) {
     LazyRow(
+        modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         items(
@@ -383,7 +386,6 @@ fun CastItem(
 ) {
     Column(
         modifier = modifier
-//            .clickable { onNavigateToMovieDetail(movie.id) },
     ) {
         AsyncImage(
             model = getCastProfilePath(cast.profilePath),
@@ -430,7 +432,6 @@ fun AboutItem(
             )
         )
     }
-
 }
 
 @Composable
@@ -450,7 +451,7 @@ fun Overview(
     }
 
     val action = if (showFullText) " Show less"
-        else " Show more"
+    else " Show more"
 
     Column(
         modifier = modifier
@@ -578,7 +579,7 @@ fun TrailerItem(
     backgroundColor = 0xFF090E17
 )
 @Composable
-fun  MovieDetailScreenPreview() {
+fun MovieDetailScreenPreview() {
     MovieDetailScreen(
         uiState = MovieDetailUiState.Success(
             successData = FullDetailMovie(

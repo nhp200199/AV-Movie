@@ -36,15 +36,16 @@ import com.av.avmovie.R
 import com.av.movie.domain.model.Movie
 import com.av.movie.dataTest.MODEL_POPULAR_MOVIES
 import com.av.movie.presentation.components.GradientIcon
-import com.av.movie.presentation.screen.home.MovieItem
+import com.av.movie.presentation.components.MovieItem
 import com.av.movie.ui.theme.LightGrey10
 import com.av.movie.ui.theme.LightGrey30
 
 @Composable
 fun ArchiveScreen(
-    onNavigateToDownload: () -> Unit
+    onNavigateToDownload: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = modifier.fillMaxSize()) {
         MainContent(
             onNavigateToDownload = onNavigateToDownload,
             modifier = Modifier.fillMaxSize()

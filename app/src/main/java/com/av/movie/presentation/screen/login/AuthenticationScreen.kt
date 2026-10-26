@@ -62,9 +62,11 @@ import com.av.movie.ui.theme.LightGrey30
 
 @Composable
 fun AuthenticationScreen(
+    modifier: Modifier = Modifier,
     onNavigateToOnboarding: () -> Unit,
 ) {
     Scaffold(
+        modifier = modifier,
         containerColor = Color.Black
     ) {
         Box(
@@ -381,8 +383,11 @@ fun LoginSection(
     }
 }
 @Composable
-fun Introduction() {
+fun Introduction(
+    modifier: Modifier = Modifier
+) {
     Column(
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(

@@ -1,4 +1,4 @@
-package com.av.movie.presentation.screen.home.viewmodel
+package com.av.movie.presentation.screen.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -34,9 +35,9 @@ sealed class HomeUiState {
 class HomeViewModel @Inject constructor(
     private val movieListRepository: MoviePreviewRepository,
     private val genreRepository: GenreRepository
-): ViewModel() {
+) : ViewModel() {
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Initial)
-    val uiState = _uiState
+    val uiState: StateFlow<HomeUiState> = _uiState
         .map {
             if (it !is HomeUiState.Success) return@map it
 

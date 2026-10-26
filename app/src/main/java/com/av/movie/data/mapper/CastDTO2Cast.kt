@@ -4,7 +4,7 @@ import com.av.movie.data.model.CastListDTO
 import com.av.movie.domain.model.Cast
 import javax.inject.Inject
 
-class CastDTO2Cast @Inject constructor() : Mapper<CastListDTO, List<Cast>> {
+class CastDTO2Cast @Inject constructor() : Mapper<CastListDTO, @JvmSuppressWildcards List<Cast>> {
     override fun map(input: CastListDTO): List<Cast> {
         return input.cast.map {
             Cast(

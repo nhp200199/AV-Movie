@@ -57,7 +57,7 @@ import com.av.movie.presentation.screen.explore.ExploreViewModel
 import com.av.movie.presentation.screen.explore.Filter
 import com.av.movie.presentation.screen.explore.GenreFilterScreen
 import com.av.movie.presentation.screen.explore.YearFilterScreen
-import com.av.movie.presentation.screen.home.MyHomeScreenVM
+import com.av.movie.presentation.screen.home.HomeScreenVM
 import com.av.movie.ui.theme.Blue90
 import com.av.movie.ui.theme.Cyan90
 import com.av.movie.ui.theme.Grey10
@@ -166,7 +166,7 @@ fun MainScreen(
 
             navigation<NestedHome>(startDestination = Home) {
                 composable<Home> {
-                    MyHomeScreenVM(
+                    HomeScreenVM(
                         onNavigateToCategoryDetail = { category ->
                             navHostController.navigate(CategoryDetail(category))
                         },

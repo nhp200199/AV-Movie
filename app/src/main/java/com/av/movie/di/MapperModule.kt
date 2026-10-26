@@ -39,12 +39,12 @@ abstract class MapperModule {
     @Binds
     abstract fun bindGenreDTO2Genre(
         genreDTO2Genre: GenreDTO2Genre
-    ): Mapper<GenreDTO, List<Genre>>
+    ): Mapper<GenreDTO, @JvmSuppressWildcards List<Genre>>
 
     @Binds
     abstract fun bindVideoDTO2Video(
         videoDTO2Video: VideoDTO2Video
-    ): Mapper<VideoListDTO, List<Video>>
+    ): Mapper<VideoListDTO, @JvmSuppressWildcards List<Video>>
 
     @Binds
     abstract fun bindActorDTO2Actor(
@@ -54,12 +54,12 @@ abstract class MapperModule {
     @Binds
     abstract fun bindMovieCastDTO2MovieCast(
         mapper: CastDTO2Cast
-    ): Mapper<CastListDTO, List<Cast>>
+    ): Mapper<CastListDTO, @JvmSuppressWildcards List<Cast>>
 
     @Binds
     abstract fun bindCreditDTO2Credit(
         mapper: CreditDTO2Credit
-    ): Mapper<CreditsDTO, List<Credit>>
+    ): Mapper<CreditsDTO, @JvmSuppressWildcards List<Credit>>
 
     @Binds
     abstract fun bindMovieDetailDTO2MovieDetail(

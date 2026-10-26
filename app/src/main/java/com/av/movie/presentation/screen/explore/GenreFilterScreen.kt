@@ -23,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.av.movie.domain.model.Genre
-import com.av.movie.presentation.screen.onboarding.GenreItem
+import com.av.movie.presentation.components.GenreItem
 import com.av.movie.ui.theme.Grey10
 import com.av.movie.ui.theme.LightGrey50
 
@@ -34,10 +34,11 @@ fun GenreFilterScreen(
     selectedGenres: List<Genre>?,
     onGenreSelected: (Genre) -> Unit,
     onReset: () -> Unit,
-    onNavigateUp: () -> Unit
+    onNavigateUp: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize()
             .background(color = Grey10)
     ) {
         CenterAlignedTopAppBar(

@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class CreditRemoteDataSourceImp @Inject constructor(
     private val creditApi: CreditApi,
-    mapper: Mapper<CreditsDTO, List<Credit>>
+    mapper: Mapper<CreditsDTO, @JvmSuppressWildcards List<Credit>>
 ) : CreditRemoteDataSource,
     BaseRemoteDataSource<CreditsDTO, List<Credit>>(mapper) {
 

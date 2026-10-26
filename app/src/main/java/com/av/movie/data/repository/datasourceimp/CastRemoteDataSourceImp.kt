@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class CastRemoteDataSourceImp @Inject constructor(
     private val castApi: CastApi,
-    mapper: Mapper<CastListDTO, List<Cast>>
+    mapper: Mapper<CastListDTO, @JvmSuppressWildcards List<Cast>>
 ) : CastRemoteDataSource,
     BaseRemoteDataSource<CastListDTO, List<Cast>>(mapper) {
 

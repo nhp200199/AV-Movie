@@ -46,10 +46,11 @@ fun CountryFilterScreen(
     selectedCountry: String?,
     onCountrySelected: (String) -> Unit,
     onReset: () -> Unit,
-    onNavigateUp: () -> Unit
+    onNavigateUp: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize()
             .background(color = Grey10)
     ) {
         CenterAlignedTopAppBar(

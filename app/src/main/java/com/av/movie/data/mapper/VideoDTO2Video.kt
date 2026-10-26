@@ -4,7 +4,7 @@ import com.av.movie.data.model.VideoListDTO
 import com.av.movie.domain.model.Video
 import javax.inject.Inject
 
-class VideoDTO2Video @Inject constructor() : Mapper<VideoListDTO, List<Video>> {
+class VideoDTO2Video @Inject constructor() : Mapper<VideoListDTO, @JvmSuppressWildcards List<Video>> {
     override fun map(input: VideoListDTO): List<Video> {
         return input.results.map {
             Video(

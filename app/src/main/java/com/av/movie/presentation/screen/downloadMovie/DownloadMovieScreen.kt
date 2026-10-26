@@ -71,6 +71,7 @@ import kotlin.math.round
 
 @Composable
 fun DownloadMovieScreen(
+    modifier: Modifier = Modifier,
     onNavigateUp: () -> Unit = {}
 ) {
     val sheetState = rememberModalBottomSheetState()
@@ -79,7 +80,7 @@ fun DownloadMovieScreen(
     var pendingDeleteMovie by remember { mutableStateOf<Int?>(null) }
 
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize()
     ) {
         Column(
             modifier = Modifier

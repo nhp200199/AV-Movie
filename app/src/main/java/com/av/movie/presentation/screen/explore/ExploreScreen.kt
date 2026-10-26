@@ -58,7 +58,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.av.movie.dataTest.MODEL_POPULAR_MOVIES
 import com.av.movie.domain.model.Movie
-import com.av.movie.presentation.screen.home.MovieItem
+import com.av.movie.presentation.components.MovieItem
 
 @Composable
 fun ExploreScreenVM(
@@ -93,7 +93,7 @@ fun ExploreScreen(
             .fillMaxSize()
     ) {
         Column(
-            modifier = modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
         ) {
             ExploreToolBar(
                 onMovieSearch = onMovieSearch,

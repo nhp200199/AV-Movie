@@ -4,7 +4,7 @@ import com.av.movie.data.model.CreditsDTO
 import com.av.movie.domain.model.Credit
 import javax.inject.Inject
 
-class CreditDTO2Credit @Inject constructor() : Mapper<CreditsDTO, List<Credit>> {
+class CreditDTO2Credit @Inject constructor() : Mapper<CreditsDTO, @JvmSuppressWildcards List<Credit>> {
     override fun map(input: CreditsDTO): List<Credit> {
         return input.cast.map {
             Credit(

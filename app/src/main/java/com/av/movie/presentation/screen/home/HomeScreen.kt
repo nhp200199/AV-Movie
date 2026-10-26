@@ -1,7 +1,6 @@
 package com.av.movie.presentation.screen.home
 
 import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -17,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
@@ -27,19 +25,12 @@ import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -52,7 +43,6 @@ import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -62,9 +52,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.av.avmovie.R
-import com.av.movie.core.utils.getFullBackdropPath
 import com.av.movie.core.utils.getFullPosterPath
 import com.av.movie.dataTest.ALL_GENRES
 import com.av.movie.dataTest.GLADIATOR_II
@@ -72,34 +62,31 @@ import com.av.movie.dataTest.MODEL_POPULAR_MOVIES
 import com.av.movie.domain.model.Category
 import com.av.movie.domain.model.Genre
 import com.av.movie.domain.model.Movie
-import com.av.movie.presentation.screen.home.viewmodel.HomeData
-import com.av.movie.presentation.screen.home.viewmodel.HomeUiState
-import com.av.movie.presentation.screen.home.viewmodel.HomeViewModel
+import com.av.movie.presentation.components.MovieAction
+import com.av.movie.presentation.components.MovieInfo
+import com.av.movie.presentation.components.MovieItem
 import com.av.movie.ui.theme.Blue90
 import com.av.movie.ui.theme.Cyan90
 import com.av.movie.ui.theme.LightGrey30
-import com.av.movie.ui.theme.White
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.math.BigDecimal
-import java.math.RoundingMode
 
 @Composable
-fun MyHomeScreenVM(
+fun HomeScreenVM(
     viewModel: HomeViewModel = hiltViewModel(),
     onNavigateToCategoryDetail: (category: Category) -> Unit,
     onNavigateToMovieDetail: (id: Int) -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) {
         viewModel.getInitialData()
     }
 
     LaunchedEffect(uiState) {
-        Log.d("PhucNguyen", "MyHomeScreen: $uiState")
+        Log.d("PhucNguyen", "HomeScreen: $uiState")
     }
 
-    MyHomeScreen(
+    HomeScreen(
         uiState = uiState,
         onNavigateToCategoryDetail = onNavigateToCategoryDetail,
         onNavigateToMovieDetail = onNavigateToMovieDetail
@@ -107,13 +94,14 @@ fun MyHomeScreenVM(
 }
 
 @Composable
-fun MyHomeScreen(
+fun HomeScreen(
     uiState: HomeUiState,
     onNavigateToCategoryDetail: (category: Category) -> Unit,
-    onNavigateToMovieDetail: (id: Int) -> Unit
+    onNavigateToMovieDetail: (id: Int) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     LazyColumn(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
     ) {
         item {
@@ -167,7 +155,8 @@ fun Genres(
             fontSize = 16.sp,
             color = Color.White,
             text = "Categories",
-            fontWeight = FontWeight.SemiBold)
+            fontWeight = FontWeight.SemiBold
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -204,9 +193,9 @@ fun Genres(
 
 @Composable
 fun MovieCarousel(
-    modifier: Modifier = Modifier,
     movies: List<Movie>,
-    onNavigateToMovieDetail: (id: Int) -> Unit
+    onNavigateToMovieDetail: (id: Int) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val listState = rememberLazyListState()
     val pagerState = rememberPagerState(pageCount = { movies.size })
@@ -234,7 +223,6 @@ fun MovieCarousel(
             listState.animateScrollToItem(page)
         }
     }
-
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -282,9 +270,9 @@ fun MovieCarousel(
 
 @Composable
 fun PopularMovie(
-    modifier: Modifier = Modifier,
     movie: Movie,
-    onNavigateToMovieDetail: (id: Int) -> Unit
+    onNavigateToMovieDetail: (id: Int) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Box(
         modifier = modifier
@@ -325,87 +313,12 @@ fun PopularMovie(
 }
 
 @Composable
-fun MovieInfo(avgRating: Double, title: String) {
-    Column {
-        Row {
-            RatingChip(rating = avgRating)
-        }
-        Text(
-            title,
-            color = White,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.SemiBold
-        )
-    }
-}
-
-@Composable
-fun MovieAction(isFavorite: Boolean) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        val colors = listOf(
-            Cyan90,
-            Blue90
-        )
-
-        Button(
-            modifier = Modifier
-                .background(
-                    brush = Brush.linearGradient(colors),
-                    shape = ButtonDefaults.shape
-                )
-                .width(150.dp)
-                .height(ButtonDefaults.MinHeight),
-            onClick = {},
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Transparent,
-            )
-        ) {
-            Text("Watch Now")
-        }
-        Spacer(modifier = Modifier.width(24.dp))
-        Button(
-            onClick = {},
-            modifier = Modifier
-                .size(40.dp),
-            shape = CircleShape,
-            contentPadding = PaddingValues(0.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = LightGrey30
-            )
-
-        ) {
-            val brush = Brush.linearGradient(listOf(
-                Cyan90,
-                Blue90
-            ))
-
-            Icon(
-                contentDescription =
-                    if (isFavorite) "Favorite" else "Not Favorite",
-                modifier = Modifier
-                    .graphicsLayer(alpha = 0.99f)
-                    .drawWithCache {
-                        onDrawWithContent {
-                            drawContent()
-                            drawRect(brush, blendMode = BlendMode.SrcAtop)
-                        }
-                    },
-                imageVector =
-                    if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-            )
-        }
-    }
-}
-
-@Composable
 fun Category(
     name: String,
     movies: List<Movie>,
-    modifier: Modifier = Modifier,
     onNavigateToCategoryDetail: (category: Category) -> Unit,
-    onNavigateToMovieDetail: (id: Int) -> Unit
+    onNavigateToMovieDetail: (id: Int) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
         Row(
@@ -416,16 +329,17 @@ fun Category(
             Text(fontSize = 16.sp, color = Color.White, text = name, fontWeight = FontWeight.SemiBold)
             TextButton(
                 onClick = { onNavigateToCategoryDetail(Category.POPULAR) },
-                colors = ButtonDefaults.textButtonColors(
-
-                )
+                colors = ButtonDefaults.textButtonColors()
             ) {
-                val brush = Brush.linearGradient(listOf(
-                    Cyan90,
-                    Blue90
-                ))
+                val brush = Brush.linearGradient(
+                    listOf(
+                        Cyan90,
+                        Blue90
+                    )
+                )
 
-                Text(text = "See all",
+                Text(
+                    text = "See all",
                     style = TextStyle(
                         brush = brush
                     )
@@ -454,9 +368,9 @@ fun Category(
 fun MovieCategory(
     category: Category,
     movies: List<Movie>,
-    modifier: Modifier = Modifier,
     onNavigateToCategoryDetail: (category: Category) -> Unit,
-    onNavigateToMovieDetail: (id: Int) -> Unit
+    onNavigateToMovieDetail: (id: Int) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
         Row(
@@ -467,16 +381,17 @@ fun MovieCategory(
             Text(fontSize = 16.sp, color = Color.White, text = category.categoryName, fontWeight = FontWeight.SemiBold)
             TextButton(
                 onClick = { onNavigateToCategoryDetail(category) },
-                colors = ButtonDefaults.textButtonColors(
-
-                )
+                colors = ButtonDefaults.textButtonColors()
             ) {
-                val brush = Brush.linearGradient(listOf(
-                    Cyan90,
-                    Blue90
-                ))
+                val brush = Brush.linearGradient(
+                    listOf(
+                        Cyan90,
+                        Blue90
+                    )
+                )
 
-                Text(text = "See all",
+                Text(
+                    text = "See all",
                     style = TextStyle(
                         brush = brush
                     )
@@ -502,113 +417,23 @@ fun MovieCategory(
     }
 }
 
-@Composable
-fun MovieItem(
-    movie: Movie,
-    modifier: Modifier = Modifier,
-    isBackdrop: Boolean = false,
-    onNavigateToMovieDetail: (id: Int) -> Unit = {}
-) {
-    Column(
-        modifier = modifier
-            .clickable { onNavigateToMovieDetail(movie.id) },
-    ) {
-        Box {
-            AsyncImage(
-                model = if (isBackdrop) getFullBackdropPath(movie.backdropPath)
-                    else getFullPosterPath(movie.posterPath),
-                placeholder = painterResource(id = R.drawable.ic_launcher_background),
-                error = painterResource(id = R.drawable.ic_launcher_background),
-                contentDescription = movie.title,
-                contentScale = ContentScale.FillWidth,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(8.dp))
-            )
-            Box(
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .padding(start = 8.dp, top = 8.dp)
-            ) {
-                RatingChip(rating = movie.voteAverage)
-            }
-
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        //only show text for horizontal images movie
-        if (isBackdrop)
-            Text(fontSize = 14.sp, color = Color.White, text = movie.title)
-    }
-}
-
-@Composable
-fun RatingChip(
-    rating: Double,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-            .background(
-                color = White.copy(alpha = 0.5f),
-                shape = RoundedCornerShape(8.dp),
-            )
-            .padding(4.dp)
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.pngwing),
-            contentDescription = null,
-            modifier = Modifier.width(36.dp),
-            contentScale = ContentScale.FillWidth
-        )
-        Spacer(modifier = Modifier.width(4.dp))
-        Text(text = BigDecimal(rating)
-            .setScale(1, RoundingMode.HALF_UP)
-            .toDouble()
-            .toString()
-        )
-    }
-}
-
 //---PREVIEW
 @Preview(showBackground = true)
 @Composable
-fun MovieItemPreview() {
-    MovieItem(movie = GLADIATOR_II, modifier = Modifier.width(110.dp))
-}
-
-@Preview(showBackground = true)
-@Composable
-fun MyHomeScreenPreview() {
-    MyHomeScreen(
+fun HomeScreenPreview() {
+    HomeScreen(
         uiState = HomeUiState.Success(HomeData(nowPlayingMovies = MODEL_POPULAR_MOVIES)),
         onNavigateToMovieDetail = {},
         onNavigateToCategoryDetail = {}
     )
 }
 
-@Preview(showBackground = true)
-@Composable
-fun MovieActionPreview() {
-    MovieAction(isFavorite = true)
-}
-
-@Preview()
-@Composable
-fun MovieInfoPreview() {
-    MovieInfo(
-        GLADIATOR_II.voteAverage,
-        GLADIATOR_II.title
-    )
-}
-
-@Preview()
+@Preview
 @Composable
 fun PopularMoviePreview() {
     PopularMovie(
         modifier = Modifier.fillMaxSize(),
-        movie = GLADIATOR_II
-    ) {}
+        movie = GLADIATOR_II,
+        onNavigateToMovieDetail = {}
+    )
 }

@@ -43,4 +43,3 @@ object FavouritesNested
 
 @Serializable
 data class MovieDetail(val id: Int)
-

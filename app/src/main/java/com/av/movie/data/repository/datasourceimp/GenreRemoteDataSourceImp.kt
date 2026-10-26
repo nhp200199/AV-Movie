@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class GenreRemoteDataSourceImp @Inject constructor(
     private val genreApi: GenreApi,
-    genreDTO2Genre: Mapper<GenreDTO, List<Genre>>
+    genreDTO2Genre: Mapper<GenreDTO, @JvmSuppressWildcards List<Genre>>
 ) : BaseRemoteDataSource<GenreDTO, List<Genre>>(genreDTO2Genre),
     GenreRemoteDataSource {
 
