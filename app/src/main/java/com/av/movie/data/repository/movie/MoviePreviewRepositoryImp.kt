@@ -1,14 +1,13 @@
 package com.av.movie.data.repository.movie
 
-import com.av.movie.data.datasource.remote.movie.IMoviePreviewRemoteDataSource
-import com.av.movie.data.model.MoviePreviewDTO
 import com.av.movie.data.model.ResultData
+import com.av.movie.data.repository.datasource.MoviePreviewRemoteDataSource
 import com.av.movie.domain.model.Movie
 import com.av.movie.domain.repository.movie.MoviePreviewRepository
 import javax.inject.Inject
 
 class MoviePreviewRepositoryImp @Inject constructor(
-    private val movieListDataSource: IMoviePreviewRemoteDataSource<MoviePreviewDTO, Movie>
+    private val movieListDataSource: MoviePreviewRemoteDataSource
 ) : MoviePreviewRepository {
     private val moviePreviews: MutableSet<Movie> = mutableSetOf()
 
