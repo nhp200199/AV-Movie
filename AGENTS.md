@@ -50,13 +50,14 @@ app/src/main/java/com/av/movie/
   - Repository interfaces: `domain.repository.*` (e.g., `MovieRepository.kt`)
   - UseCases: `domain.usecase.*`
 
-#### 2. `data` (Data Source & Implementation)
+#### 2. `data` (Data & Implementation)
 - Implements repository interfaces defined in `domain`.
 - Contains:
-  - Feature-specific Retrofit API interfaces: `data.api.*` (e.g., `MovieApi.kt`)
-  - Remote/Local Data Sources: `data.repository.datasource.*` and implementations in `...datasourceimp.*`
-  - Repository Implementations: `data.repository.*` (e.g., `MovieRepositoryImp.kt`)
-  - DTOs and Data models.
+  - Feature-specific Retrofit API interfaces: `data.api.*` (e.g., `MoviePreviewApi.kt`)
+  - Repository Implementations: `data.repository.*` (e.g., `MoviePreviewRepositoryImp.kt`)
+  - Mappers: `data.mapper.*`
+  - DTOs and Data models: `data.model.*`
+- **Direct API & Mapping:** Repositories directly inject Retrofit API interfaces and Mappers, avoiding redundant DataSource abstraction layers.
 - **Data Mapping Rule:** All network response DTOs must be mapped into clean domain models before emitting data back to the callers.
 
 #### 3. `core` (Infrastructure Setup & Utilities)
@@ -70,7 +71,7 @@ app/src/main/java/com/av/movie/
 #### 4. `presentation` & `di` (UI, State & Dependency Injection)
 - Contains:
   - Presentation layer: `presentation.screen.*`, `presentation.navigation.*`, `presentation.components.*`
-  - DI Modules: `di.*` (`NetworkModule`, `RepositoryModule`, `RemoteDataModule`, `UseCaseModule`)
+  - DI Modules: `di.*` (`NetworkModule`, `RepositoryModule`, `MapperModule`, `UseCaseModule`)
   - Application class (`AVMovieApplication.kt`) and root Activity (`MainActivity.kt`).
 
 ---
@@ -142,7 +143,6 @@ All screens must strictly adhere to the **MVVM (Model-View-ViewModel)** architec
 - **Navigation:** Under `presentation/navigation/` (e.g., `NavGraph.kt`, `Screen.kt`)
 - **Repository Interface:** `[Entity]Repository.kt` (located in `domain.repository`)
 - **Repository Implementation:** `[Entity]RepositoryImp.kt` (located in `data.repository`)
-- **Data Sources:** `[Entity]RemoteDataSource.kt` and `[Entity]RemoteDataSourceImp.kt`
 
 ---
 

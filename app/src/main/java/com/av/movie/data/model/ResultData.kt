@@ -13,3 +13,11 @@ sealed class ResultData<out T: Any, out E: Any> {
         }
     }
 }
+
+inline fun <T : Any, R : Any, E : Any> ResultData<T, E>.map(transform: (T) -> R): ResultData<R, E> {
+    return when (this) {
+        is ResultData.Success -> ResultData.Success(transform(data))
+        is ResultData.ApiError -> ResultData.ApiError(body)
+        is ResultData.OperationError -> ResultData.OperationError(exception)
+    }
+}
