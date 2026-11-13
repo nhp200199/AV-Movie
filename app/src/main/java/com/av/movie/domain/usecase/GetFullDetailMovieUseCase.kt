@@ -5,10 +5,7 @@ import com.av.movie.domain.model.Cast
 import com.av.movie.domain.model.Movie
 import com.av.movie.domain.model.MovieDetail
 import com.av.movie.domain.model.Video
-import com.av.movie.domain.repository.movie.MovieDetailRepository
-import com.av.movie.domain.repository.movie.MoviePreviewRepository
-import com.av.movie.domain.repository.movie.cast.MovieCastRepository
-import com.av.movie.domain.repository.movie.video.VideoRepository
+import com.av.movie.domain.repository.MovieRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
@@ -21,17 +18,14 @@ data class FullDetailMovie(
 )
 
 class GetFullDetailMovieUseCase @Inject constructor(
-    private val movieCastRepository: MovieCastRepository,
-    private val videoRepository: VideoRepository,
-    private val moviePreviewRepository: MoviePreviewRepository,
-    private val movieDetailRepository: MovieDetailRepository
+    private val movieRepository: MovieRepository
 ) {
     suspend operator fun invoke(id: Int): ResultData<FullDetailMovie, Nothing> {
         return coroutineScope {
-            val movieDetailResult = async { movieDetailRepository.getDetail(id) }
-            val castsResult = async { movieCastRepository.getCastForMovie(id) }
-            val videosResult = async { videoRepository.getVideoForMovie(id) }
-            val recommendationsResult = async { moviePreviewRepository.getRecommendationsForMovie(id) }
+            val movieDetailResult = async { movieRepository.getMovieDetail(id) }
+            val castsResult = async { movieRepository.getCastForMovie(id) }
+            val videosResult = async { movieRepository.getVideoForMovie(id) }
+            val recommendationsResult = async { movieRepository.getRecommendationsForMovie(id) }
 
             val movieDetail = movieDetailResult.await()
             val casts = castsResult.await()

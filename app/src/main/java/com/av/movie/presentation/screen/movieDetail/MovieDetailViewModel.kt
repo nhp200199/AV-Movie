@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.av.movie.data.model.ResultData
 import com.av.movie.domain.model.Movie
 import com.av.movie.domain.model.MovieDetail
-import com.av.movie.domain.repository.movie.MoviePreviewRepository
+import com.av.movie.domain.repository.MovieRepository
 import com.av.movie.domain.usecase.FullDetailMovie
 import com.av.movie.domain.usecase.GetFullDetailMovieUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,13 +24,13 @@ sealed class MovieDetailUiState(val data: FullDetailMovie?) {
 @HiltViewModel
 class MovieDetailViewModel @Inject constructor(
     private val getFullDetailMovieUseCase: GetFullDetailMovieUseCase,
-    private val moviePreviewRepository: MoviePreviewRepository
+    private val movieRepository: MovieRepository
 ) : ViewModel() {
     private val _detailMovieState = MutableStateFlow<MovieDetailUiState>(MovieDetailUiState.Initial)
     val detailMovieState = _detailMovieState.asStateFlow()
 
     fun loadMovieDetail(id: Int) {
-        val cacheMovie = moviePreviewRepository.getMoviePreview(id)?.let {
+        val cacheMovie = movieRepository.getMoviePreview(id)?.let {
             convertToFullDetailMovie(it)
         }
         _detailMovieState.value = MovieDetailUiState.Loading(cacheMovie)

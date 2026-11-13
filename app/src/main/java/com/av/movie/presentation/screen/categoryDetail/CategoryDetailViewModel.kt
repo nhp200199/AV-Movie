@@ -9,7 +9,7 @@ import androidx.paging.cachedIn
 import com.av.movie.data.paging.MoviePagingSource
 import com.av.movie.domain.model.Category
 import com.av.movie.domain.model.Movie
-import com.av.movie.domain.repository.movie.MoviePreviewRepository
+import com.av.movie.domain.repository.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.filterNotNull
@@ -27,7 +27,7 @@ sealed class CategoryUIState {
 @HiltViewModel
 class CategoryDetailViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
-    private val moviePreviewRepository: MoviePreviewRepository,
+    private val movieRepository: MovieRepository,
 ): ViewModel() {
     private val _category = savedStateHandle.getStateFlow<Category?>("category", null)
 
@@ -35,7 +35,7 @@ class CategoryDetailViewModel @Inject constructor(
         .flatMapLatest {
             Pager(
                 config = PagingConfig(pageSize = 10),
-                pagingSourceFactory = { MoviePagingSource(moviePreviewRepository, it) }
+                pagingSourceFactory = { MoviePagingSource(movieRepository, it) }
             )
                 .flow
                 .cachedIn(viewModelScope)

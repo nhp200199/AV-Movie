@@ -9,7 +9,7 @@ import com.av.movie.core.utils.parseDateString
 import com.av.movie.data.model.ResultData
 import com.av.movie.domain.model.Genre
 import com.av.movie.domain.model.Movie
-import com.av.movie.domain.repository.movie.MoviePreviewRepository
+import com.av.movie.domain.repository.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -43,7 +43,7 @@ const val SAVED_STATE_QUERY = "SAVED_QUERY"
 
 @HiltViewModel
 class ExploreViewModel @Inject constructor(
-    private val movieRepository: MoviePreviewRepository,
+    private val movieRepository: MovieRepository,
     private val savedStateHandle: SavedStateHandle
 ): ViewModel() {
     private val _searchUiState = MutableStateFlow<SearchUiState>(SearchUiState.Initial)

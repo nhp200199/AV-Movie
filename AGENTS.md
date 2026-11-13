@@ -53,8 +53,8 @@ app/src/main/java/com/av/movie/
 #### 2. `data` (Data & Implementation)
 - Implements repository interfaces defined in `domain`.
 - Contains:
-  - Feature-specific Retrofit API interfaces: `data.api.*` (e.g., `MoviePreviewApi.kt`)
-  - Repository Implementations: `data.repository.*` (e.g., `MoviePreviewRepositoryImp.kt`)
+  - Feature-specific Retrofit API interfaces: `data.api.*` (e.g., `MovieApi.kt`, `ActorApi.kt`)
+  - Repository Implementations: `data.repository.*` (e.g., `MovieRepositoryImp.kt`, `ActorRepositoryImp.kt`)
   - Mappers: `data.mapper.*`
   - DTOs and Data models: `data.model.*`
 - **Direct API & Mapping:** Repositories directly inject Retrofit API interfaces and Mappers, avoiding redundant DataSource abstraction layers.

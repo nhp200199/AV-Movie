@@ -5,8 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.av.movie.data.model.ResultData
 import com.av.movie.domain.model.Genre
 import com.av.movie.domain.model.Movie
-import com.av.movie.domain.repository.genre.GenreRepository
-import com.av.movie.domain.repository.movie.MoviePreviewRepository
+import com.av.movie.domain.repository.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,8 +32,7 @@ sealed class HomeUiState {
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val movieListRepository: MoviePreviewRepository,
-    private val genreRepository: GenreRepository
+    private val movieRepository: MovieRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Initial)
     val uiState: StateFlow<HomeUiState> = _uiState
@@ -54,11 +52,11 @@ class HomeViewModel @Inject constructor(
         _uiState.value = HomeUiState.Loading
 
         val popularMoviesDeferred = viewModelScope.async {
-            movieListRepository.getPopularMovies()
+            movieRepository.getPopularMovies()
         }
-        val nowPlayingMoviesDeferred = viewModelScope.async { movieListRepository.getNowPlayingMovies() }
-        val genreDeferred = viewModelScope.async { genreRepository.getAllGenres() }
-        val topRatedMoviesDeferred = viewModelScope.async { movieListRepository.getTopRatedMovies() }
+        val nowPlayingMoviesDeferred = viewModelScope.async { movieRepository.getNowPlayingMovies() }
+        val genreDeferred = viewModelScope.async { movieRepository.getMovieGenres() }
+        val topRatedMoviesDeferred = viewModelScope.async { movieRepository.getTopRatedMovies() }
 
         viewModelScope.launch {
             val nowPlayingMoviesResult = nowPlayingMoviesDeferred.await()
