@@ -8,35 +8,44 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = BrandPrimary,
+    secondary = BrandSecondary,
+    tertiary = Cyan90,
+    background = DarkBackground,
+    surface = DarkSurface,
+    surfaceVariant = DarkSurfaceSecondary,
+    onPrimary = Color.White,
+    onSecondary = Color.White,
+    onBackground = DarkTextPrimary,
+    onSurface = DarkTextPrimary,
+    onSurfaceVariant = DarkTextSecondary,
+    outline = DarkDivider
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
+    primary = BrandPrimary,
+    secondary = BrandSecondary,
+    tertiary = Blue90,
+    background = LightBackground,
+    surface = LightSurface,
+    surfaceVariant = LightSurfaceSecondary,
     onPrimary = Color.White,
     onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    onBackground = LightTextPrimary,
+    onSurface = LightTextPrimary,
+    onSurfaceVariant = LightTextSecondary,
+    outline = LightDivider
 )
 
 @Composable
 fun AVMovieTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    // Mặc định false để giữ màu sắc nhận diện thương hiệu của ứng dụng thay vì lấy theo hình nền máy (Material You)
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -44,7 +53,6 @@ fun AVMovieTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
