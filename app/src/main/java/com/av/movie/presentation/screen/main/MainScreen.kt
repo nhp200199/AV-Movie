@@ -1,6 +1,8 @@
 package com.av.movie.presentation.screen.main
 
 import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -83,23 +85,31 @@ fun MainScreen(
 ) {
     val systemUiController = rememberSystemUiController()
     val systemBarColor = MaterialTheme.colorScheme.primary
+    val navHostController = rememberNavController()
+    val navBackStackEntry by navHostController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+    val isHomeDestination = currentDestination == null || currentDestination.hasRoute<Home>()
 
     SideEffect {
-        systemUiController.setSystemBarsColor(color = systemBarColor)
+        systemUiController.setStatusBarColor(
+            color = if (isHomeDestination) Color.Transparent else systemBarColor,
+            darkIcons = false
+        )
+        systemUiController.setNavigationBarColor(
+            color = Grey10,
+            darkIcons = false
+        )
     }
-
-    val navHostController = rememberNavController()
 
     Scaffold(
         containerColor = Grey10,
         bottomBar = {
             BottomNavigation(
                 backgroundColor = Grey10,
+                modifier = Modifier
+                    .background(Grey10)
+                    .navigationBarsPadding()
             ) {
-                val navBackStackEntry
-                        by navHostController.currentBackStackEntryAsState()
-                val currentDestination = navBackStackEntry?.destination
-
                 val currentRoute = currentDestination?.route
 
                 Log.d("TAG", "MainScreen: $currentRoute")
@@ -158,10 +168,15 @@ fun MainScreen(
             }
         }
     ) { innerPadding ->
+        val navHostModifier = if (isHomeDestination) {
+            Modifier.padding(bottom = innerPadding.calculateBottomPadding())
+        } else {
+            Modifier.padding(innerPadding)
+        }
         NavHost(
             navController = navHostController,
             startDestination = NestedHome,
-            Modifier.padding(innerPadding)
+            modifier = navHostModifier
         ) {
 
             navigation<NestedHome>(startDestination = Home) {

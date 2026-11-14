@@ -2,6 +2,7 @@ package com.av.movie.presentation.screen.home
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
@@ -25,22 +27,29 @@ import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -48,6 +57,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -62,12 +72,14 @@ import com.av.movie.dataTest.MODEL_POPULAR_MOVIES
 import com.av.movie.domain.model.Category
 import com.av.movie.domain.model.Genre
 import com.av.movie.domain.model.Movie
-import com.av.movie.presentation.components.MovieAction
-import com.av.movie.presentation.components.MovieInfo
 import com.av.movie.presentation.components.MovieItem
+import com.av.movie.presentation.components.RatingChip
 import com.av.movie.ui.theme.Blue90
+import com.av.movie.ui.theme.BrandGradient
 import com.av.movie.ui.theme.Cyan90
+import com.av.movie.ui.theme.Grey10
 import com.av.movie.ui.theme.LightGrey30
+import com.av.movie.ui.theme.White
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -103,6 +115,7 @@ fun HomeScreen(
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
+            .background(Grey10)
     ) {
         item {
             MovieCarousel(
@@ -208,8 +221,8 @@ fun MovieCarousel(
     // Stop auto-advancing when pager is dragged or one of the pages is pressed
     val autoAdvance = !pagerIsDragged && !pageIsPressed
 
-    if (autoAdvance) {
-        LaunchedEffect(pagerState, pageInteractionSource) {
+    if (autoAdvance && movies.isNotEmpty()) {
+        LaunchedEffect(pagerState, pageInteractionSource, movies.size) {
             while (true) {
                 delay(2000)
                 val nextPage = (pagerState.currentPage + 1) % movies.size
@@ -272,29 +285,48 @@ fun MovieCarousel(
 fun PopularMovie(
     movie: Movie,
     onNavigateToMovieDetail: (id: Int) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onMyListClick: (Movie) -> Unit = {}
 ) {
+    var isInMyList by remember(movie.id, movie.isFavorite) { mutableStateOf(movie.isFavorite) }
+
     Box(
         modifier = modifier
+            .fillMaxWidth()
+            .height(430.dp)
             .clickable { onNavigateToMovieDetail(movie.id) }
     ) {
         AsyncImage(
             model = getFullPosterPath(movie.posterPath),
             contentDescription = movie.title,
+            alignment = Alignment.TopCenter,
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .drawWithCache {
-                    val gradient = Brush.verticalGradient(
-                        colors = listOf(Color.Transparent, Color.Black),
-                        startY = size.height / 3,
+                    val topGradient = Brush.verticalGradient(
+                        colors = listOf(
+                            Grey10.copy(alpha = 0.45f),
+                            Color.Transparent
+                        ),
+                        startY = 0f,
+                        endY = size.height * 0.22f
+                    )
+                    val bottomGradient = Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            Grey10.copy(alpha = 0.75f),
+                            Grey10
+                        ),
+                        startY = size.height * 0.35f,
                         endY = size.height
                     )
                     onDrawWithContent {
                         drawContent()
-                        drawRect(gradient, blendMode = BlendMode.Multiply)
+                        drawRect(topGradient)
+                        drawRect(bottomGradient)
                     }
                 },
-            contentScale = ContentScale.FillWidth,
+            contentScale = ContentScale.Crop,
             error = painterResource(id = R.drawable.ic_launcher_background),
             placeholder = painterResource(id = R.drawable.ic_launcher_background)
         )
@@ -303,11 +335,104 @@ fun PopularMovie(
             verticalArrangement = Arrangement.Bottom,
             modifier = Modifier
                 .align(Alignment.BottomStart)
-                .padding(start = 8.dp)
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 20.dp)
         ) {
-            MovieInfo(movie.voteAverage, movie.title)
-            Spacer(Modifier.height(16.dp))
-            MovieAction(movie.isFavorite)
+            RatingChip(rating = movie.voteAverage)
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Text(
+                text = movie.title,
+                color = White,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            HomeHeroActions(
+                isFavorite = isInMyList,
+                onPlayClick = { onNavigateToMovieDetail(movie.id) },
+                onMyListClick = {
+                    isInMyList = !isInMyList
+                    onMyListClick(movie)
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun HomeHeroActions(
+    isFavorite: Boolean,
+    onPlayClick: () -> Unit,
+    onMyListClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .height(40.dp)
+                .clip(CircleShape)
+                .background(brush = BrandGradient)
+                .clickable(onClick = onPlayClick)
+                .padding(horizontal = 20.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(18.dp)
+                    .background(color = White, shape = CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.PlayArrow,
+                    contentDescription = null,
+                    tint = Blue90,
+                    modifier = Modifier.size(13.dp)
+                )
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = "Play",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = White
+            )
+        }
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .height(40.dp)
+                .clip(CircleShape)
+                .background(color = Color.Black.copy(alpha = 0.25f))
+                .border(width = 1.5.dp, color = White, shape = CircleShape)
+                .clickable(onClick = onMyListClick)
+                .padding(horizontal = 20.dp)
+        ) {
+            Icon(
+                imageVector = if (isFavorite) Icons.Filled.Check else Icons.Filled.Add,
+                contentDescription = if (isFavorite) "Added to My List" else "Add to My List",
+                tint = White,
+                modifier = Modifier.size(18.dp)
+            )
+            Spacer(modifier = Modifier.width(6.dp))
+            Text(
+                text = "My List",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = White
+            )
         }
     }
 }
@@ -432,7 +557,7 @@ fun HomeScreenPreview() {
 @Composable
 fun PopularMoviePreview() {
     PopularMovie(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxWidth(),
         movie = GLADIATOR_II,
         onNavigateToMovieDetail = {}
     )
