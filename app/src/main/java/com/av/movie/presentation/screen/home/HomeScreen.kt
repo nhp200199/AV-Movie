@@ -1,9 +1,14 @@
 package com.av.movie.presentation.screen.home
 
 import android.util.Log
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -21,6 +26,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
@@ -40,6 +46,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -62,7 +69,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import coil3.compose.AsyncImage
 import com.av.avmovie.R
 import com.av.movie.core.utils.getFullPosterPath
@@ -80,8 +90,17 @@ import com.av.movie.ui.theme.Cyan90
 import com.av.movie.ui.theme.Grey10
 import com.av.movie.ui.theme.LightGrey30
 import com.av.movie.ui.theme.White
+import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+
+private const val HOME_CAROUSEL_ENTRY_DELAY_MS = 500L
+private const val CAROUSEL_AUTO_ADVANCE_DELAY_MS = 3000L
+private const val CAROUSEL_PAGE_ANIMATION_MS = 650
+private const val THUMBNAIL_SCROLL_ANIMATION_MS = 650
+private const val THUMBNAIL_MIN_VISIBLE_RATIO = 0.7f
 
 @Composable
 fun HomeScreenVM(
@@ -91,7 +110,9 @@ fun HomeScreenVM(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) {
-        viewModel.getInitialData()
+        if (uiState is HomeUiState.Initial || uiState is HomeUiState.Error) {
+            viewModel.getInitialData()
+        }
     }
 
     LaunchedEffect(uiState) {
@@ -210,44 +231,92 @@ fun MovieCarousel(
     onNavigateToMovieDetail: (id: Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    if (movies.isEmpty()) return
+
     val listState = rememberLazyListState()
-    val pagerState = rememberPagerState(pageCount = { movies.size })
+    val isLooping = movies.size > 1
+    val initialPage = remember(movies.size) {
+        if (isLooping) {
+            val middle = Int.MAX_VALUE / 2
+            middle - (middle % movies.size)
+        } else {
+            0
+        }
+    }
+    val pagerState = rememberPagerState(
+        initialPage = initialPage,
+        pageCount = { if (isLooping) Int.MAX_VALUE else movies.size }
+    )
 
     val pagerIsDragged by pagerState.interactionSource.collectIsDraggedAsState()
-
     val pageInteractionSource = remember { MutableInteractionSource() }
     val pageIsPressed by pageInteractionSource.collectIsPressedAsState()
 
-    // Stop auto-advancing when pager is dragged or one of the pages is pressed
-    val autoAdvance = !pagerIsDragged && !pageIsPressed
+    val lifecycleOwner = LocalLifecycleOwner.current
+    var isHomeResumedReady by remember { mutableStateOf(false) }
 
-    if (autoAdvance && movies.isNotEmpty()) {
-        LaunchedEffect(pagerState, pageInteractionSource, movies.size) {
-            while (true) {
-                delay(2000)
-                val nextPage = (pagerState.currentPage + 1) % movies.size
-                pagerState.animateScrollToPage(nextPage)
+    // Cancel active carousel work immediately when leaving RESUMED, and wait 500ms on entry/return.
+    LaunchedEffect(lifecycleOwner) {
+        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            isHomeResumedReady = false
+            delay(HOME_CAROUSEL_ENTRY_DELAY_MS)
+            isHomeResumedReady = true
+            try {
+                awaitCancellation()
+            } finally {
+                isHomeResumedReady = false
             }
         }
     }
 
-    LaunchedEffect(pagerState) {
-        snapshotFlow { pagerState.settledPage }.collect { page ->
-            listState.animateScrollToItem(page)
+    val autoAdvance = isHomeResumedReady && !pagerIsDragged && !pageIsPressed && isLooping
+    var autoAdvanceResetKey by remember { mutableIntStateOf(0) }
+    val pageTransitionSpec = remember {
+        tween<Float>(
+            durationMillis = CAROUSEL_PAGE_ANIMATION_MS,
+            easing = FastOutSlowInEasing
+        )
+    }
+
+    if (autoAdvance) {
+        LaunchedEffect(pagerState, movies.size, autoAdvanceResetKey) {
+            while (true) {
+                if (pagerState.isScrollInProgress) {
+                    snapshotFlow { pagerState.isScrollInProgress }.first { !it }
+                }
+                delay(CAROUSEL_AUTO_ADVANCE_DELAY_MS)
+                pagerState.animateScrollToPage(
+                    page = pagerState.currentPage + 1,
+                    animationSpec = pageTransitionSpec
+                )
+            }
+        }
+    }
+
+    if (isHomeResumedReady) {
+        LaunchedEffect(pagerState, movies.size) {
+            snapshotFlow { pagerState.targetPage % movies.size }.collectLatest { targetIndex ->
+                ensureThumbnailVisible(listState = listState, targetIndex = targetIndex)
+            }
         }
     }
 
     val coroutineScope = rememberCoroutineScope()
+    val actualCurrentPage = pagerState.currentPage % movies.size
 
     Column(
         modifier = modifier
     ) {
         HorizontalPager(
             state = pagerState,
+            beyondViewportPageCount = 1,
+            key = { page -> "${movies[page % movies.size].id}_$page" }
         ) { page ->
+            val movie = movies[page % movies.size]
             PopularMovie(
-                movie = movies[page],
-                onNavigateToMovieDetail = onNavigateToMovieDetail
+                movie = movie,
+                onNavigateToMovieDetail = onNavigateToMovieDetail,
+                interactionSource = pageInteractionSource
             )
         }
 
@@ -260,6 +329,12 @@ fun MovieCarousel(
                 count = movies.size,
                 key = { movies[it].id }
             ) { idx ->
+                val isSelected = actualCurrentPage == idx
+                val thumbnailAlpha by animateFloatAsState(
+                    targetValue = if (isSelected) 1f else 0.35f,
+                    animationSpec = tween(durationMillis = 300),
+                    label = "thumbnailAlpha"
+                )
                 AsyncImage(
                     model = getFullPosterPath(movies[idx].posterPath),
                     contentDescription = null,
@@ -267,10 +342,19 @@ fun MovieCarousel(
                         .clip(RoundedCornerShape(8.dp))
                         .width(125.dp)
                         .height(50.dp)
-                        .alpha(if (pagerState.currentPage == idx) 1f else 0.3f)
+                        .alpha(thumbnailAlpha)
                         .clickable {
+                            autoAdvanceResetKey++
                             coroutineScope.launch {
-                                pagerState.animateScrollToPage(idx)
+                                val targetPage = if (isLooping) {
+                                    pagerState.currentPage + (idx - actualCurrentPage)
+                                } else {
+                                    idx
+                                }
+                                pagerState.animateScrollToPage(
+                                    page = targetPage,
+                                    animationSpec = pageTransitionSpec
+                                )
                             }
                         },
                     contentScale = ContentScale.Crop,
@@ -281,11 +365,48 @@ fun MovieCarousel(
     }
 }
 
+private suspend fun ensureThumbnailVisible(
+    listState: LazyListState,
+    targetIndex: Int
+) {
+    val layoutInfo = listState.layoutInfo
+    val anchor = layoutInfo.visibleItemsInfo.firstOrNull() ?: return
+    val itemInfo = layoutInfo.visibleItemsInfo.firstOrNull { it.index == targetIndex }
+
+    val contentStart = layoutInfo.viewportStartOffset + layoutInfo.beforeContentPadding
+    val contentEnd = layoutInfo.viewportEndOffset - layoutInfo.afterContentPadding
+    val itemSize = itemInfo?.size ?: anchor.size
+    val itemStart = itemInfo?.offset
+        ?: (anchor.offset + (targetIndex - anchor.index) * (anchor.size + layoutInfo.mainAxisItemSpacing))
+    val itemEnd = itemStart + itemSize
+
+    val visibleWidth = (minOf(itemEnd, contentEnd) - maxOf(itemStart, contentStart)).coerceAtLeast(0)
+    val visibleRatio = if (itemSize > 0) visibleWidth.toFloat() / itemSize else 0f
+
+    if (visibleRatio >= THUMBNAIL_MIN_VISIBLE_RATIO) return
+
+    val scrollDelta = when {
+        itemEnd > contentEnd -> (itemEnd - contentEnd).toFloat()
+        itemStart < contentStart -> (itemStart - contentStart).toFloat()
+        else -> 0f
+    }
+    if (scrollDelta != 0f) {
+        listState.animateScrollBy(
+            value = scrollDelta,
+            animationSpec = tween(
+                durationMillis = THUMBNAIL_SCROLL_ANIMATION_MS,
+                easing = FastOutSlowInEasing
+            )
+        )
+    }
+}
+
 @Composable
 fun PopularMovie(
     movie: Movie,
     onNavigateToMovieDetail: (id: Int) -> Unit,
     modifier: Modifier = Modifier,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     onMyListClick: (Movie) -> Unit = {}
 ) {
     var isInMyList by remember(movie.id, movie.isFavorite) { mutableStateOf(movie.isFavorite) }
@@ -294,7 +415,10 @@ fun PopularMovie(
         modifier = modifier
             .fillMaxWidth()
             .height(430.dp)
-            .clickable { onNavigateToMovieDetail(movie.id) }
+            .clickable(
+                interactionSource = interactionSource,
+                indication = LocalIndication.current
+            ) { onNavigateToMovieDetail(movie.id) }
     ) {
         AsyncImage(
             model = getFullPosterPath(movie.posterPath),
