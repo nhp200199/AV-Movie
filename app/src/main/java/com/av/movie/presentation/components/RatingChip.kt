@@ -13,11 +13,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.av.avmovie.R
+import com.av.movie.ui.theme.BrandGradient
 import com.av.movie.ui.theme.White
 import java.math.BigDecimal
 import java.math.RoundingMode
+
+internal fun formatMovieRating(rating: Double): String {
+    if (rating <= 0.0) return "--"
+    return BigDecimal.valueOf(rating)
+        .setScale(1, RoundingMode.HALF_UP)
+        .toPlainString()
+}
 
 @Composable
 fun RatingChip(
@@ -41,10 +52,32 @@ fun RatingChip(
         )
         Spacer(modifier = Modifier.width(4.dp))
         Text(
-            text = BigDecimal(rating)
-                .setScale(1, RoundingMode.HALF_UP)
-                .toDouble()
-                .toString()
+            text = formatMovieRating(rating)
         )
     }
+}
+
+@Composable
+fun RatingBadge(
+    rating: Double,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = formatMovieRating(rating),
+        color = White,
+        fontSize = 12.sp,
+        fontWeight = FontWeight.SemiBold,
+        modifier = modifier
+            .background(
+                brush = BrandGradient,
+                shape = RoundedCornerShape(6.dp)
+            )
+            .padding(horizontal = 8.dp, vertical = 4.dp)
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun RatingBadgePreview() {
+    RatingBadge(rating = 9.8)
 }

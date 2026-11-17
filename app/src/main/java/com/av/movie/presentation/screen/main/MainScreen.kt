@@ -2,6 +2,7 @@ package com.av.movie.presentation.screen.main
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
@@ -85,10 +86,32 @@ fun MainScreen(
 ) {
     val systemUiController = rememberSystemUiController()
     val systemBarColor = MaterialTheme.colorScheme.primary
+    val isDarkTheme = isSystemInDarkTheme()
     val navHostController = rememberNavController()
     val navBackStackEntry by navHostController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
     val isHomeDestination = currentDestination == null || currentDestination.hasRoute<Home>()
+
+    val scaffoldBackgroundColor = if (isHomeDestination) {
+        MaterialTheme.colorScheme.background
+    } else {
+        Grey10
+    }
+    val bottomBarSurfaceColor = if (isHomeDestination) {
+        MaterialTheme.colorScheme.surface
+    } else {
+        Grey10
+    }
+    val selectedIconTint = if (isHomeDestination) {
+        MaterialTheme.colorScheme.onSurface
+    } else {
+        Color.White
+    }
+    val unselectedIconTint = if (isHomeDestination) {
+        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.65f)
+    } else {
+        Color.White.copy(alpha = 0.7f)
+    }
 
     SideEffect {
         systemUiController.setStatusBarColor(
@@ -96,18 +119,18 @@ fun MainScreen(
             darkIcons = false
         )
         systemUiController.setNavigationBarColor(
-            color = Grey10,
-            darkIcons = false
+            color = bottomBarSurfaceColor,
+            darkIcons = if (isHomeDestination) !isDarkTheme else false
         )
     }
 
     Scaffold(
-        containerColor = Grey10,
+        containerColor = scaffoldBackgroundColor,
         bottomBar = {
             BottomNavigation(
-                backgroundColor = Grey10,
+                backgroundColor = bottomBarSurfaceColor,
                 modifier = Modifier
-                    .background(Grey10)
+                    .background(bottomBarSurfaceColor)
                     .navigationBarsPadding()
             ) {
                 val currentRoute = currentDestination?.route
@@ -158,11 +181,12 @@ fun MainScreen(
                             Icon(
                                 topLevelRoute.icon,
                                 contentDescription = topLevelRoute.name,
+                                tint = if (isSelected) selectedIconTint else unselectedIconTint,
                                 modifier = modifier
                             )
                         },
-                        selectedContentColor = Color.White,
-                        unselectedContentColor = Color.White
+                        selectedContentColor = selectedIconTint,
+                        unselectedContentColor = unselectedIconTint
                     )
                 }
             }

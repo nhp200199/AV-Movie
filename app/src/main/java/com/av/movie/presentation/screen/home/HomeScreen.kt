@@ -12,6 +12,7 @@ import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,10 +40,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -65,6 +65,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -83,10 +84,9 @@ import com.av.movie.domain.model.Genre
 import com.av.movie.domain.model.Movie
 import com.av.movie.presentation.components.GenreItem
 import com.av.movie.presentation.components.MovieItem
-import com.av.movie.presentation.components.RatingChip
+import com.av.movie.ui.theme.AVMovieTheme
 import com.av.movie.ui.theme.Blue90
 import com.av.movie.ui.theme.BrandGradient
-import com.av.movie.ui.theme.Cyan90
 import com.av.movie.ui.theme.Grey10
 import com.av.movie.ui.theme.White
 import kotlinx.coroutines.awaitCancellation
@@ -132,43 +132,48 @@ fun HomeScreen(
     onNavigateToMovieDetail: (id: Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val backgroundColor = MaterialTheme.colorScheme.background
+
     LazyColumn(
+        contentPadding = PaddingValues(bottom = 24.dp),
         modifier = modifier
             .fillMaxSize()
-            .background(Grey10)
+            .background(backgroundColor)
     ) {
         item {
             MovieCarousel(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 movies = (uiState as? HomeUiState.Success)?.data?.nowPlayingMovies ?: MODEL_POPULAR_MOVIES,
                 onNavigateToMovieDetail = onNavigateToMovieDetail
             )
         }
 
         item {
-            Category(
-                name = "Popular",
+            Spacer(modifier = Modifier.height(8.dp))
+            MovieCategorySection(
+                title = "Popular",
+                category = Category.POPULAR,
                 movies = (uiState as? HomeUiState.Success)?.data?.popularMovies ?: MODEL_POPULAR_MOVIES,
-                modifier = Modifier.padding(8.dp),
                 onNavigateToCategoryDetail = onNavigateToCategoryDetail,
                 onNavigateToMovieDetail = onNavigateToMovieDetail
             )
         }
 
         item {
+            Spacer(modifier = Modifier.height(24.dp))
             Genres(
                 genres = (uiState as? HomeUiState.Success)?.data?.genres ?: ALL_GENRES,
-                modifier = Modifier
-                    .padding(8.dp)
+                modifier = Modifier.fillMaxWidth()
             )
         }
 
         item {
-            MovieCategory(
+            Spacer(modifier = Modifier.height(24.dp))
+            MovieCategorySection(
+                title = Category.TOP_RATED.categoryName,
                 category = Category.TOP_RATED,
                 movies = (uiState as? HomeUiState.Success)?.data?.topRatedMovies ?: MODEL_POPULAR_MOVIES,
-                modifier = Modifier.padding(8.dp),
+                isBackdrop = true,
                 onNavigateToCategoryDetail = onNavigateToCategoryDetail,
                 onNavigateToMovieDetail = onNavigateToMovieDetail
             )
@@ -185,16 +190,17 @@ fun Genres(
         modifier = modifier
     ) {
         Text(
-            fontSize = 16.sp,
-            color = Color.White,
             text = "Categories",
-            fontWeight = FontWeight.SemiBold
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.padding(horizontal = 16.dp)
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         LazyHorizontalGrid(
             rows = GridCells.Fixed(3),
+            contentPadding = PaddingValues(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.height(225.dp)
@@ -400,6 +406,12 @@ fun PopularMovie(
     onMyListClick: (Movie) -> Unit = {}
 ) {
     var isInMyList by remember(movie.id, movie.isFavorite) { mutableStateOf(movie.isFavorite) }
+    val isDarkTheme = isSystemInDarkTheme()
+    val bottomScrimColor = if (isDarkTheme) {
+        MaterialTheme.colorScheme.background
+    } else {
+        Color.Black.copy(alpha = 0.85f)
+    }
 
     Box(
         modifier = modifier
@@ -428,8 +440,8 @@ fun PopularMovie(
                     val bottomGradient = Brush.verticalGradient(
                         colors = listOf(
                             Color.Transparent,
-                            Grey10.copy(alpha = 0.75f),
-                            Grey10
+                            bottomScrimColor.copy(alpha = 0.75f),
+                            bottomScrimColor
                         ),
                         startY = size.height * 0.35f,
                         endY = size.height
@@ -452,10 +464,6 @@ fun PopularMovie(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 20.dp)
         ) {
-            RatingChip(rating = movie.voteAverage)
-
-            Spacer(modifier = Modifier.height(10.dp))
-
             Text(
                 text = movie.title,
                 color = White,
@@ -552,103 +560,61 @@ private fun HomeHeroActions(
 }
 
 @Composable
-fun Category(
-    name: String,
-    movies: List<Movie>,
-    onNavigateToCategoryDetail: (category: Category) -> Unit,
-    onNavigateToMovieDetail: (id: Int) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(modifier = modifier) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(fontSize = 16.sp, color = Color.White, text = name, fontWeight = FontWeight.SemiBold)
-            TextButton(
-                onClick = { onNavigateToCategoryDetail(Category.POPULAR) },
-                colors = ButtonDefaults.textButtonColors()
-            ) {
-                val brush = Brush.linearGradient(
-                    listOf(
-                        Cyan90,
-                        Blue90
-                    )
-                )
-
-                Text(
-                    text = "See all",
-                    style = TextStyle(
-                        brush = brush
-                    )
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            items(
-                movies.size,
-                key = { movies[it].id }
-            ) {
-                MovieItem(
-                    movie = movies[it],
-                    modifier = Modifier.width(110.dp),
-                    onNavigateToMovieDetail = onNavigateToMovieDetail
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun MovieCategory(
+fun MovieCategorySection(
+    title: String,
     category: Category,
     movies: List<Movie>,
     onNavigateToCategoryDetail: (category: Category) -> Unit,
     onNavigateToMovieDetail: (id: Int) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isBackdrop: Boolean = false,
+    cardWidth: Dp = if (isBackdrop) 250.dp else 148.dp
 ) {
+    val contentColor = MaterialTheme.colorScheme.onBackground
+
     Column(modifier = modifier) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(fontSize = 16.sp, color = Color.White, text = category.categoryName, fontWeight = FontWeight.SemiBold)
-            TextButton(
-                onClick = { onNavigateToCategoryDetail(category) },
-                colors = ButtonDefaults.textButtonColors()
-            ) {
-                val brush = Brush.linearGradient(
-                    listOf(
-                        Cyan90,
-                        Blue90
-                    )
-                )
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleLarge,
+                color = contentColor
+            )
 
-                Text(
-                    text = "See all",
-                    style = TextStyle(
-                        brush = brush
-                    )
-                )
-            }
+            Text(
+                text = "See all",
+                style = TextStyle(
+                    brush = BrandGradient,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold
+                ),
+                modifier = Modifier
+                    .clip(RoundedCornerShape(8.dp))
+                    .clickable { onNavigateToCategoryDetail(category) }
+                    .padding(horizontal = 4.dp, vertical = 6.dp)
+            )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
             items(
-                movies.size,
+                count = movies.size,
                 key = { movies[it].id }
-            ) {
+            ) { index ->
                 MovieItem(
-                    movie = movies[it],
-                    modifier = Modifier.width(250.dp),
-                    isBackdrop = true,
+                    movie = movies[index],
+                    isBackdrop = isBackdrop,
+                    titleColor = contentColor,
+                    modifier = Modifier.width(cardWidth),
                     onNavigateToMovieDetail = onNavigateToMovieDetail
                 )
             }
@@ -659,20 +625,36 @@ fun MovieCategory(
 //---PREVIEW
 @Preview(showBackground = true)
 @Composable
-fun HomeScreenPreview() {
-    HomeScreen(
-        uiState = HomeUiState.Success(HomeData(nowPlayingMovies = MODEL_POPULAR_MOVIES)),
-        onNavigateToMovieDetail = {},
-        onNavigateToCategoryDetail = {}
-    )
+fun HomeScreenLightPreview() {
+    AVMovieTheme(darkTheme = false) {
+        HomeScreen(
+            uiState = HomeUiState.Success(HomeData(nowPlayingMovies = MODEL_POPULAR_MOVIES)),
+            onNavigateToMovieDetail = {},
+            onNavigateToCategoryDetail = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HomeScreenDarkPreview() {
+    AVMovieTheme(darkTheme = true) {
+        HomeScreen(
+            uiState = HomeUiState.Success(HomeData(nowPlayingMovies = MODEL_POPULAR_MOVIES)),
+            onNavigateToMovieDetail = {},
+            onNavigateToCategoryDetail = {}
+        )
+    }
 }
 
 @Preview
 @Composable
 fun PopularMoviePreview() {
-    PopularMovie(
-        modifier = Modifier.fillMaxWidth(),
-        movie = GLADIATOR_II,
-        onNavigateToMovieDetail = {}
-    )
+    AVMovieTheme(darkTheme = false) {
+        PopularMovie(
+            modifier = Modifier.fillMaxWidth(),
+            movie = GLADIATOR_II,
+            onNavigateToMovieDetail = {}
+        )
+    }
 }
