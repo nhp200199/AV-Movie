@@ -10,6 +10,7 @@ import com.av.movie.presentation.screen.login.AuthenticationScreen
 import com.av.movie.presentation.screen.main.MainScreen
 import com.av.movie.presentation.screen.movieDetail.MovieDetailScreenVM
 import com.av.movie.presentation.screen.onboarding.OnBoardingScreen
+import com.av.movie.presentation.screen.search.SearchScreenVM
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 const val MOVIE_ID_ARGUMENT_KEY = "movieId"
@@ -33,6 +34,18 @@ fun AVMovieNavGraph() {
         composable<Main> {
             MainScreen(
                 onNavigateMovieDetail = { movieId ->
+                    navController.navigate(MovieDetail(movieId))
+                },
+                onNavigateToSearch = {
+                    navController.navigate(Search)
+                }
+            )
+        }
+
+        composable<Search> {
+            SearchScreenVM(
+                onNavigateBack = { navController.navigateUp() },
+                onNavigateToMovieDetail = { movieId ->
                     navController.navigate(MovieDetail(movieId))
                 }
             )

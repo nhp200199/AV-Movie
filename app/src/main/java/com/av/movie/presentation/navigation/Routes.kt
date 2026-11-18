@@ -17,6 +17,8 @@ object Home
 @Serializable
 object Explore
 @Serializable
+object Search
+@Serializable
 object ExploreFilter
 @Serializable
 object GenreFilter

@@ -82,7 +82,8 @@ val topLevelScreens = listOf(
 
 @Composable
 fun MainScreen(
-    onNavigateMovieDetail: (Int) -> Unit
+    onNavigateMovieDetail: (Int) -> Unit,
+    onNavigateToSearch: () -> Unit = {}
 ) {
     val systemUiController = rememberSystemUiController()
     val systemBarColor = MaterialTheme.colorScheme.primary
@@ -237,7 +238,8 @@ fun MainScreen(
                         onNavigateExploreFilterScreen = {
                             navHostController.navigate(ExploreFilter)
                         },
-                        onNavigateToMovieDetail = onNavigateMovieDetail
+                        onNavigateToMovieDetail = onNavigateMovieDetail,
+                        onNavigateToSearchScreen = onNavigateToSearch
                     )
                 }
                 composable<ExploreFilter> { entry ->

@@ -22,9 +22,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
@@ -36,6 +36,7 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -46,6 +47,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
@@ -64,7 +66,8 @@ import com.av.movie.presentation.components.MovieItem
 fun ExploreScreenVM(
     vm: ExploreViewModel,
     onNavigateExploreFilterScreen: () -> Unit,
-    onNavigateToMovieDetail: (Int) -> Unit
+    onNavigateToMovieDetail: (Int) -> Unit,
+    onNavigateToSearchScreen: () -> Unit = {}
 ) {
     val searchUiState by vm.filteredSearchUiState.collectAsStateWithLifecycle()
 
@@ -72,7 +75,8 @@ fun ExploreScreenVM(
         searchUiState = searchUiState,
         onMovieSearch = { vm.onSearchMovie(it) },
         onNavigateExploreFilterScreen = onNavigateExploreFilterScreen,
-        onNavigateToMovieDetail = onNavigateToMovieDetail
+        onNavigateToMovieDetail = onNavigateToMovieDetail,
+        onNavigateToSearchScreen = onNavigateToSearchScreen
     )
 }
 
@@ -82,7 +86,8 @@ fun ExploreScreen(
     onMovieSearch: (query: String) -> Unit,
     onNavigateExploreFilterScreen: () -> Unit,
     onNavigateToMovieDetail: (Int) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onNavigateToSearchScreen: () -> Unit = {}
 ) {
     LaunchedEffect(searchUiState) {
         Log.d("PhucNguyen", "ExploreScreen: $searchUiState")
@@ -96,7 +101,7 @@ fun ExploreScreen(
             modifier = Modifier.fillMaxSize(),
         ) {
             ExploreToolBar(
-                onMovieSearch = onMovieSearch,
+                onSearchClick = onNavigateToSearchScreen,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -239,41 +244,45 @@ fun SearchHistory(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExploreToolBar(
-    onMovieSearch: (query: String) -> Unit,
+    onSearchClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var query by rememberSaveable { mutableStateOf("") }
+    val shape = RoundedCornerShape(28.dp)
+    val searchBarColors = SearchBarDefaults.colors()
+    val inputFieldColors = SearchBarDefaults.inputFieldColors()
 
     Row(
         modifier = modifier
-            .padding(horizontal = 8.dp),
+            .padding(horizontal = 8.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        SearchBar(
-            inputField = {
-                SearchBarDefaults.InputField(
-                    onQueryChange = { query = it },
-                    query = query,
-                    onSearch = onMovieSearch,
-                    expanded = false,
-                    onExpandedChange = {},
-                    placeholder = { Text("Search movies, TV shows, ...") },
-                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-                    trailingIcon = {
-                        if (query.isNotEmpty()) {
-                            Icon(
-                                Icons.Filled.Clear,
-                                contentDescription = null,
-                                modifier = Modifier.clickable { query = "" }
-                            )
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth()
+        Surface(
+            shape = shape,
+            color = searchBarColors.containerColor,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+                .clip(shape)
+                .clickable(onClick = onSearchClick)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = "Search",
+                    tint = inputFieldColors.focusedLeadingIconColor
                 )
-            },
-            expanded = false,
-            onExpandedChange = {}
-        ) {}
+                Spacer(modifier = Modifier.width(12.dp))
+                Text(
+                    text = "Search movies, TV shows, ...",
+                    color = inputFieldColors.focusedPlaceholderColor
+                )
+            }
+        }
     }
 }
 
@@ -290,7 +299,7 @@ fun SearchHistoryPreview() {
 @Composable
 fun ExploreToolBarPreview() {
     ExploreToolBar(
-        onMovieSearch = {}
+        onSearchClick = {}
     )
 }
 
