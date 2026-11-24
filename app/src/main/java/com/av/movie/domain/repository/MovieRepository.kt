@@ -18,5 +18,4 @@ interface MovieRepository {
     suspend fun getCastForMovie(id: Int): ResultData<List<Cast>, String>
     suspend fun getVideoForMovie(id: Int): ResultData<List<Video>, String>
     suspend fun getMovieGenres(): ResultData<List<Genre>, String>
-    fun getMoviePreview(id: Int): Movie?
 }

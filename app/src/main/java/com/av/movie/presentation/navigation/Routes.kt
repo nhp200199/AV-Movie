@@ -44,4 +44,4 @@ object ExploreNested
 object FavouritesNested
 
 @Serializable
-data class MovieDetail(val id: Int)
+data class MovieDetail(val movie: MovieNavPayload)

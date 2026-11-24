@@ -20,7 +20,7 @@ data class FullDetailMovie(
 class GetFullDetailMovieUseCase @Inject constructor(
     private val movieRepository: MovieRepository
 ) {
-    suspend operator fun invoke(id: Int): ResultData<FullDetailMovie, Nothing> {
+    suspend operator fun invoke(id: Int): ResultData<FullDetailMovie, String> {
         return coroutineScope {
             val movieDetailResult = async { movieRepository.getMovieDetail(id) }
             val castsResult = async { movieRepository.getCastForMovie(id) }
@@ -32,25 +32,19 @@ class GetFullDetailMovieUseCase @Inject constructor(
             val videos = videosResult.await()
             val recommendations = recommendationsResult.await()
 
-            val results = listOf(
-                movieDetail,
-                casts,
-                videos,
-                recommendations
-            )
-
-            if (results.any { it !is ResultData.Success }) {
-                return@coroutineScope ResultData.OperationError(Exception("Error"))
-            }
-
-            return@coroutineScope ResultData.Success(
-                FullDetailMovie(
-                    movieDetail = (movieDetail as ResultData.Success).data,
-                    casts = (casts as ResultData.Success).data,
-                    videos = (videos as ResultData.Success).data,
-                    recommendations = (recommendations as ResultData.Success).data
+            when (movieDetail) {
+                is ResultData.Success -> ResultData.Success(
+                    FullDetailMovie(
+                        movieDetail = movieDetail.data,
+                        casts = (casts as? ResultData.Success)?.data ?: emptyList(),
+                        videos = (videos as? ResultData.Success)?.data ?: emptyList(),
+                        recommendations = (recommendations as? ResultData.Success)?.data ?: emptyList()
+                    )
                 )
-            )
+
+                is ResultData.ApiError -> ResultData.ApiError(movieDetail.body)
+                is ResultData.OperationError -> ResultData.OperationError(movieDetail.exception)
+            }
         }
     }
 }

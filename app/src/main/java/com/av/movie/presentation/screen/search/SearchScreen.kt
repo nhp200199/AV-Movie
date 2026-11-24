@@ -92,7 +92,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 @Composable
 fun SearchScreenVM(
     onNavigateBack: () -> Unit,
-    onNavigateToMovieDetail: (Int) -> Unit,
+    onNavigateToMovieDetail: (Movie) -> Unit,
     viewModel: SearchViewModel = hiltViewModel()
 ) {
     val query by viewModel.query.collectAsStateWithLifecycle()
@@ -125,9 +125,9 @@ fun SearchScreenVM(
         onRemoveFilterChip = viewModel::onRemoveFilterChip,
         onRetry = viewModel::onRetry,
         onBackClick = onNavigateBack,
-        onMovieClick = { movieId ->
+        onMovieClick = { movie ->
             viewModel.onMovieClick()
-            onNavigateToMovieDetail(movieId)
+            onNavigateToMovieDetail(movie)
         }
     )
 }
@@ -145,7 +145,7 @@ fun SearchScreen(
     onRemoveFilterChip: (ActiveFilterChip) -> Unit,
     onRetry: () -> Unit,
     onBackClick: () -> Unit,
-    onMovieClick: (Int) -> Unit,
+    onMovieClick: (Movie) -> Unit,
     modifier: Modifier = Modifier,
     autoFocus: Boolean = true
 ) {
@@ -498,7 +498,7 @@ private sealed interface SearchBodyTransitionState {
 private fun SearchResultBody(
     resultState: SearchResultState,
     filterRevision: Int,
-    onMovieClick: (Int) -> Unit,
+    onMovieClick: (Movie) -> Unit,
     onRetry: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -571,7 +571,7 @@ private fun SearchResultBody(
 private fun SearchMovieGrid(
     movies: List<Movie>,
     gridState: LazyGridState,
-    onMovieClick: (Int) -> Unit,
+    onMovieClick: (Movie) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyVerticalGrid(

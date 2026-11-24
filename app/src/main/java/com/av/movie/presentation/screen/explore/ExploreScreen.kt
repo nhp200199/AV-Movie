@@ -66,7 +66,7 @@ import com.av.movie.presentation.components.MovieItem
 fun ExploreScreenVM(
     vm: ExploreViewModel,
     onNavigateExploreFilterScreen: () -> Unit,
-    onNavigateToMovieDetail: (Int) -> Unit,
+    onNavigateToMovieDetail: (Movie) -> Unit,
     onNavigateToSearchScreen: () -> Unit = {}
 ) {
     val searchUiState by vm.filteredSearchUiState.collectAsStateWithLifecycle()
@@ -85,7 +85,7 @@ fun ExploreScreen(
     searchUiState: SearchUiState,
     onMovieSearch: (query: String) -> Unit,
     onNavigateExploreFilterScreen: () -> Unit,
-    onNavigateToMovieDetail: (Int) -> Unit,
+    onNavigateToMovieDetail: (Movie) -> Unit,
     modifier: Modifier = Modifier,
     onNavigateToSearchScreen: () -> Unit = {}
 ) {
@@ -147,7 +147,7 @@ fun ExploreScreen(
 fun SearchResult(
     movies: List<Movie>,
     TVs: List<Movie>,
-    onNavigateToMovieDetail: (Int) -> Unit,
+    onNavigateToMovieDetail: (Movie) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(

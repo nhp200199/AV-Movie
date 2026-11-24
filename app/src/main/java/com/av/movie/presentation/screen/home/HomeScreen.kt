@@ -105,7 +105,7 @@ private const val THUMBNAIL_MIN_VISIBLE_RATIO = 0.7f
 fun HomeScreenVM(
     viewModel: HomeViewModel = hiltViewModel(),
     onNavigateToCategoryDetail: (category: Category) -> Unit,
-    onNavigateToMovieDetail: (id: Int) -> Unit
+    onNavigateToMovieDetail: (Movie) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) {
@@ -129,7 +129,7 @@ fun HomeScreenVM(
 fun HomeScreen(
     uiState: HomeUiState,
     onNavigateToCategoryDetail: (category: Category) -> Unit,
-    onNavigateToMovieDetail: (id: Int) -> Unit,
+    onNavigateToMovieDetail: (Movie) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val backgroundColor = MaterialTheme.colorScheme.background
@@ -224,7 +224,7 @@ fun Genres(
 @Composable
 fun MovieCarousel(
     movies: List<Movie>,
-    onNavigateToMovieDetail: (id: Int) -> Unit,
+    onNavigateToMovieDetail: (Movie) -> Unit,
     modifier: Modifier = Modifier
 ) {
     if (movies.isEmpty()) return
@@ -400,7 +400,7 @@ private suspend fun ensureThumbnailVisible(
 @Composable
 fun PopularMovie(
     movie: Movie,
-    onNavigateToMovieDetail: (id: Int) -> Unit,
+    onNavigateToMovieDetail: (Movie) -> Unit,
     modifier: Modifier = Modifier,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     onMyListClick: (Movie) -> Unit = {}
@@ -420,7 +420,7 @@ fun PopularMovie(
             .clickable(
                 interactionSource = interactionSource,
                 indication = LocalIndication.current
-            ) { onNavigateToMovieDetail(movie.id) }
+            ) { onNavigateToMovieDetail(movie) }
     ) {
         AsyncImage(
             model = getFullPosterPath(movie.posterPath),
@@ -477,7 +477,7 @@ fun PopularMovie(
 
             HomeHeroActions(
                 isFavorite = isInMyList,
-                onPlayClick = { onNavigateToMovieDetail(movie.id) },
+                onPlayClick = { onNavigateToMovieDetail(movie) },
                 onMyListClick = {
                     isInMyList = !isInMyList
                     onMyListClick(movie)
@@ -565,7 +565,7 @@ fun MovieCategorySection(
     category: Category,
     movies: List<Movie>,
     onNavigateToCategoryDetail: (category: Category) -> Unit,
-    onNavigateToMovieDetail: (id: Int) -> Unit,
+    onNavigateToMovieDetail: (Movie) -> Unit,
     modifier: Modifier = Modifier,
     isBackdrop: Boolean = false,
     cardWidth: Dp = if (isBackdrop) 250.dp else 148.dp

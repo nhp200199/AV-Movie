@@ -36,11 +36,11 @@ fun MovieItem(
     modifier: Modifier = Modifier,
     isBackdrop: Boolean = false,
     titleColor: Color = Color.White,
-    onNavigateToMovieDetail: (id: Int) -> Unit = {}
+    onNavigateToMovieDetail: (Movie) -> Unit = {}
 ) {
     Column(
         modifier = modifier
-            .clickable { onNavigateToMovieDetail(movie.id) },
+            .clickable { onNavigateToMovieDetail(movie) },
     ) {
         Box {
             AsyncImage(

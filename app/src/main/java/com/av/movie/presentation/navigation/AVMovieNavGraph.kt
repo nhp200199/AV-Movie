@@ -12,6 +12,7 @@ import com.av.movie.presentation.screen.movieDetail.MovieDetailScreenVM
 import com.av.movie.presentation.screen.onboarding.OnBoardingScreen
 import com.av.movie.presentation.screen.search.SearchScreenVM
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlin.reflect.typeOf
 
 const val MOVIE_ID_ARGUMENT_KEY = "movieId"
 
@@ -33,8 +34,8 @@ fun AVMovieNavGraph() {
 
         composable<Main> {
             MainScreen(
-                onNavigateMovieDetail = { movieId ->
-                    navController.navigate(MovieDetail(movieId))
+                onNavigateMovieDetail = { movie ->
+                    navController.navigate(MovieDetail(movie.toNavPayload()))
                 },
                 onNavigateToSearch = {
                     navController.navigate(Search)
@@ -45,8 +46,8 @@ fun AVMovieNavGraph() {
         composable<Search> {
             SearchScreenVM(
                 onNavigateBack = { navController.navigateUp() },
-                onNavigateToMovieDetail = { movieId ->
-                    navController.navigate(MovieDetail(movieId))
+                onNavigateToMovieDetail = { movie ->
+                    navController.navigate(MovieDetail(movie.toNavPayload()))
                 }
             )
         }
@@ -71,9 +72,17 @@ fun AVMovieNavGraph() {
             }
         }
 
-        composable<MovieDetail> {  backStackEntry ->
-            val movieDetail = backStackEntry.toRoute<MovieDetail>()
-            MovieDetailScreenVM(movieDetail.id)
+        composable<MovieDetail>(
+            typeMap = mapOf(typeOf<MovieNavPayload>() to MovieNavType)
+        ) { backStackEntry ->
+            val route = backStackEntry.toRoute<MovieDetail>()
+            MovieDetailScreenVM(
+                movie = route.movie.toDomain(),
+                onBackClick = { navController.navigateUp() },
+                onNavigateToMovieDetail = { selectedMovie ->
+                    navController.navigate(MovieDetail(selectedMovie.toNavPayload()))
+                }
+            )
         }
     }
 }

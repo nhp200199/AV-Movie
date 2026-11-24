@@ -37,6 +37,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import com.av.movie.domain.model.Genre
+import com.av.movie.domain.model.Movie
 import com.av.movie.presentation.navigation.CategoryDetail
 import com.av.movie.presentation.navigation.CountryFilter
 import com.av.movie.presentation.navigation.Download
@@ -82,7 +83,7 @@ val topLevelScreens = listOf(
 
 @Composable
 fun MainScreen(
-    onNavigateMovieDetail: (Int) -> Unit,
+    onNavigateMovieDetail: (Movie) -> Unit,
     onNavigateToSearch: () -> Unit = {}
 ) {
     val systemUiController = rememberSystemUiController()

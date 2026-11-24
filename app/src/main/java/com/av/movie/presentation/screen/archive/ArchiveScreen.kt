@@ -184,7 +184,7 @@ fun WatchHistory(
 fun History(
     modifier: Modifier = Modifier,
     movies: List<Movie>,
-    onNavigateToMovieDetail: (Int) -> Unit
+    onNavigateToMovieDetail: (Movie) -> Unit
 ) {
     LazyVerticalGrid(
         modifier = modifier,

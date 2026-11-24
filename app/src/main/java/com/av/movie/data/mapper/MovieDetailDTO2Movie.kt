@@ -7,6 +7,10 @@ import javax.inject.Inject
 
 class MovieDetailDTO2Movie @Inject constructor() : Mapper<MovieDetailDTO, MovieDetail> {
     override fun map(input: MovieDetailDTO): MovieDetail {
+        val country = input.productionCountries.firstOrNull { it.name.isNotBlank() }?.name
+            ?: input.originCountry.firstOrNull { it.isNotBlank() }
+            ?: input.originalLanguage
+
         return MovieDetail(
             adult = input.adult,
             genres = input.genres.map { Genre(id = it.id, name = it.name) },
@@ -23,7 +27,8 @@ class MovieDetailDTO2Movie @Inject constructor() : Mapper<MovieDetailDTO, MovieD
             originalLanguage = input.originalLanguage,
             posterPath = input.posterPath ?: "",
             duration = input.runtime ?: 0,
-            isFavorite = false
+            isFavorite = false,
+            country = country
         )
     }
 }

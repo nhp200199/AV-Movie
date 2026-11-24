@@ -16,7 +16,6 @@ import com.av.movie.domain.model.Movie
 import com.av.movie.domain.model.MovieDetail
 import com.av.movie.domain.model.Video
 import com.av.movie.domain.repository.MovieRepository
-import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 
 class MovieRepositoryImp @Inject constructor(
@@ -27,25 +26,24 @@ class MovieRepositoryImp @Inject constructor(
     private val videoMapper: Mapper<VideoListDTO, @JvmSuppressWildcards List<Video>>,
     private val genreMapper: Mapper<GenreDTO, @JvmSuppressWildcards List<Genre>>
 ) : MovieRepository {
-    private val moviePreviews: MutableSet<Movie> = ConcurrentHashMap.newKeySet()
 
     override suspend fun getNowPlayingMovies(page: Int): ResultData<List<Movie>, String> =
-        fetchAndCacheMovies { movieApi.getNowPlayingMovies(page) }
+        fetchMovies { movieApi.getNowPlayingMovies(page) }
 
     override suspend fun getPopularMovies(page: Int): ResultData<List<Movie>, String> =
-        fetchAndCacheMovies { movieApi.getPopularMovies(page) }
+        fetchMovies { movieApi.getPopularMovies(page) }
 
     override suspend fun getTopRatedMovies(page: Int): ResultData<List<Movie>, String> =
-        fetchAndCacheMovies { movieApi.getTopRatedMovies(page) }
+        fetchMovies { movieApi.getTopRatedMovies(page) }
 
     override suspend fun getUpcomingMovies(page: Int): ResultData<List<Movie>, String> =
-        fetchAndCacheMovies { movieApi.getUpcomingMovies(page) }
+        fetchMovies { movieApi.getUpcomingMovies(page) }
 
     override suspend fun searchMovie(query: String): ResultData<List<Movie>, String> =
-        fetchAndCacheMovies { movieApi.searchMovie(query) }
+        fetchMovies { movieApi.searchMovie(query) }
 
     override suspend fun getRecommendationsForMovie(id: Int): ResultData<List<Movie>, String> =
-        fetchAndCacheMovies { movieApi.getRecommendations(id) }
+        fetchMovies { movieApi.getRecommendations(id) }
 
     override suspend fun getMovieDetail(id: Int): ResultData<MovieDetail, String> =
         movieApi.getDetail(id).map(movieDetailMapper::map)
@@ -59,18 +57,11 @@ class MovieRepositoryImp @Inject constructor(
     override suspend fun getMovieGenres(): ResultData<List<Genre>, String> =
         movieApi.getAllGenres().map(genreMapper::map)
 
-    override fun getMoviePreview(id: Int): Movie? =
-        moviePreviews.firstOrNull { it.id == id }
-
-    private suspend fun fetchAndCacheMovies(
+    private suspend fun fetchMovies(
         apiCall: suspend () -> ResultData<PagingDTO<MoviePreviewDTO>, String>
     ): ResultData<List<Movie>, String> {
-        val result = apiCall().map { paging ->
+        return apiCall().map { paging ->
             paging.results.map(moviePreviewMapper::map)
         }
-        if (result is ResultData.Success) {
-            moviePreviews.addAll(result.data)
-        }
-        return result
     }
 }

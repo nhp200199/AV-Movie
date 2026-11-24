@@ -42,7 +42,7 @@ import com.av.movie.ui.theme.Grey10
 fun CategoryDetailScreenVM(
     category: Category,
     onNavigatingUp: () -> Unit,
-    onNavigateToMovieDetail: (Int) -> Unit,
+    onNavigateToMovieDetail: (Movie) -> Unit,
     viewmodel: CategoryDetailViewModel = hiltViewModel()
 ) {
     val flowState = viewmodel.flow.collectAsLazyPagingItems()
@@ -61,7 +61,7 @@ fun CategoryDetailScreen(
     pagingState: LazyPagingItems<Movie>,
     category: Category,
     onNavigatingUp: () -> Unit,
-    onNavigateToMovieDetail: (Int) -> Unit,
+    onNavigateToMovieDetail: (Movie) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
@@ -104,7 +104,7 @@ fun CategoryDetailScreen(
 @Composable
 fun PaginatedCategoryWrapper(
     pagingState: LazyPagingItems<Movie>,
-    onNavigateToMovieDetail: (Int) -> Unit,
+    onNavigateToMovieDetail: (Movie) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -147,7 +147,7 @@ fun InitialLoadErrorContainer(
 @Composable
 fun PaginatedCategory(
     pagingState: LazyPagingItems<Movie>,
-    onNavigateToMovieDetail: (Int) -> Unit,
+    onNavigateToMovieDetail: (Movie) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyVerticalGrid(
